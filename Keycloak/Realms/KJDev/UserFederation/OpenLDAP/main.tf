@@ -26,7 +26,7 @@ terraform {
 }
 
 data "vault_generic_secret" "openldap" {
-  path = "secret/keycloak/OPENLDAP"
+  path = "keycloak/data/OPENLDAP"
 }
 
 resource "keycloak_ldap_user_federation" "openldap" {
