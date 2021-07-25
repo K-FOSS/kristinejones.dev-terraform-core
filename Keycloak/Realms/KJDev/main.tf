@@ -90,4 +90,6 @@ module "OpenLDAP" {
 
 module "MinioClient" {
   source = "./Clients/Minio"
+
+  realmID = "${keycloak_realm.kjdev.id}"
 }
