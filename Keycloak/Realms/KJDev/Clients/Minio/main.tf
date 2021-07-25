@@ -23,7 +23,7 @@ terraform {
 }
 
 resource "keycloak_openid_client" "minio-oid" {
-  realm_id            = keycloak_realm.kjdev.id
+  realm_id            = "${var.realmID}"
 
   client_id           = "Minio"
   client_secret       = "MinioSecret"
@@ -43,7 +43,7 @@ resource "keycloak_openid_client" "minio-oid" {
 
 resource "keycloak_openid_user_attribute_protocol_mapper" "map_user_attributes_client" {
   name           = "minio"
-  realm_id       = keycloak_realm.kjdev.id
+  realm_id       = "${var.realmID}"
   client_id      = keycloak_openid_client.minio-oid.id
   user_attribute = "policy"
   claim_name     = "policy"
