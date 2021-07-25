@@ -32,8 +32,6 @@ data "vault_generic_secret" "keycloakClient" {
 }
 
 provider "keycloak" {
-  alias = "core"
-
   client_id          = "${var.keycloakClientID}"
   client_secret      = data.vault_generic_secret.keycloak.data["CLIENT_SECRET"]
   url                = "${var.keycloakProtocol}://${var.keycloakHostname}:${var.keycloakPort}"
@@ -41,8 +39,4 @@ provider "keycloak" {
 
 module "kjdev-realm" {
   source = "./Realms/KJDev"
-
-  providers = {
-    keycloak = keycloak.core
-  }
 }
