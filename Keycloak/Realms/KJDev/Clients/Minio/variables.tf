@@ -1,3 +1,3 @@
 variable "realmID" {
-  type = "string"
+  type = string
 }

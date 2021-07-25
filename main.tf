@@ -23,5 +23,4 @@ module "Keycloak" {
   keycloakHostname = "keycloak.kristianjones.dev"
   
   keycloakClientID = "Terraform"
-  keycloakClientSecret = "b06181af-0629-408a-ab3c-bc276c44a03b"
 }
