@@ -1,0 +1,3 @@
+variable "realmID" {
+  type = "string"
+}

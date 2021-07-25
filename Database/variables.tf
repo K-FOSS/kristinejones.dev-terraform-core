@@ -1,0 +1,3 @@
+variable "storageNetworkID" {
+  type = string
+}
