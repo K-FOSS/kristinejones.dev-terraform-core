@@ -67,7 +67,7 @@ resource "keycloak_realm" "kjdev" {
 
   web_authn_policy {
     relying_party_entity_name = "KJDev Int"
-    relying_party_id          = var.url
+    relying_party_id          = var.keycloakHostname
     signature_algorithms      = [
       "ES256",
       "RS256"]
@@ -75,7 +75,7 @@ resource "keycloak_realm" "kjdev" {
 
   web_authn_passwordless_policy {
     relying_party_entity_name = "KJDev Int"
-    relying_party_id          = var.url
+    relying_party_id          = var.keycloakHostname
     signature_algorithms      = [
       "ES256",
       "RS256"]
