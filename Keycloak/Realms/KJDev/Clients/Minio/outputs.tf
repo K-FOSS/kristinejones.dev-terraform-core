@@ -1,3 +1,3 @@
-output "OpenLDAP" {
-  value = keycloak_ldap_user_federation.openldap
+output "MinioClient" {
+  value = keycloak_openid_client.minio-oid
 }
