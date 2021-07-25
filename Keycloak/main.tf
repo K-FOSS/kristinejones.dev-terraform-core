@@ -28,12 +28,12 @@ terraform {
 }
 
 data "vault_generic_secret" "keycloakClient" {
-  path = "secret/keycloak/KEYCLOAK_SECRET"
+  path = "secret/keycloak/Terraform"
 }
 
 provider "keycloak" {
   client_id          = "${var.keycloakClientID}"
-  client_secret      = data.vault_generic_secret.keycloak.data["CLIENT_SECRET"]
+  client_secret      = data.vault_generic_secret.keycloakClient.data["CLIENT_SECRET"]
   url                = "${var.keycloakProtocol}://${var.keycloakHostname}:${var.keycloakPort}"
 }
 

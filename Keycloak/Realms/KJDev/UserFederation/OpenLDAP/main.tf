@@ -54,7 +54,7 @@ resource "keycloak_ldap_user_federation" "openldap" {
   connection_url  = "ldap://tasks.OpenLDAP"
   users_dn        = "ou=People,dc=kristianjones,dc=dev"
   bind_dn         = "cn=admin,dc=kristianjones,dc=dev"
-  bind_credential = data.vault_generic_secret.keycloak.data["PASSWORD"]
+  bind_credential = data.vault_generic_secret.openldap.data["PASSWORD"]
 
   connection_timeout = "5s"
   read_timeout       = "10s"
