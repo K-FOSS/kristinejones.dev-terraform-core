@@ -28,7 +28,7 @@ terraform {
 }
 
 data "vault_generic_secret" "keycloakClient" {
-  path = "keycloak/data/Terraform"
+  path = "secret/keycloak/data/Terraform"
 }
 
 provider "keycloak" {
