@@ -34,3 +34,10 @@ module "Keycloak" {
   
   keycloakClientID = "Terraform"
 }
+
+module "Minio" {
+  source = "./Minio"
+
+  minioHostname = "s3core.kristianjones.dev"
+  minioPort = 443
+}
