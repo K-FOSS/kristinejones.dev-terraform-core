@@ -45,6 +45,6 @@ module "Minio" {
 module "Docker" {
   source = "./Docker"
 
-  minioURL = "https://s3core.kristianjones.dev:443"
+  minioURL = "http://s3core.kristianjones.dev:9000"
   NextCloudBucket = module.Minio.NextCloudBucket
 }
