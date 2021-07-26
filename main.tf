@@ -49,6 +49,6 @@ module "Docker" {
   NextCloudBucket = module.Minio.NextCloudBucket
 
   depends_on = [
-    module.Minio.NextCloudBucket
+    module.Minio
   ]
 }
