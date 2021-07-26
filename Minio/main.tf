@@ -40,3 +40,8 @@ provider "minio" {
   minio_access_key = "${data.vault_generic_secret.minio.data["ACCESS_KEY"]}"
   minio_secret_key = "${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
 }
+
+resource "minio_s3_bucket" "nextcloudcore" {
+  bucket = "nextcloud-core"
+  acl    = "private"
+}
