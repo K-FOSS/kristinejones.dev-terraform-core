@@ -59,7 +59,7 @@ resource "docker_image" "mariadb" {
 
 resource "docker_container" "DHCPDatabase" {
   name    = "dhcpDatabase"
-  image   = "kristianfjones/mariadb:vps1-core"
+  image   = "mariadb:10"
 
   networks_advanced {
     name = data.docker_network.storageIntWeb.id
