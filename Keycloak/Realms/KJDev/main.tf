@@ -32,7 +32,7 @@ resource "keycloak_realm" "kjdev" {
 
   access_code_lifespan = "30m"
 
-  browser_flow = "${var.firstRun == true ? "browser" : module.FIDO2-Flow.FIDO2Flow.id}"
+  browser_flow = "${var.firstRun == true ? "browser" : "Browser-FIDO2"}"
 
   internationalization {
     supported_locales = [
