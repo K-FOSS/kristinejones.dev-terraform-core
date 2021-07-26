@@ -19,6 +19,11 @@ terraform {
       source  = "mrparkers/keycloak"
       version = "3.2.1"
     }
+
+    minio = {
+      source = "aminueza/minio"
+      version = "1.2.0"
+    }
   }
 }
 

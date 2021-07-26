@@ -82,6 +82,12 @@ resource "keycloak_realm" "kjdev" {
   }
 }
 
+module "FIDO2-Flow" {
+  source = "./Authentication/Flows/FIDO2"
+
+  realmID = "${keycloak_realm.kjdev.id}"
+}
+
 module "OpenLDAP" {
   source = "./UserFederation/OpenLDAP"
 
