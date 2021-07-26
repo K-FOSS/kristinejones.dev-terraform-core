@@ -47,8 +47,4 @@ module "Docker" {
 
   minioURL = "https://s3core.kristianjones.dev:443"
   NextCloudBucket = module.Minio.NextCloudBucket
-
-  depends_on = [
-    module.Minio
-  ]
 }
