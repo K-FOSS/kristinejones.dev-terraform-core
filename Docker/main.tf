@@ -51,26 +51,26 @@ resource "docker_image" "mariadb" {
   keep_locally = true
 }
 
-# resource "docker_container" "DHCPDatabase" {
-#   name    = "dhcpDatabase"
-#   image   = "mariadb:10"
+resource "docker_container" "DHCPDatabase" {
+  name    = "dhcpDatabase"
+  image   = "mariadb:10"
 
-#   networks_advanced {
-#     name = data.docker_network.storageIntWeb.id
+  networks_advanced {
+    name = data.docker_network.storageIntWeb.id
 
-#     aliases = ["DHCPMariaDB"]
-#   }
+    aliases = ["DHCPMariaDB"]
+  }
 
-#   volumes {
-#     volume_name    = "${var.NextCloudBucket.bucket}"
-#     container_path = "/var/lib/mysql"
-#     read_only      = false
-#   }
+  volumes {
+    volume_name    = "${var.NextCloudBucket.bucket}"
+    container_path = "/var/lib/mysql"
+    read_only      = false
+  }
 
-#   env = [
-#     "MYSQL_ROOT_PASSWORD=password/",
-#     "MYSQL_DATABASE=DHCP",
-#     "MYSQL_USER=dhcp",
-#     "MYSQL_PASSWORD=password"
-#   ]
-# }
+  env = [
+    "MYSQL_ROOT_PASSWORD=password/",
+    "MYSQL_DATABASE=DHCP",
+    "MYSQL_USER=dhcp",
+    "MYSQL_PASSWORD=password"
+  ]
+}
