@@ -3,3 +3,9 @@ variable "keycloakHostname" {
 
   default = "keycloak.kristianjones.dev"
 }
+
+variable "firstRun" {
+  type = bool
+
+  default = true
+}
