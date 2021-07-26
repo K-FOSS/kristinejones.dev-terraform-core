@@ -41,12 +41,6 @@ resource "docker_plugin" "s3core-storage" {
   ]
 }
 
-resource "docker_volume" "shared_volume" {
-  name = "${var.NextCloudBucket.bucket}"
-
-  driver = "${docker_plugin.s3core-storage.alias}"
-}
-
 data "docker_network" "storageIntWeb" {
   name = "storageIntWeb"
 }
