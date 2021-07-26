@@ -41,3 +41,14 @@ module "Minio" {
   minioHostname = "s3core.kristianjones.dev"
   minioPort = 443
 }
+
+module "Docker" {
+  source = "./Docker"
+
+  minioURL = "https://s3core.kristianjones.dev:443"
+  NextCloudBucket = module.Minio.NextCloudBucket
+
+  depends_on = [
+    module.Minio.NextCloudBucket
+  ]
+}
