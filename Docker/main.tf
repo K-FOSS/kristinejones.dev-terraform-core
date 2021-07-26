@@ -46,3 +46,37 @@ resource "docker_volume" "shared_volume" {
 
   driver = "${docker_plugin.s3core-storage.alias}"
 }
+
+data "docker_network" "storageIntWeb" {
+  name = "storageIntWeb"
+}
+
+resource "docker_image" "mariadb" {
+  provider = docker
+  name         = "kristianfjones/mariadb:vps1-core"
+  keep_locally = true
+}
+
+resource "docker_container" "DHCPDatabase" {
+  name    = "dhcpDatabase"
+  image   = "kristianfjones/mariadb:vps1-core"
+
+  networks_advanced {
+    name = data.docker_network.storageIntWeb.id
+
+    aliases = ["DHCPMariaDB"]
+  }
+
+  volumes {
+    volume_name    = docker_volume.shared_volume.name
+    container_path = "/var/lib/mysql"
+    read_only      = false
+  }
+
+  env = [
+    "MYSQL_ROOT_PASSWORD=password/",
+    "MYSQL_DATABASE=DHCP",
+    "MYSQL_USER=dhcp",
+    "MYSQL_PASSWORD=password"
+  ]
+}
