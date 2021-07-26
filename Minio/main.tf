@@ -45,3 +45,8 @@ resource "minio_s3_bucket" "nextcloudcore" {
   bucket = "nextcloud-core"
   acl    = "private"
 }
+
+resource "minio_s3_bucket" "dhcpDatabaseData" {
+  bucket = "dhcp-database"
+  acl    = "private"
+}
