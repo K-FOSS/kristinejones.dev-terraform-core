@@ -41,12 +41,6 @@ resource "docker_plugin" "s3core-storage" {
   ]
 }
 
-resource "docker_volume" "shared_volume" {
-  name = "${var.NextCloudBucket.bucket}"
-
-  driver = "${docker_plugin.s3core-storage.alias}"
-}
-
 data "docker_network" "storageIntWeb" {
   name = "storageIntWeb"
 }
@@ -68,7 +62,7 @@ resource "docker_container" "DHCPDatabase" {
   }
 
   volumes {
-    volume_name    = docker_volume.shared_volume.name
+    volume_name    = "${var.NextCloudBucket.bucket}"
     container_path = "/var/lib/mysql"
     read_only      = false
   }
