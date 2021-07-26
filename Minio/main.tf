@@ -32,16 +32,16 @@ data "vault_generic_secret" "minio" {
 }
 
 provider "minio" {
-  minio_server = "${var.minioHostname}:${tostring(var.minioPort)}"
+  minio_server = "tasks.StorageWeb:9000"
   minio_region = "us-east-1"
 
-  minio_ssl = true
+  minio_ssl = false
 
   minio_access_key = "${data.vault_generic_secret.minio.data["ACCESS_KEY"]}"
   minio_secret_key = "${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
 }
 
-resource "minio_s3_bucket" "nextcloud-core" {
-  bucket = "nextcloud-core"
+resource "minio_s3_bucket" "nextcloudcore" {
+  bucket = "nextcloudcore"
   acl    = "private"
 }
