@@ -40,3 +40,9 @@ resource "docker_plugin" "s3core-storage" {
     "S3FS_SECRETKEY=${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
   ]
 }
+
+resource "docker_volume" "shared_volume" {
+  name = "${var.NextCloudBucket.bucket}"
+
+  driver = "${docker_plugin.s3core-storage.alias}"
+}
