@@ -39,6 +39,10 @@ resource "keycloak_openid_client" "minio-oid" {
   ]
 
   login_theme = "keycloak"
+
+  authentication_flow_binding_overrides {
+    browser_id = "${var.FIDO2FlowID}"
+  }
 }
 
 resource "keycloak_openid_user_attribute_protocol_mapper" "map_user_attributes_client" {
