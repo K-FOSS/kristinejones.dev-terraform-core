@@ -29,6 +29,11 @@ terraform {
       source = "cyrilgdn/postgresql"
       version = "1.13.0"
     }
+
+    unifi = {
+      source = "paultyng/unifi"
+      version = "0.27.0"
+    }
   }
 }
 
@@ -54,6 +59,14 @@ module "Docker" {
 
   NextCloudBucket = module.Minio.NextCloudBucket
   PostgresDatabaseBucket = module.Minio.PostgresDatabaseBucket
+}
+
+module "Unifi" {
+  source = "./Network/Unifi"
+
+  unifiURL = "https://unifi.kristianjones.dev"
+
+  unifiSite = "default"
 }
 
 # module "Database" {
