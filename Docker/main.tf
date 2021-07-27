@@ -79,65 +79,65 @@ resource "docker_container" "DHCPDatabase" {
   ]
 }
 
-resource "docker_service" "postgresDatabase" {
-  name = "postgres-database"
+# resource "docker_service" "postgresDatabase" {
+#   name = "postgres-database"
 
-  task_spec {
-    container_spec {
-      image = "postgres:alpine3.14"
+#   task_spec {
+#     container_spec {
+#       image = "postgres:alpine3.14"
 
-      hostname = "pgdatabase"
+#       hostname = "pgdatabase"
 
-      user   = "root"
+#       user   = "root"
 
-      env = {
-        POSTGRES_PASSWORD = "helloWorld"
-      }
+#       env = {
+#         POSTGRES_PASSWORD = "helloWorld"
+#       }
 
-      mounts {
-        target    = "/var/lib/postgresql/data"
-        source    = "${var.PostgresDatabaseBucket.bucket}"
-        type      = "volume"
-      }
+#       mounts {
+#         target    = "/var/lib/postgresql/data"
+#         source    = "${var.PostgresDatabaseBucket.bucket}"
+#         type      = "volume"
+#       }
 
-      stop_signal       = "SIGTERM"
-      stop_grace_period = "10s"
-    }
+#       stop_signal       = "SIGTERM"
+#       stop_grace_period = "10s"
+#     }
 
-    placement {
-      max_replicas = 1
-    }
+#     placement {
+#       max_replicas = 1
+#     }
 
-    force_update = 0
-    runtime      = "container"
-    networks     = [data.docker_network.coreAuthWeb.id]
-  }
+#     force_update = 0
+#     runtime      = "container"
+#     networks     = [data.docker_network.coreAuthWeb.id]
+#   }
 
-  mode {
-    replicated {
-      replicas = 1
-    }
-  }
+#   mode {
+#     replicated {
+#       replicas = 1
+#     }
+#   }
 
-  update_config {
-    parallelism       = 1
-    delay             = "10s"
-    failure_action    = "pause"
-    monitor           = "5s"
-    max_failure_ratio = "0.1"
-    order             = "start-first"
-  }
+#   update_config {
+#     parallelism       = 1
+#     delay             = "10s"
+#     failure_action    = "pause"
+#     monitor           = "5s"
+#     max_failure_ratio = "0.1"
+#     order             = "start-first"
+#   }
 
-  rollback_config {
-    parallelism       = 2
-    delay             = "5ms"
-    failure_action    = "pause"
-    monitor           = "10h"
-    max_failure_ratio = "0.9"
-    order             = "stop-first"
-  }
+#   rollback_config {
+#     parallelism       = 2
+#     delay             = "5ms"
+#     failure_action    = "pause"
+#     monitor           = "10h"
+#     max_failure_ratio = "0.9"
+#     order             = "stop-first"
+#   }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
