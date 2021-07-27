@@ -56,8 +56,8 @@ module "Docker" {
   PostgresDatabaseBucket = module.Minio.PostgresDatabaseBucket
 }
 
-module "Database" {
-  source = "./Database"
+# module "Database" {
+#   source = "./Database"
 
-  postgresDatabaseService = module.Docker.PostgresDatabaseService
-}
+#   postgresDatabaseService = module.Docker.PostgresDatabaseService
+# }
