@@ -110,15 +110,6 @@ resource "docker_service" "postgresDatabase" {
     force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.coreAuthWeb.id]
-
-    log_driver {
-      name = "json-file"
-
-      options {
-        max-size = "10m"
-        max-file = "3"
-      }
-    }
   }
 
   mode {
