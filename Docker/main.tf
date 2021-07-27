@@ -69,17 +69,13 @@ resource "docker_container" "DHCPDatabase" {
   name    = "dhcpDatabase"
   image   = "mariadb:10"
 
-  dns        = []
-  dns_opts = []
-  group_add = []
+  cpu_shares      = 4
+  memory = 256
 
-  log_opts = {}
+  dns        = ["1.1.1.1", "1.0.0.1"]
+  group_add = ["docker"]
 
-  sysctls = {
-
-  }
-
-  tmpfs = {}
+  log_driver = "json-file"
 
   networks_advanced {
     name = data.docker_network.storageIntWeb.id
