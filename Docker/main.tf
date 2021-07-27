@@ -72,7 +72,7 @@ resource "docker_container" "DHCPDatabase" {
   dns        = []
   dns_opts = []
   group_add = []
-  links = []
+
   log_opts = {}
 
   sysctls = {
