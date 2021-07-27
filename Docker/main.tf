@@ -45,6 +45,10 @@ data "docker_network" "storageIntWeb" {
   name = "storageIntWeb"
 }
 
+data "docker_network" "coreAuthWeb" {
+  name = "coreAuthWeb"
+}
+
 resource "docker_image" "mariadb" {
   provider = docker
   name         = "kristianfjones/mariadb:vps1-core"
@@ -73,4 +77,82 @@ resource "docker_container" "DHCPDatabase" {
     "MYSQL_USER=dhcp",
     "MYSQL_PASSWORD=password"
   ]
+}
+
+resource "docker_service" "postgresDatabase" {
+  name = "postgres-database"
+
+  task_spec {
+    container_spec {
+      image = "postgres"
+
+      hostname = "pgdatabase:alpine3.14"
+
+      env = {
+        PGDATA = "/Data"
+        POSTGRES_PASSWORD = "helloWorld"
+      }
+
+      mounts {
+        target    = "/Data"
+        source    = "${var.PostgresDatabaseBucket.bucket}"
+        type      = "volume"
+      }
+
+      stop_signal       = "SIGTERM"
+      stop_grace_period = "10s"
+    }
+
+    restart_policy = {
+      condition    = "on-failure"
+      delay        = "3s"
+      max_attempts = 4
+      window       = "10s"
+    }
+
+    placement {
+      max_replicas = 1
+    }
+
+    force_update = 0
+    runtime      = "container"
+    networks     = [docker_network.coreAuthWeb.id]
+
+    log_driver {
+      name = "json-file"
+
+      options {
+        max-size = "10m"
+        max-file = "3"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  update_config {
+    parallelism       = 1
+    delay             = "10s"
+    failure_action    = "pause"
+    monitor           = "5s"
+    max_failure_ratio = "0.1"
+    order             = "start-first"
+  }
+
+  rollback_config {
+    parallelism       = 2
+    delay             = "5ms"
+    failure_action    = "pause"
+    monitor           = "10h"
+    max_failure_ratio = "0.9"
+    order             = "stop-first"
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
 }

@@ -55,3 +55,8 @@ resource "minio_s3_bucket" "tftpData" {
   bucket = "tftp-data"
   acl    = "private"
 }
+
+resource "minio_s3_bucket" "postgresDatabase" {
+  bucket = "database-postgres"
+  acl    = "private"
+}

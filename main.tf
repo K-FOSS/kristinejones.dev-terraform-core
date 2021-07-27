@@ -24,6 +24,11 @@ terraform {
       source = "aminueza/minio"
       version = "1.2.0"
     }
+
+    postgresql = {
+      source = "cyrilgdn/postgresql"
+      version = "1.13.0"
+    }
   }
 }
 
@@ -46,5 +51,13 @@ module "Docker" {
   source = "./Docker"
 
   minioURL = "http://s3core.kristianjones.dev:9000"
+
   NextCloudBucket = module.Minio.NextCloudBucket
+  PostgresDatabaseBucket = module.Minio.PostgresDatabaseBucket
+}
+
+module "Database" {
+  source = "./Database"
+
+  postgresDatabaseService = module.Docker.PostgresDatabaseService
 }

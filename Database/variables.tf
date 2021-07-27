@@ -1,3 +1,3 @@
-variable "storageNetworkID" {
-  type = string
+variable "postgresDatabaseService" {
+  description = "Postgres Docker Service"
 }
