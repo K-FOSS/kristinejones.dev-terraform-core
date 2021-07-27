@@ -116,7 +116,7 @@ resource "docker_service" "postgresDatabase" {
 
     force_update = 0
     runtime      = "container"
-    networks     = [docker_network.coreAuthWeb.id]
+    networks     = [data.docker_network.coreAuthWeb.id]
 
     log_driver {
       name = "json-file"
