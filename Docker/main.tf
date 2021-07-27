@@ -103,13 +103,6 @@ resource "docker_service" "postgresDatabase" {
       stop_grace_period = "10s"
     }
 
-    restart_policy = {
-      condition    = "on-failure"
-      delay        = "3s"
-      max_attempts = 4
-      window       = "10s"
-    }
-
     placement {
       max_replicas = 1
     }
