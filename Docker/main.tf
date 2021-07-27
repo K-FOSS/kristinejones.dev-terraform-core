@@ -91,12 +91,11 @@ resource "docker_service" "postgresDatabase" {
       user   = "root"
 
       env = {
-        PGDATA = "/Data"
         POSTGRES_PASSWORD = "helloWorld"
       }
 
       mounts {
-        target    = "/Data"
+        target    = "/var/lib/postgresql/data"
         source    = "${var.PostgresDatabaseBucket.bucket}"
         type      = "volume"
       }
