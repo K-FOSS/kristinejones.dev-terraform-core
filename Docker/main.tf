@@ -30,15 +30,25 @@ resource "docker_plugin" "s3core-storage" {
   alias                 = "s3core-storage"
   enabled               = true
   grant_all_permissions = true
-  force_destroy         = true
   enable_timeout        = 300
-  force_disable         = true
+
+  force_destroy         = false
+  force_disable         = false
+
   env = [
     "S3FS_OPTIONS=allow_other,use_path_request_style,nonempty,url=${var.minioURL}",
     "S3FS_ENDPOINT=${var.minioURL}",
     "S3FS_ACCESSKEY=${data.vault_generic_secret.minio.data["ACCESS_KEY"]}",
     "S3FS_SECRETKEY=${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
   ]
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      env,
+    ]
+  }
 }
 
 data "docker_network" "storageIntWeb" {
@@ -77,6 +87,42 @@ resource "docker_container" "DHCPDatabase" {
     "MYSQL_USER=dhcp",
     "MYSQL_PASSWORD=password"
   ]
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      command,
+      cpu_shares,
+      dns,
+      dns_opts,
+      dns_search,
+      entrypoint,
+      exit_code,
+      gateway,
+      group_add,
+      hostname,
+      init,
+      ip_address,
+      ip_prefix_length,
+      ipc_mode,
+      links,
+      log_opts,
+      max_retry_count,
+      memory,
+      memory_swap,
+      network_data,
+      network_mode,
+      privileged,
+      publish_all_ports,
+      security_opts,
+      shm_size,
+      sysctls,
+      tmpfs,
+      healthcheck,
+      labels,
+    ]
+  }
 }
 
 # resource "docker_service" "postgresDatabase" {
