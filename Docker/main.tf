@@ -88,6 +88,8 @@ resource "docker_service" "postgresDatabase" {
 
       hostname = "pgdatabase"
 
+      user   = "root"
+
       env = {
         PGDATA = "/Data"
         POSTGRES_PASSWORD = "helloWorld"
