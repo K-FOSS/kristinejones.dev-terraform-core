@@ -46,7 +46,7 @@ data "docker_network" "storageIntWeb" {
 }
 
 data "docker_network" "coreAuthWeb" {
-  name = "coreAuthWeb"
+  name = "authWeb"
 }
 
 resource "docker_image" "mariadb" {
