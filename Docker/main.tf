@@ -84,9 +84,9 @@ resource "docker_service" "postgresDatabase" {
 
   task_spec {
     container_spec {
-      image = "postgres"
+      image = "postgres:alpine3.14"
 
-      hostname = "pgdatabase:alpine3.14"
+      hostname = "pgdatabase"
 
       env = {
         PGDATA = "/Data"

@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "postgresql" {
-  host            = "tasks.${var.postgresDatabaseService.name}"
+  host            = "pgdatabase"
   port            = 5432
   username        = "postgres"
   password        = "helloWorld"
