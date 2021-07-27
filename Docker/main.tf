@@ -73,7 +73,6 @@ resource "docker_container" "DHCPDatabase" {
   memory = 256
 
   dns        = ["1.1.1.1", "1.0.0.1"]
-  group_add = ["docker"]
 
   log_driver = "json-file"
 
