@@ -89,6 +89,18 @@ resource "docker_service" "DHCPDatabase" {
     }
 
     networks = ["${data.docker_network.storageIntWeb.id}"]
+
+    placement {
+      constraints = [
+        "node.role==manager",
+      ]
+
+      prefs = [
+        "spread=node.role.manager",
+      ]
+
+      max_replicas = 1
+    }
   }
 }
 
