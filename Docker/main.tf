@@ -117,8 +117,10 @@ resource "docker_container" "DHCPDatabase" {
   }
 
   env = [
-    "",
-
+    "MYSQL_ROOT_PASSWORD=password/",
+    "MYSQL_DATABASE=DHCP",
+    "MYSQL_USER=dhcp",
+    "MYSQL_PASSWORD=password"
   ]
 
   # lifecycle {
