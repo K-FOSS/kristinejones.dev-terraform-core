@@ -1,5 +1,5 @@
 output "DHCPDatabaseContainer" {
-  value = docker_container.DHCPDatabase
+  value = docker_service.DHCPDatabase
 }
 
 # output "PostgresDatabaseService" {
