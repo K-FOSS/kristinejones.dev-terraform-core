@@ -21,7 +21,7 @@ resource "vault_policy" "consulConnectCA" {
 resource "vault_token" "consulConnectCAToken" {
   role_name = "consul-connect-ca"
 
-  policies = ["${vault_policy.consulConnectCA}"]
+  policies = ["${vault_policy.consulConnectCA.name}"]
 
   renewable = true
   ttl = "7d"
