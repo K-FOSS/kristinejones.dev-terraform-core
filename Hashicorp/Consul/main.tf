@@ -32,10 +32,6 @@ provider "consul" {
   scheme = "https"
 }
 
-data "vault_generic_secret" "vault" {
-  path = "keycloak/VAULT"
-}
-
 resource "consul_certificate_authority" "connect" {
   connect_provider = "vault"
 
