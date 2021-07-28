@@ -19,7 +19,7 @@ resource "vault_policy" "consulConnectCA" {
 }
 
 resource "vault_token" "consulConnectCAToken" {
-  role_name = "consul-connect-ca"
+  role_name = "app"
 
   policies = ["${vault_policy.consulConnectCA.name}"]
 
