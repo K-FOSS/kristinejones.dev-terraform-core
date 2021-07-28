@@ -32,14 +32,14 @@ provider "consul" {
   scheme = "https"
 }
 
-resource "consul_certificate_authority" "connect" {
-  connect_provider = "vault"
+# resource "consul_certificate_authority" "connect" {
+#   connect_provider = "vault"
 
-  config = {
-    Address = "https://vault.kristianjones.dev:443"
-    Token = "${vault_token.consulConnectCAToken.client_token}"
-    RootPKIPath = "connect_root"
-    IntermediatePKIPath = "connect_inter"
-    IntermediateCertTTL = "8760h"
-  }
-}
+#   config = {
+#     Address = "https://vault.kristianjones.dev:443"
+#     Token = "${vault_token.consulConnectCAToken.client_token}"
+#     RootPKIPath = "connect_root"
+#     IntermediatePKIPath = "connect_inter"
+#     IntermediateCertTTL = "8760h"
+#   }
+# }

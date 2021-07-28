@@ -65,33 +65,33 @@ resource "docker_image" "mariadb" {
   keep_locally = true
 }
 
-resource "docker_service" "DHCPDatabase" {
-  name = "DHCPDatabase"
+# resource "docker_service" "DHCPDatabase" {
+#   name = "DHCPDatabase"
 
-  task_spec {
-    container_spec {
-      image = "mariadb:10"
+#   task_spec {
+#     container_spec {
+#       image = "mariadb:10"
 
-      hostname = "DHCPDatabase"
+#       hostname = "DHCPDatabase"
 
-      env = {
-        MYSQL_ROOT_PASSWORD = "password"
-        MYSQL_DATABASE = "DHCP"
-        MYSQL_USER = "dhcp"
-        MYSQL_PASSWORD = "password"
-        MYSQL_ROOT_HOST = "DHCPDatabase"
-      }
+#       env = {
+#         MYSQL_ROOT_PASSWORD = "password"
+#         MYSQL_DATABASE = "DHCP"
+#         MYSQL_USER = "dhcp"
+#         MYSQL_PASSWORD = "password"
+#         MYSQL_ROOT_HOST = "DHCPDatabase"
+#       }
 
-      mounts {
-        target    = "/var/lib/mysql"
-        source    = "dhcp-database"
-        type      = "volume"
-      }
-    }
+#       mounts {
+#         target    = "/var/lib/mysql"
+#         source    = "dhcp-database"
+#         type      = "volume"
+#       }
+#     }
 
-    networks = ["${data.docker_network.storageIntWeb.id}"]
-  }
-}
+#     networks = ["${data.docker_network.storageIntWeb.id}"]
+#   }
+# }
 
 # resource "docker_container" "DHCPDatabase" {
 #   name    = "dhcpDatabase"
