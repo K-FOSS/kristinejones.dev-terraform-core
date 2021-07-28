@@ -19,8 +19,6 @@ resource "vault_policy" "consulConnectCA" {
 }
 
 resource "vault_token" "consulConnectCAToken" {
-  role_name = "token"
-
   policies = ["${vault_policy.consulConnectCA.name}"]
 
   renewable = true
