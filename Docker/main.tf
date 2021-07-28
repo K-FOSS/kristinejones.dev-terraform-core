@@ -72,23 +72,20 @@ resource "docker_service" "DHCPDatabase" {
     container_spec {
       image = "mariadb:10"
 
+      hostname = "DHCPDatabase"
+
       env = {
-        MYSQL_ROOT_PASSWORD = "password/"
+        MYSQL_ROOT_PASSWORD = "password"
         MYSQL_DATABASE = "DHCP"
         MYSQL_USER = "dhcp"
         MYSQL_PASSWORD = "password"
+        MYSQL_ROOT_HOST = "DHCPDatabase"
       }
 
       mounts {
         target    = "/var/lib/mysql"
         source    = "${var.NextCloudBucket.bucket}"
         type      = "volume"
-
-        volume_options {
-          no_copy = false
-
-          driver_name = "s3core-storage"
-        }
       }
     }
 
