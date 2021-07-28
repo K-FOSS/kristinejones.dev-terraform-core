@@ -22,7 +22,7 @@ resource "vault_token" "consulConnectCAToken" {
   policies = ["${vault_policy.consulConnectCA.name}"]
 
   renewable = true
-  ttl = "7d"
+  ttl = "168h"
 }
 
 provider "consul" {
