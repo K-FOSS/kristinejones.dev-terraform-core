@@ -1,5 +1,10 @@
 terraform {
   required_providers {
+    consul = {
+      source = "hashicorp/consul"
+      version = "2.12.0"
+    }
+
     mysql = {
       source = "winebarrel/mysql"
       version = "1.10.4"
@@ -74,3 +79,12 @@ module "Unifi" {
 
 #   postgresDatabaseService = module.Docker.PostgresDatabaseService
 # }
+
+module "Consul" {
+  source = "./Hashicorp/Consul"
+
+  consulHostname = "consul.kristianjones.dev"
+  consulPort = 443
+
+  consulDatacenter = "dc1"
+}
