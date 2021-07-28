@@ -36,13 +36,14 @@ data "vault_generic_secret" "vault" {
   path = "keycloak/VAULT"
 }
 
-# resource "consul_certificate_authority" "connect" {
-#   connect_provider = "vault"
+resource "consul_certificate_authority" "connect" {
+  connect_provider = "vault"
 
-#   config = {
-#     address = "https://vault.kristianjones.dev:443"
-#     token = "${data.vault_generic_secret.vault.data["TOKEN"]}"
-#     root_pki_path = "connect_root"
-#     intermediate_pki_path = "connect_inter"
-#   }
-# }
+  config = {
+    Address = "https://vault.kristianjones.dev:443"
+    Token = "${data.vault_generic_secret.vault.data["TOKEN"]}"
+    RootPKIPath = "connect_root"
+    IntermediatePKIPath = "connect_inter"
+    IntermediateCertTTL = "8760h"
+  }
+}
