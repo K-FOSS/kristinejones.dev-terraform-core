@@ -38,7 +38,7 @@ resource "consul_certificate_authority" "connect" {
   config = {
     address = "https://vault.kristianjones.dev"
     token = "${vault_token.consulConnectCAToken.client_token}"
-    root_pki_path = "/connect_root/"
-    intermediate_pki_path = "/connect_inter/"
+    root_pki_path = "connect_root"
+    intermediate_pki_path = "connect_inter"
   }
 }
