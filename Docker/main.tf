@@ -66,7 +66,7 @@ resource "docker_image" "mariadb" {
 }
 
 resource "docker_service" "DHCPDatabase" {
-  name = "dhcp-database"
+  name = "DHCPDatabase"
 
   task_spec {
     container_spec {
@@ -84,7 +84,7 @@ resource "docker_service" "DHCPDatabase" {
 
       mounts {
         target    = "/var/lib/mysql"
-        source    = "${var.NextCloudBucket.bucket}"
+        source    = "dhcp-database"
         type      = "volume"
       }
     }
