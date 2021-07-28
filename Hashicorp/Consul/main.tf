@@ -28,6 +28,8 @@ resource "vault_token" "consulConnectCAToken" {
 provider "consul" {
   address    = "${var.consulHostname}:${var.consulPort}"
   datacenter = "dc1"
+
+  scheme = "https"
 }
 
 resource "consul_certificate_authority" "connect" {
