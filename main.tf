@@ -5,6 +5,11 @@ terraform {
       version = "2.12.0"
     }
 
+    docker = {
+      source = "kreuzwerker/docker"
+      version = "2.14.0"
+    }
+
     mysql = {
       source = "winebarrel/mysql"
       version = "1.10.4"
