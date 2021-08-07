@@ -35,6 +35,11 @@ terraform {
       version = "1.13.0"
     }
 
+    tinkerbell = {
+      source  = "tinkerbell/tinkerbell"
+      version = "0.1.0"
+    }
+
     unifi = {
       source = "paultyng/unifi"
       version = "0.27.0"
