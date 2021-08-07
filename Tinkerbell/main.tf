@@ -19,7 +19,7 @@ terraform {
 
 provider "tinkerbell" {
   grpc_authority = "TinkServer:42113"
-  cert_url       = "http://:TinkServer42114/cert"
+  cert_url       = "http://TinkServer:42114/cert"
 }
 
 resource "tinkerbell_hardware" "foo" {
