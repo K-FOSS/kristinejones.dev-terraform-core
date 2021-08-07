@@ -21,6 +21,8 @@ provider "postgresql" {
   port            = 5432
   username        = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}"
   password        = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+
+  sslmode = "disable"
 }
 
 resource "postgresql_database" "hashicorpBoundary" {
