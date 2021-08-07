@@ -27,8 +27,7 @@ provider "docker" {
 
 resource "docker_plugin" "s3core-storage" {
   name                  = "rexray/s3fs"
-  alias                 = "s3core-storage"
-  id = "73cf4ba97082"
+  alias                 = "s3core-storagenew"
 
   enabled               = true
   grant_all_permissions = true
@@ -49,6 +48,7 @@ resource "docker_plugin" "s3core-storage" {
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.
       env,
+      id,
     ]
   }
 }
