@@ -10,9 +10,9 @@ terraform {
       version = "3.1.0"
     }
 
-    tinkerbell = {
-      source  = "github.com/tinkerbell/terraform-provider-tinkerbell.git"
-    }
+    # tinkerbell = {
+    #   source  = "github.com/tinkerbell/terraform-provider-tinkerbell.git"
+    # }
   }
 }
 
