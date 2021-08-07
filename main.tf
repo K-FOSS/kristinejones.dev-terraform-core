@@ -57,28 +57,26 @@ module "Minio" {
   minioPort = 443
 }
 
-module "Docker" {
-  source = "./Docker"
+# module "Docker" {
+#   source = "./Docker"
 
-  minioURL = "http://s3core.kristianjones.dev:9000"
+#   minioURL = "http://s3core.kristianjones.dev:9000"
 
-  NextCloudBucket = module.Minio.NextCloudBucket
-  PostgresDatabaseBucket = module.Minio.PostgresDatabaseBucket
-}
-
-module "Unifi" {
-  source = "./Network/Unifi"
-
-  unifiURL = "https://unifi.kristianjones.dev"
-
-  unifiSite = "default"
-}
-
-# module "Database" {
-#   source = "./Database"
-
-#   postgresDatabaseService = module.Docker.PostgresDatabaseService
+#   NextCloudBucket = module.Minio.NextCloudBucket
+#   PostgresDatabaseBucket = module.Minio.PostgresDatabaseBucket
 # }
+
+# module "Unifi" {
+#   source = "./Network/Unifi"
+
+#   unifiURL = "https://unifi.kristianjones.dev"
+
+#   unifiSite = "default"
+# }
+
+module "Database" {
+  source = "./Database"
+}
 
 module "Consul" {
   source = "./Hashicorp/Consul"

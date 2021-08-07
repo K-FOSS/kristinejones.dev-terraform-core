@@ -1,3 +1,5 @@
-variable "postgresDatabaseService" {
-  description = "Postgres Docker Service"
+variable "postgresHost" {
+  type = string
+
+  default = "tasks.StolonProxy"
 }

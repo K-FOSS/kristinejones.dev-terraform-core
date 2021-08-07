@@ -52,10 +52,10 @@ data "unifi_port_profile" "all" {
 }
 
 resource "unifi_network" "vlan" {
-  name    = "wifi-vlan"
+  name    = "kjdev-home1-spine0"
   purpose = "corporate"
 
-  subnet       = "10.0.0.1/24"
+  subnet       = "172.16.100.0/24"
   vlan_id      = 20
   dhcp_start   = "10.0.0.6"
   dhcp_stop    = "10.0.0.254"

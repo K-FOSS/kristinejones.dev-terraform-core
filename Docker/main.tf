@@ -59,51 +59,6 @@ data "docker_network" "coreAuthWeb" {
   name = "authWeb"
 }
 
-resource "docker_image" "mariadb" {
-  provider = docker
-  name         = "kristianfjones/mariadb:vps1-core"
-  keep_locally = true
-}
-
-resource "docker_service" "DHCPDatabase" {
-  name = "dhcpDatabase"
-
-  task_spec {
-    container_spec {
-      image = "mariadb:10"
-
-      hostname = "dhcpDatabase"
-
-      env = {
-          MYSQL_ROOT_PASSWORD = "password/"
-          MYSQL_DATABASE = "DHCP"
-          MYSQL_USER = "dhcp"
-          MYSQL_PASSWORD = "password"
-        }
-
-      mounts {
-        target    = "/var/lib/mysql"
-        source    = "${var.NextCloudBucket.bucket}"
-        type      = "volume"
-      }
-    }
-
-    networks = ["${data.docker_network.storageIntWeb.id}"]
-
-    placement {
-      constraints = [
-        "node.role==manager",
-      ]
-
-      prefs = [
-        "spread=node.role.manager",
-      ]
-
-      max_replicas = 1
-    }
-  }
-}
-
 # resource "docker_container" "DHCPDatabase" {
 #   name    = "dhcpDatabase"
 #   image   = "mariadb:10"
