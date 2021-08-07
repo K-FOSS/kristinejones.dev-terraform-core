@@ -25,33 +25,33 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
-resource "docker_plugin" "s3core-storage" {
-  name                  = "rexray/s3fs"
-  alias                 = "s3core-storagenew"
+# resource "docker_plugin" "s3core-storage" {
+#   name                  = "rexray/s3fs"
+#   alias                 = "s3core-storagenew"
 
-  enabled               = true
-  grant_all_permissions = true
-  enable_timeout        = 300
+#   enabled               = true
+#   grant_all_permissions = true
+#   enable_timeout        = 300
 
-  force_destroy         = false
-  force_disable         = false
+#   force_destroy         = false
+#   force_disable         = false
 
-  env = [
-    "S3FS_OPTIONS=allow_other,use_path_request_style,url=${var.minioURL}",
-    "S3FS_ENDPOINT=${var.minioURL}",
-    "S3FS_ACCESSKEY=${data.vault_generic_secret.minio.data["ACCESS_KEY"]}",
-    "S3FS_SECRETKEY=${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
-  ]
+#   env = [
+#     "S3FS_OPTIONS=allow_other,use_path_request_style,url=${var.minioURL}",
+#     "S3FS_ENDPOINT=${var.minioURL}",
+#     "S3FS_ACCESSKEY=${data.vault_generic_secret.minio.data["ACCESS_KEY"]}",
+#     "S3FS_SECRETKEY=${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
+#   ]
 
-  lifecycle {
-    ignore_changes = [
-      # Ignore changes to tags, e.g. because a management agent
-      # updates these based on some ruleset managed elsewhere.
-      env,
-      id,
-    ]
-  }
-}
+#   lifecycle {
+#     ignore_changes = [
+#       # Ignore changes to tags, e.g. because a management agent
+#       # updates these based on some ruleset managed elsewhere.
+#       env,
+#       id,
+#     ]
+#   }
+# }
 
 # data "docker_network" "storageIntWeb" {
 #   name = "storageIntWeb"
