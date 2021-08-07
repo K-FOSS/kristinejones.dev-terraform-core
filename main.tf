@@ -80,6 +80,10 @@ module "Database" {
   source = "./Database"
 }
 
+module "Tinkerbell" {
+  source = "./Tinkerbell"
+}
+
 module "Consul" {
   source = "./Hashicorp/Consul"
 
