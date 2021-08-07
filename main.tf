@@ -36,7 +36,7 @@ terraform {
     }
 
     tinkerbell = {
-      source  = "git::https://github.com/tinkerbell/terraform-provider-tinkerbell.git"
+      source  = "github.com/tinkerbell/terraform-provider-tinkerbell.git"
     }
 
     unifi = {
