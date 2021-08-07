@@ -35,9 +35,10 @@ terraform {
       version = "1.13.0"
     }
 
-    # tinkerbell = {
-    #   source  = "github.com/tinkerbell/terraform-provider-tinkerbell.git"
-    # }
+    tinkerbell = {
+      source  = "tinkerbell/tinkerbell"
+      version = "0.1.0"
+    }
 
     unifi = {
       source = "paultyng/unifi"
