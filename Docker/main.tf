@@ -28,6 +28,8 @@ provider "docker" {
 resource "docker_plugin" "s3core-storage" {
   name                  = "rexray/s3fs"
   alias                 = "s3core-storage"
+  id = "73cf4ba97082"
+
   enabled               = true
   grant_all_permissions = true
   enable_timeout        = 300
