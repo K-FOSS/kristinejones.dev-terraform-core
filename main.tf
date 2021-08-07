@@ -36,8 +36,7 @@ terraform {
     }
 
     tinkerbell = {
-      source  = "tinkerbell/tinkerbell"
-      version = "0.1.0"
+      source  = "git::https://github.com/tinkerbell/terraform-provider-tinkerbell.git"
     }
 
     unifi = {
@@ -80,9 +79,9 @@ module "Database" {
   source = "./Database"
 }
 
-# module "Tinkerbell" {
-#   source = "./Tinkerbell"
-# }
+module "Tinkerbell" {
+  source = "./Tinkerbell"
+}
 
 module "Consul" {
   source = "./Hashicorp/Consul"

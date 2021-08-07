@@ -11,8 +11,7 @@ terraform {
     }
 
     tinkerbell = {
-      source  = "tinkerbell/tinkerbell"
-      version = "0.1.0"
+      source  = "git::https://github.com/tinkerbell/terraform-provider-tinkerbell.git"
     }
   }
 }
