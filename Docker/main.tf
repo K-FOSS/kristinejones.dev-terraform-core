@@ -36,7 +36,7 @@ resource "docker_plugin" "s3core-storage" {
   force_disable         = false
 
   env = [
-    "S3FS_OPTIONS=allow_other,use_path_request_style,nonempty,url=${var.minioURL}",
+    "S3FS_OPTIONS=allow_other,use_path_request_style,url=${var.minioURL}",
     "S3FS_ENDPOINT=${var.minioURL}",
     "S3FS_ACCESSKEY=${data.vault_generic_secret.minio.data["ACCESS_KEY"]}",
     "S3FS_SECRETKEY=${data.vault_generic_secret.minio.data["SECRET_KEY"]}"
@@ -51,13 +51,13 @@ resource "docker_plugin" "s3core-storage" {
   }
 }
 
-data "docker_network" "storageIntWeb" {
-  name = "storageIntWeb"
-}
+# data "docker_network" "storageIntWeb" {
+#   name = "storageIntWeb"
+# }
 
-data "docker_network" "coreAuthWeb" {
-  name = "authWeb"
-}
+# data "docker_network" "coreAuthWeb" {
+#   name = "authWeb"
+# }
 
 # resource "docker_container" "DHCPDatabase" {
 #   name    = "dhcpDatabase"

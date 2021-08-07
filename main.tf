@@ -42,10 +42,6 @@ terraform {
   }
 }
 
-provider "docker" {
-  host = "unix:///var/run/docker.sock"
-}
-
 module "Keycloak" {
   source = "./Keycloak"
 
@@ -61,14 +57,11 @@ module "Minio" {
   minioPort = 443
 }
 
-# module "Docker" {
-#   source = "./Docker"
+module "Docker" {
+  source = "./Docker"
 
-#   minioURL = "http://s3core.kristianjones.dev:9000"
-
-#   NextCloudBucket = module.Minio.NextCloudBucket
-#   PostgresDatabaseBucket = module.Minio.PostgresDatabaseBucket
-# }
+  minioURL = "https://s3core.kristianjones.dev:9443"
+}
 
 # module "Unifi" {
 #   source = "./Network/Unifi"
