@@ -105,7 +105,10 @@ module "MinioClient" {
 module "CoreVaultClient" {
   source = "./Clients/CoreVault"
 
-  realmID = "${keycloak_realm.kjdev.id}"
+  #
+  # Keycloak Realm
+  #
+  realmName = "${keycloak_realm.kjdev.realm}"
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
 }
 

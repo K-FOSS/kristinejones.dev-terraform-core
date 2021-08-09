@@ -35,12 +35,15 @@ resource "vault_identity_oidc_key" "keycloak_provider_key" {
 
 resource "vault_jwt_auth_backend" "keycloak" {
   provider = vault.corevault
-  path               = "oidc"
-  type               = "oidc"
-  default_role       = "default"
+
+  path = "oidc"
+  type = "oidc"
+
+  default_role = "default"
+
   oidc_discovery_url = "https://keycloak.kristianjones.dev/auth/realms/KJDev"
-  oidc_client_id  =  "${var.OpenIDClientID}"
-  oidc_client_secret = "${var.OpenIDClientSecret}"
+  oidc_client_id  =  var.KeycloakModule.KJDevRealm.CoreVaultClientModule.OpenIDClient.client_id
+  oidc_client_secret = var.KeycloakModule.KJDevRealm.CoreVaultClientModule.OpenIDClient.client_secret
 
   tune {
     audit_non_hmac_request_keys  = []
@@ -54,14 +57,23 @@ resource "vault_jwt_auth_backend" "keycloak" {
 }
 
 resource "vault_jwt_auth_backend_role" "default" {
-  provider = vault.corevault
+  provider       = vault.corevault
+
   backend        = vault_jwt_auth_backend.keycloak.path
+
+  #
+  # Role
+  #
   role_name      = "default"
   role_type      = "oidc"
+
+  #
+  # Token
+  #
   token_ttl      = 3600
   token_max_ttl  = 3600
 
-  bound_audiences = ["${var.OpenIDClientID}"]
+  bound_audiences = ["${var.KeycloakModule.KJDevRealm.CoreVaultClientModule.OpenIDClient.client_id}"]
   user_claim      = "sub"
   claim_mappings = {
     preferred_username = "username"
@@ -70,9 +82,9 @@ resource "vault_jwt_auth_backend_role" "default" {
 
   allowed_redirect_uris = [
       "https://corevault.kristianjones.dev/ui/vault/auth/oidc/oidc/callback",    
-      "https://corevault.kristianjones.devS/oidc/callback"
+      "https://corevault.kristianjones.dev/oidc/callback"
   ]
-  groups_claim = format("/resource_access/%s/roles", "${var.OpenIDClientID}")
+  groups_claim = format("/resource_access/%s/roles", var.KeycloakModule.KJDevRealm.CoreVaultClientModule.OpenIDClient.client_id)
 }
 
 data "vault_policy_document" "reader_policy" {

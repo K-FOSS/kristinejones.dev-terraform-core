@@ -2,8 +2,8 @@ output "MinioClient" {
   value = module.MinioClient
 }
 
-output "CoreVaultClient" {
-  value = module.CoreVaultClient.CoreVaultClient
+output "CoreVaultClientModule" {
+  value = module.CoreVaultClient
 }
 
 output "VaultClientModule" {

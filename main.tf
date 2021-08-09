@@ -101,11 +101,7 @@ module "Consul" {
 module "CoreVault" {
   source = "./Hashicorp/CoreVault"
 
-  OpenIDClientID = module.Keycloak.VaultOIDClient.client_id
-
-  OpenIDClientSecret = module.Keycloak.VaultOIDClient.client_secret
-
-  OpenIDEndpoint = "https://keycloak.kristianjones.dev"
+  KeycloakModule = module.Keycloak
 
   VaultURL = "http://tasks.CoreVault:8200"
 }

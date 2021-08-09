@@ -9,3 +9,7 @@ output "VaultOIDClient" {
 output "KJDevRealm" {
   value = module.kjdev-realm
 }
+
+output "KeycloakHostname" {
+  value = var.keycloakHostname
+}
