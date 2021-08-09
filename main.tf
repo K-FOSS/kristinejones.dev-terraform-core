@@ -108,10 +108,4 @@ module "CoreVault" {
   OpenIDEndpoint = "https://keycloak.kristianjones.dev"
 
   VaultURL = "http://tasks.CoreVault:8200"
-
-
-  depends_on = [
-    module.Keycloak.VaultOIDClient
-  ]
-
 }
