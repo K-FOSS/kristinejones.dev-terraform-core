@@ -203,7 +203,7 @@ resource "vault_ssh_secret_backend_role" "DemoUser" {
   allowed_users = "root"
   default_user = "root"
 
-  allowed_extensions = "permit-pty,permit-port-forwarding"
+  allowed_extensions = "permit-X11-forwarding,permit-agent-forwarding,permit-port-forwarding,permit-pty,permit-user-rc"
 
   default_extensions = {
     permit-pty = ""
