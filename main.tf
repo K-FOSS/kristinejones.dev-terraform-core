@@ -114,4 +114,4 @@ module "CoreVault" {
     module.Keycloak.VaultOIDClient
   ]
 
-]
+}
