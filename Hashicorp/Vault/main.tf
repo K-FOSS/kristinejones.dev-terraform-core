@@ -154,3 +154,54 @@ resource "vault_database_secret_backend_connection" "postgres" {
     connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres?sslmode=disable"
   }
 }
+
+#
+# Vault SSH
+# 
+resource "vault_mount" "SSHClientSigner" {
+  type = "ssh"
+
+  path = "ssh-client-signer"
+
+  description = "Vault SSH"
+}
+
+#
+# SSH Client CA
+#
+resource "vault_ssh_secret_backend_ca" "SSHClientCA" {
+  backend = vault_mount.SSHClientSigner.path
+
+  generate_signing_key = true
+}
+
+resource "vault_ssh_secret_backend_role" "DemoUser" {
+  backend                 = vault_mount.SSHClientSigner.path
+
+  name                    = "DemoUser"
+
+  key_type                = "ca"
+  allow_user_certificates = true
+
+  #
+  # Key
+  #
+  algorithm_signer = "rsa-sha2-512"
+
+  #
+  # Authorized Users
+  #
+  allowed_users = "root"
+  default_user = "root"
+
+  allowed_extensions = "permit-pty,permit-port-forwarding"
+
+  default_extensions = {
+    permit-pty = ""
+  }
+
+  #
+  # Misc
+  #
+  ttl = "30m0s"
+}
