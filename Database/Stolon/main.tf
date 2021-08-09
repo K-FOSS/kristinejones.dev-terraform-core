@@ -77,3 +77,14 @@ resource "postgresql_database" "KeycloakDB" {
 
   encoding = "UTF8"
 }
+
+resource "vault_generic_secret" "KeycloakDB" {
+  path = "keycloak/KeycloakDB"
+
+  data_json = <<EOT
+{
+  "username":   "${postgresql_role.KeycloakUser.name}",
+  "password": "${postgresql_role.KeycloakUser.password}"
+}
+EOT
+}
