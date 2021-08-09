@@ -7,5 +7,5 @@ output "VaultOIDClient" {
 }
 
 output "KJDevRealm" {
-  vale = module.kjdev-realm
+  value = module.kjdev-realm
 }
