@@ -51,7 +51,7 @@ resource "vault_jwt_auth_backend_role" "default" {
       "https://vault.kristianjones.dev/ui/vault/auth/oidc/oidc/callback",    
       "https://vault.kristianjones.dev/oidc/callback"
   ]
-  groups_claim = format("/resource_access/%s/roles", "${var.KeycloakModule.KJDevRealm.VaultClientModule.OpenIDClient.client_id}")
+  groups_claim = format("/resource_access/%s/roles", var.KeycloakModule.KJDevRealm.VaultClientModule.OpenIDClient.client_id)
 }
 
 data "vault_policy_document" "reader_policy" {
@@ -132,6 +132,14 @@ resource "vault_identity_group" "VaultManagementGroup" {
   policies = [
     vault_policy.manager_policy.name
   ]
+}
+
+resource "vault_identity_group_alias" "management_group_alias" {
+  provider = vault.corevault
+
+  name           = "management"
+  mount_accessor = vault_jwt_auth_backend.keycloak.accessor
+  canonical_id   = vault_identity_group.VaultManagementGroup.id
 }
 
 resource "vault_mount" "db" {
