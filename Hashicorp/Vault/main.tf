@@ -15,10 +15,12 @@ resource "vault_identity_oidc_key" "keycloak_provider_key" {
 resource "vault_jwt_auth_backend" "keycloak" {
   path               = "oidc"
   type               = "oidc"
+
   default_role       = "default"
+
   oidc_discovery_url = "https://keycloak.kristianjones.dev/auth/realms/KJDev"
-  oidc_client_id  =  "${var.VaultClient.Client.client_id}"
-  oidc_client_secret = "${var.VaultClient.Client.client_secret}"
+  oidc_client_id  = var.KeycloakModule.KJDevRealm.VaultClientModule.OpenIDClient.client_id
+  oidc_client_secret = var.KeycloakModule.KJDevRealm.VaultClientModule.OpenIDClient.client_secret
 
   tune {
     audit_non_hmac_request_keys  = []
@@ -38,7 +40,7 @@ resource "vault_jwt_auth_backend_role" "default" {
   token_ttl      = 3600
   token_max_ttl  = 3600
 
-  bound_audiences = ["${var.VaultClient.Client.client_id}"]
+  bound_audiences = ["${var.KeycloakModule.KJDevRealm.VaultClientModule.OpenIDClient.client_id}"]
   user_claim      = "sub"
   claim_mappings = {
     preferred_username = "username"
@@ -49,7 +51,7 @@ resource "vault_jwt_auth_backend_role" "default" {
       "https://vault.kristianjones.dev/ui/vault/auth/oidc/oidc/callback",    
       "https://vault.kristianjones.dev/oidc/callback"
   ]
-  groups_claim = format("/resource_access/%s/roles", "${var.VaultClient.Client.client_id}")
+  groups_claim = format("/resource_access/%s/roles", "${var.KeycloakModule.KJDevRealm.VaultClientModule.OpenIDClient.client_id}")
 }
 
 data "vault_policy_document" "reader_policy" {
@@ -60,7 +62,7 @@ data "vault_policy_document" "reader_policy" {
 }
 
 resource "vault_policy" "reader_policy" {
-  name   = "${var.VaultClient.ReaderRole.name}"
+  name   = var.KeycloakModule.KJDevRealm.VaultClientModule.ReaderRole.name
   policy = data.vault_policy_document.reader_policy.hcl
 }
 
@@ -112,13 +114,14 @@ data "vault_policy_document" "manager_policy" {
 }
 
 resource "vault_policy" "manager_policy" {
-  name   = "${var.VaultClient.ManagementRole.name}"
+  name   = var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name
 
   policy = data.vault_policy_document.manager_policy.hcl
 }
 
 resource "vault_identity_oidc_role" "VaultManagementRole" {
-  name = "management"
+  name = var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name
+
   key  = vault_identity_oidc_key.keycloak_provider_key.name
 }
 

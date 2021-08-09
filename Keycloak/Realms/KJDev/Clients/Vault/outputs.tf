@@ -1,4 +1,4 @@
-output "Client" {
+output "OpenIDClient" {
   value = keycloak_openid_client.VaultClient
 }
 
