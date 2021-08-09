@@ -9,3 +9,7 @@ output "ManagementRole" {
 output "ReaderRole" {
   value = keycloak_role.VaultReaderRole
 }
+
+output "SSHAdminRole" {
+  value = keycloak_role.VaultSSHAdmin
+}

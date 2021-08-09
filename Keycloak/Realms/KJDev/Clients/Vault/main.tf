@@ -115,6 +115,31 @@ resource "keycloak_role" "VaultReaderRole" {
   description = "Reader role"
 }
 
+#
+# SSH Roles
+#
+resource "keycloak_role" "VaultSSHAdmin" {
+  #
+  # Keycloak Configuration
+  #
+  realm_id    = data.keycloak_realm.KJDev.id
+  client_id   = keycloak_openid_client.VaultClient.id
+
+  #
+  # Role Configuration
+  #
+  name        = "SSHAdmin"
+  description = "Vault SSH Administrator Policy Manager role"
+
+  #
+  # TODO: Add VPS Roles & Shit
+  #
+  # composite_roles = [
+  #   keycloak_role.VaultReaderRole.id
+  # ]
+}
+
+
 resource "keycloak_openid_user_client_role_protocol_mapper" "VaultUserClientRoleMapper" {
   name           = "vault-role-mapper"
 

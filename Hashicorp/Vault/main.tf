@@ -113,6 +113,10 @@ data "vault_policy_document" "manager_policy" {
   }
 }
 
+#
+# Vault Manager
+#
+
 resource "vault_policy" "manager_policy" {
   name   = "${var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name}"
 
@@ -140,6 +144,10 @@ resource "vault_identity_group_alias" "management_group_alias" {
   canonical_id   = vault_identity_group.VaultManagementGroup.id
 }
 
+#
+# Postgres Dynamic Database Credentials
+#
+
 resource "vault_mount" "db" {
   path = "postgres"
   type = "database"
@@ -157,7 +165,8 @@ resource "vault_database_secret_backend_connection" "postgres" {
 
 #
 # Vault SSH
-# 
+#
+
 resource "vault_mount" "SSHClientSigner" {
   type = "ssh"
 
@@ -204,4 +213,47 @@ resource "vault_ssh_secret_backend_role" "DemoUser" {
   # Misc
   #
   ttl = "30m0s"
+}
+
+
+#
+# SSH Admin Policy
+#
+data "vault_policy_document" "SSHAdminPolicy" {
+  rule {
+    path         = "ssh-client-signer/roles/*"
+    capabilities = ["list"]
+  }
+
+  rule {
+    path         = "ssh-client-signer/sign/${vault_ssh_secret_backend_role.DemoUser.name}"
+    capabilities = ["create", "update"]
+  }
+}
+
+resource "vault_policy" "SSHAdminPolicy" {
+  name   = "${var.KeycloakModule.KJDevRealm.VaultClientModule.SSHAdminRole.name}"
+
+  policy = data.vault_policy_document.SSHAdminPolicy.hcl
+}
+
+resource "vault_identity_oidc_role" "VaultSSHAdminRole" {
+  name = "${var.KeycloakModule.KJDevRealm.VaultClientModule.SSHAdminRole.name}"
+
+  key  = vault_identity_oidc_key.keycloak_provider_key.name
+}
+
+resource "vault_identity_group" "VaultSSHAdminGroup" {
+  name     = vault_identity_oidc_role.VaultSSHAdminRole.name
+  type     = "external"
+
+  policies = [
+    vault_policy.SSHAdminPolicy.name
+  ]
+}
+
+resource "vault_identity_group_alias" "SSHAdminGroup" {
+  name           = var.KeycloakModule.KJDevRealm.VaultClientModule.SSHAdminRole.name
+  mount_accessor = vault_jwt_auth_backend.keycloak.accessor
+  canonical_id   = vault_identity_group.VaultSSHAdminGroup.id
 }
