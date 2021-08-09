@@ -17,7 +17,7 @@ resource "vault_jwt_auth_backend" "keycloak" {
   type               = "oidc"
   default_role       = "default"
   oidc_discovery_url = "https://keycloak.kristianjones.dev/auth/realms/KJDev"
-  oidc_client_id  =  "${var.VaultClient.Client.OpenIDClientID}"
+  oidc_client_id  =  "${var.VaultClient.Client.client_id}"
   oidc_client_secret = "${var.VaultClient.Client.client_secret}"
 
   tune {
@@ -38,7 +38,7 @@ resource "vault_jwt_auth_backend_role" "default" {
   token_ttl      = 3600
   token_max_ttl  = 3600
 
-  bound_audiences = ["${var.VaultClient.Client.OpenIDClientID}"]
+  bound_audiences = ["${var.VaultClient.Client.client_id}"]
   user_claim      = "sub"
   claim_mappings = {
     preferred_username = "username"
@@ -49,7 +49,7 @@ resource "vault_jwt_auth_backend_role" "default" {
       "https://vault.kristianjones.dev/ui/vault/auth/oidc/oidc/callback",    
       "https://vault.kristianjones.dev/oidc/callback"
   ]
-  groups_claim = format("/resource_access/%s/roles", "${var.VaultClient.Client.OpenIDClientID}")
+  groups_claim = format("/resource_access/%s/roles", "${var.VaultClient.Client.client_id}")
 }
 
 data "vault_policy_document" "reader_policy" {
