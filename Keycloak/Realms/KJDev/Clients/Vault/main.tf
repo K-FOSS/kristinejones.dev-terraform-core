@@ -63,7 +63,7 @@ resource "keycloak_role" "VaultManagementRole" {
   name        = "vault_management"
   description = "Vault Management role"
   composite_roles = [
-    keycloak_role.reader_role.id
+    keycloak_role.VaultReaderRole.id
   ]
 }
 
