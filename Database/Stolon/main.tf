@@ -34,6 +34,9 @@ resource "postgresql_database" "hashicorpBoundary" {
   name     = "boundary1"
 }
 
+#
+# Hashicorp Vault Postgres Secret Engine
+#
 resource "random_password" "StolonVaultPassword" {
   length           = 16
   special          = true
@@ -51,3 +54,26 @@ resource "postgresql_role" "vault" {
   create_role = true
 }
 
+#
+# Keycloak Database
+#
+resource "random_password" "StolonKeycloakPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "KeycloakUser" {
+  name     = "keycloak"
+
+  login    = true
+  password = random_password.StolonKeycloakPassword.result
+}
+
+resource "postgresql_database" "KeycloakDB" {
+  name     = "keycloak"
+
+  owner = postgresql_role.KeycloakUser.name
+
+  encoding = "UTF8"
+}
