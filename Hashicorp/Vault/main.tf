@@ -142,6 +142,6 @@ resource "vault_database_secret_backend_connection" "postgres" {
   allowed_roles = ["${vault_identity_oidc_role.VaultManagementRole.name}"]
 
   postgresql {
-    connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres"
+    connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres?sslmode=disable"
   }
 }
