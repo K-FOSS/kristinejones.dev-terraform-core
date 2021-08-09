@@ -3,7 +3,7 @@ output "MinioClient" {
 }
 
 output "CoreVaultClient" {
-  value = module.CoreVaultClient
+  value = module.CoreVaultClient.CoreVaultClient
 }
 
 # output "PostgresDatabaseService" {
