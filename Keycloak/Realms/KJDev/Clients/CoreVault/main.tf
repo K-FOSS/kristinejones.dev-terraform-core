@@ -19,15 +19,25 @@ terraform {
       source  = "mrparkers/keycloak"
       version = "3.2.1"
     }
+
+    random = {
+      source = "hashicorp/random"
+      version = "3.1.0"
+    }
   }
 }
 
+resource "random_password" "corevault_secret" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
 
 resource "keycloak_openid_client" "corevault-oid" {
   realm_id            = "${var.realmID}"
 
   client_id           = "CoreVault"
-  client_secret       = "VaultSecret"
+  client_secret       = "${random_password.corevault_secret}"
 
   name                = "CoreVault"
   enabled             = true

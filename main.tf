@@ -44,6 +44,11 @@ terraform {
       source = "paultyng/unifi"
       version = "0.27.0"
     }
+
+    random = {
+      source = "hashicorp/random"
+      version = "3.1.0"
+    }
   }
 }
 
@@ -92,3 +97,21 @@ module "Consul" {
 
   consulDatacenter = "dc1"
 }
+
+module "CoreVault" {
+  source = "./Hashicorp/CoreVault"
+
+  OpenIDClientID = module.Keycloak.VaultOIDClient.client_id
+
+  OpenIDClientSecret = module.Keycloak.VaultOIDClient.client_secret
+
+  OpenIDEndpoint = "https://keycloak.kristianjones.dev"
+
+  VaultURL = "http://tasks.CoreVault:8200"
+
+
+  depends_on = [
+    module.Keycloak.VaultOIDClient
+  ]
+
+]
