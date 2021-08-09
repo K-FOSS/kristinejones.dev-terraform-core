@@ -109,3 +109,15 @@ module "CoreVault" {
 
   VaultURL = "http://tasks.CoreVault:8200"
 }
+
+module "Vault" {
+  source = "./Hashicorp/Vault"
+
+  OpenIDClientID = module.Keycloak.KJDevRealm.VaultClientModule.Client.client_id
+
+  OpenIDClientSecret = module.Keycloak.KJDevRealm.VaultClientModule.Client.client_secret
+
+  VaultClient = module.Keycloak.KJDevRealm.VaultClientModule
+
+  OpenIDEndpoint = "https://keycloak.kristianjones.dev"
+}

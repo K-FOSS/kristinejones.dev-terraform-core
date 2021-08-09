@@ -108,3 +108,10 @@ module "CoreVaultClient" {
   realmID = "${keycloak_realm.kjdev.id}"
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
 }
+
+module "VaultClient" {
+  source = "./Clients/Vault"
+
+  realmID = "${keycloak_realm.kjdev.id}"
+  FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+}

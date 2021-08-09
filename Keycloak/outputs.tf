@@ -5,3 +5,7 @@ output "MinioOIDClient" {
 output "VaultOIDClient" {
   value = module.kjdev-realm.CoreVaultClient
 }
+
+output "KJDevRealm" {
+  vale = module.kjdev-realm
+}
