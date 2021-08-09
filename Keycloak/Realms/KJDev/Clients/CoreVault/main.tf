@@ -70,6 +70,6 @@ resource "keycloak_openid_user_client_role_protocol_mapper" "user_client_role_ma
   realm_id    = "${var.realmID}"
   client_id   = keycloak_openid_client.corevault-oid.id
 
-  claim_name = format("resource_access.%s.roles", keycloak_openid_client.openid_client.client_id)                                    
+  claim_name = format("resource_access.%s.roles", keycloak_openid_client.corevault-oid.client_id)                                    
   multivalued = true
 }
