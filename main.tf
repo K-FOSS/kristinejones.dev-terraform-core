@@ -109,13 +109,7 @@ module "CoreVault" {
 module "Vault" {
   source = "./Hashicorp/Vault"
 
-  OpenIDClientID = module.Keycloak.KJDevRealm.VaultClientModule.Client.client_id
-
-  OpenIDClientSecret = module.Keycloak.KJDevRealm.VaultClientModule.Client.client_secret
-
-  VaultClient = module.Keycloak.KJDevRealm.VaultClientModule
-
-  OpenIDEndpoint = "https://keycloak.kristianjones.dev"
+  KeycloakModule = module.Keycloak
 
   StolonRole = module.Database.VaultRole
 }
