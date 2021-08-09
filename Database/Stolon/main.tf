@@ -9,6 +9,11 @@ terraform {
       source = "hashicorp/vault"
       version = "2.22.1"
     }
+
+    random = {
+      source = "hashicorp/random"
+      version = "3.1.0"
+    }
   }
 }
 
@@ -28,3 +33,21 @@ provider "postgresql" {
 resource "postgresql_database" "hashicorpBoundary" {
   name     = "boundary1"
 }
+
+resource "random_password" "StolonVaultPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "vault" {
+  name     = "vault"
+
+  login    = true
+  password = random_password.StolonVaultPassword.result
+
+  superuser = true
+  create_database = true
+  create_role = true
+}
+

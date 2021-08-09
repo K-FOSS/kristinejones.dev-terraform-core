@@ -82,7 +82,7 @@ module "Docker" {
 # }
 
 module "Database" {
-  source = "./Database"
+  source = "./Database/Stolon"
 }
 
 module "Tinkerbell" {
@@ -116,4 +116,6 @@ module "Vault" {
   VaultClient = module.Keycloak.KJDevRealm.VaultClientModule
 
   OpenIDEndpoint = "https://keycloak.kristianjones.dev"
+
+  StolonRole = module.Database.VaultRole
 }

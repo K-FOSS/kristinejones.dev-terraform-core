@@ -66,8 +66,48 @@ resource "vault_policy" "reader_policy" {
 
 data "vault_policy_document" "manager_policy" {
   rule {
-    path         = "/secret/*"
-    capabilities = ["create", "update", "delete"]
+    path         = "sys/policies/acl"
+    capabilities = ["list"]
+  }
+
+  rule {
+    path         = "sys/policies/acl/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "auth/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "sys/auth/*"
+    capabilities = ["create", "update", "delete", "sudo"]
+  }
+
+  rule {
+    path         = "sys/auth"
+    capabilities = ["read"]
+  }
+
+  rule {
+    path         = "secret/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "sys/mounts/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "sys/mounts"
+    capabilities = ["read"]
+  }
+
+  rule {
+    path         = "database/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
   }
 }
 
@@ -75,4 +115,33 @@ resource "vault_policy" "manager_policy" {
   name   = "${var.VaultClient.ManagementRole.name}"
 
   policy = data.vault_policy_document.manager_policy.hcl
+}
+
+resource "vault_identity_oidc_role" "VaultManagementRole" {
+  name = "management"
+  key  = vault_identity_oidc_key.keycloak_provider_key.name
+}
+
+resource "vault_identity_group" "VaultManagementGroup" {
+  name     = vault_identity_oidc_role.VaultManagementRole.name
+  type     = "external"
+
+  policies = [
+    vault_policy.manager_policy.name
+  ]
+}
+
+resource "vault_mount" "db" {
+  path = "postgres"
+  type = "database"
+}
+
+resource "vault_database_secret_backend_connection" "postgres" {
+  backend       = vault_mount.db.path
+  name          = "postgres"
+  allowed_roles = ["${vault_identity_oidc_role.VaultManagementRole.name}"]
+
+  postgresql {
+    connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres"
+  }
 }

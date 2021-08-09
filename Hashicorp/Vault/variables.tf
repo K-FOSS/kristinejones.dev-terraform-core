@@ -13,3 +13,7 @@ variable "OpenIDEndpoint" {
 variable "VaultClient" {
   
 }
+
+variable "StolonRole" {
+  
+}
