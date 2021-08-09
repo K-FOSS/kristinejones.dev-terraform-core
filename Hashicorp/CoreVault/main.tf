@@ -103,11 +103,15 @@ resource "vault_policy" "manager_policy" {
 }
 
 resource "vault_identity_oidc_role" "CoreVaultManagementRole" {
+  provider = vault.corevault
+
   name = "management"
   key  = vault_identity_oidc_key.keycloak_provider_key.name
 }
 
 resource "vault_identity_group" "CoreVaultManagementGroup" {
+  provider = vault.corevault
+
   name     = vault_identity_oidc_role.CoreVaultManagementRole.name
   type     = "external"
 
@@ -117,6 +121,8 @@ resource "vault_identity_group" "CoreVaultManagementGroup" {
 }
 
 resource "vault_identity_group_alias" "management_group_alias" {
+  provider = vault.corevault
+
   name           = "management"
   mount_accessor = vault_jwt_auth_backend.keycloak.accessor
   canonical_id   = vault_identity_group.CoreVaultManagementGroup.id
