@@ -135,8 +135,6 @@ resource "vault_identity_group" "VaultManagementGroup" {
 }
 
 resource "vault_identity_group_alias" "management_group_alias" {
-  provider = vault.corevault
-
   name           = "management"
   mount_accessor = vault_jwt_auth_backend.keycloak.accessor
   canonical_id   = vault_identity_group.VaultManagementGroup.id
