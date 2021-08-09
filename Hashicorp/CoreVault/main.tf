@@ -90,9 +90,45 @@ resource "vault_policy" "reader_policy" {
 }
 data "vault_policy_document" "manager_policy" {
   provider = vault.corevault
+
   rule {
-    path         = "/secret/*"
-    capabilities = ["create", "update", "delete"]
+    path         = "sys/policies/acl"
+    capabilities = ["list"]
+  }
+
+  rule {
+    path         = "sys/policies/acl/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "auth/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "sys/auth/*"
+    capabilities = ["create", "update", "delete", "sudo"]
+  }
+
+  rule {
+    path         = "sys/auth"
+    capabilities = ["read"]
+  }
+
+  rule {
+    path         = "secret/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "sys/mounts/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  rule {
+    path         = "sys/mounts"
+    capabilities = ["read"]
   }
 }
 
