@@ -108,7 +108,7 @@ data "vault_policy_document" "manager_policy" {
   }
 
   rule {
-    path         = "database/*"
+    path         = "postgres/*"
     capabilities = ["create", "read", "update", "delete", "list", "sudo"]
   }
 }
