@@ -7,8 +7,6 @@ terraform {
   }
 }
 
-provider vault {}
-
 data "vault_generic_secret" "corevault" {
   path = "keycloak/CORE_VAULT"
 }
