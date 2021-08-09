@@ -34,6 +34,7 @@ resource "vault_identity_oidc_key" "keycloak_provider_key" {
 }
 
 resource "vault_jwt_auth_backend" "keycloak" {
+  provider = vault.corevault
   path               = "oidc"
   type               = "oidc"
   default_role       = "default"
@@ -53,6 +54,7 @@ resource "vault_jwt_auth_backend" "keycloak" {
 }
 
 resource "vault_jwt_auth_backend_role" "default" {
+  provider = vault.corevault
   backend        = vault_jwt_auth_backend.keycloak.path
   role_name      = "default"
   role_type      = "oidc"
@@ -74,6 +76,7 @@ resource "vault_jwt_auth_backend_role" "default" {
 }
 
 data "vault_policy_document" "reader_policy" {
+  provider = vault.corevault
   rule {
     path         = "/secret/*"
     capabilities = ["list", "read"]
@@ -81,10 +84,12 @@ data "vault_policy_document" "reader_policy" {
 }
 
 resource "vault_policy" "reader_policy" {
+  provider = vault.corevault
   name   = "reader"
   policy = data.vault_policy_document.reader_policy.hcl
 }
 data "vault_policy_document" "manager_policy" {
+  provider = vault.corevault
   rule {
     path         = "/secret/*"
     capabilities = ["create", "update", "delete"]
@@ -92,6 +97,7 @@ data "vault_policy_document" "manager_policy" {
 }
 
 resource "vault_policy" "manager_policy" {
+  provider = vault.corevault
   name   = "management"
   policy = data.vault_policy_document.manager_policy.hcl
 }
