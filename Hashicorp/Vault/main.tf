@@ -120,7 +120,7 @@ resource "vault_policy" "manager_policy" {
 }
 
 resource "vault_identity_oidc_role" "VaultManagementRole" {
-  name = var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name
+  name = "management"
 
   key  = vault_identity_oidc_key.keycloak_provider_key.name
 }
