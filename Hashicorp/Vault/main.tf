@@ -114,37 +114,37 @@ data "vault_policy_document" "manager_policy" {
 }
 
 resource "vault_policy" "manager_policy" {
-  name   = var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name
+  name   = "${var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name}"
 
   policy = data.vault_policy_document.manager_policy.hcl
 }
 
-# resource "vault_identity_oidc_role" "VaultManagementRole" {
-#   name = "management"
+resource "vault_identity_oidc_role" "VaultManagementRole" {
+  name = "${var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name}"
 
-#   key  = vault_identity_oidc_key.keycloak_provider_key.name
-# }
+  key  = vault_identity_oidc_key.keycloak_provider_key.name
+}
 
-# resource "vault_identity_group" "VaultManagementGroup" {
-#   name     = vault_identity_oidc_role.VaultManagementRole.name
-#   type     = "external"
+resource "vault_identity_group" "VaultManagementGroup" {
+  name     = vault_identity_oidc_role.VaultManagementRole.name
+  type     = "external"
 
-#   policies = [
-#     vault_policy.manager_policy.name
-#   ]
-# }
+  policies = [
+    vault_policy.manager_policy.name
+  ]
+}
 
-# resource "vault_mount" "db" {
-#   path = "postgres"
-#   type = "database"
-# }
+resource "vault_mount" "db" {
+  path = "postgres"
+  type = "database"
+}
 
-# resource "vault_database_secret_backend_connection" "postgres" {
-#   backend       = vault_mount.db.path
-#   name          = "postgres"
-#   allowed_roles = ["${vault_identity_oidc_role.VaultManagementRole.name}"]
+resource "vault_database_secret_backend_connection" "postgres" {
+  backend       = vault_mount.db.path
+  name          = "postgres"
+  allowed_roles = ["${vault_identity_oidc_role.VaultManagementRole.name}"]
 
-#   postgresql {
-#     connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres?sslmode=disable"
-#   }
-# }
+  postgresql {
+    connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres?sslmode=disable"
+  }
+}
