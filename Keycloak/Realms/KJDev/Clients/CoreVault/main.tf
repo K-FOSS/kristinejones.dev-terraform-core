@@ -37,7 +37,7 @@ resource "keycloak_openid_client" "corevault-oid" {
   realm_id            = "${var.realmID}"
 
   client_id           = "CoreVault"
-  client_secret       = "${random_password.corevault_secret}"
+  client_secret       = "${random_password.corevault_secret.result}"
 
   name                = "CoreVault"
   enabled             = true
