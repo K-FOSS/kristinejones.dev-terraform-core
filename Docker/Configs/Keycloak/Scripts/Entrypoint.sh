@@ -51,4 +51,4 @@ echo "Install..."
 echo "Install HA..."
 /opt/jboss/keycloak/bin/jboss-cli.sh --file=/opt/radius/cli/radius-ha.cli
 
-exec /opt/jboss/tools/docker-entrypoint.sh
+exec /opt/jboss/tools/docker-entrypoint.sh -b=0.0.0.0 -Dkeycloak.profile.feature.account2=enabled -Dkeycloak.profile.feature.account_api=enabled
