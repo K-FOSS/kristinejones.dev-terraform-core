@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Fucker"
+
 export FILE=~/status
 if [ -f "$FILE" ]; then
     echo "$FILE exist"

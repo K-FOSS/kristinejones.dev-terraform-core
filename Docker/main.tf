@@ -168,7 +168,7 @@ resource "docker_service" "Keycloak" {
       #   value = "baz"
       # }
 
-      command = ["/opt/radius/scripts/docker-entrypoint.sh"]
+      command = ["/bin/bash", "/opt/radius/scripts/docker-entrypoint.sh"]
 
       hostname = "Keycloak"
 
