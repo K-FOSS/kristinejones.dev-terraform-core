@@ -384,7 +384,7 @@ resource "docker_service" "Bitwarden" {
 
   task_spec {
     container_spec {
-      image = "vaultwarden/server:alpine"
+      image = "vaultwarden/server:webauthn"
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -398,13 +398,12 @@ resource "docker_service" "Bitwarden" {
 
       env = {
         WEBSOCKET_ENABLED = "true"
-        LOG_LEVEL = "off"
         ROCKET_PORT = "8080"
         DATABASE_URL = "postgresql://${var.StolonBitwardenRole.name}:${var.StolonBitwardenRole.password}@tasks.StolonProxy:5432/${var.StolonBitwardenDB.name}"
       }
 
       # dir    = "/root"
-      #user   = "1000:1000"
+      user   = "1000"
       # groups = ["docker", "foogroup"]
 
       # privileges {
