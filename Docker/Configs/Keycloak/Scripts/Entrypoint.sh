@@ -50,3 +50,5 @@ echo "Install..."
 # Install modules HA
 echo "Install HA..."
 /opt/jboss/keycloak/bin/jboss-cli.sh --file=/opt/radius/cli/radius-ha.cli
+
+exec /opt/jboss/tools/docker-entrypoint.sh
