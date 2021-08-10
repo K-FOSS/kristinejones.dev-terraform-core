@@ -341,24 +341,9 @@ resource "docker_service" "Keycloak" {
       }
     }
 
-    restart_policy = {
-      condition    = "on-failure"
-      delay        = "3s"
-      max_attempts = 4
-      window       = "10s"
-    }
-
     force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id]
-
-    log_driver {
-      name = "loki"
-
-      options {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
   }
 
   mode {
