@@ -102,6 +102,11 @@ resource "docker_config" "KeycloakEntrypointScript" {
       }
     )
   )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
 }
 
 resource "docker_config" "KeycloakRADIUSHACLI" {
