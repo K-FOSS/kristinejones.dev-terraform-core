@@ -2,6 +2,8 @@
 
 echo "Fucker"
 
+mkdir -p ~/artifacts/
+
 curl -J -L  "https://repository.sonatype.org/service/local/artifact/maven/content?r=central-proxy&g=com.github.vzakharchenko&a=radius-theme&e=zip&v=${VERSION}" --output ~/artifacts/radius-theme.zip
 curl -J -L  "https://repository.sonatype.org/service/local/artifact/maven/content?r=central-proxy&g=com.github.vzakharchenko&a=radius-plugin&e=jar&v=${VERSION}" --output ~/artifacts/radius-plugin.zip
 curl -J -L  "https://repository.sonatype.org/service/local/artifact/maven/content?r=central-proxy&g=com.github.vzakharchenko&a=radius-disconnect-plugin&e=jar&v=${VERSION}" --output ~/artifacts/radius-disconnect-plugin.zip
