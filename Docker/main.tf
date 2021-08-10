@@ -92,7 +92,7 @@ data "vault_generic_secret" "KeycloakAdmin" {
 resource "docker_config" "KeycloakEntrypointScript" {
   name = "keycloak-entrypointscript-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.cwd}/Configs/Keycloak/Scripts/Entrypoint.sh",
+    templatefile("${path.module}/Configs/Keycloak/Scripts/Entrypoint.sh",
       {
         version = "1.3.10"
       }
@@ -107,7 +107,7 @@ resource "docker_config" "KeycloakEntrypointScript" {
 
 resource "docker_config" "KeycloakRADIUSHACLI" {
   name = "keycloak-radiushacli-${replace(timestamp(), ":", ".")}"
-  data = base64encode(file("${path.cwd}/Configs/Keycloak/CLI/radius-ha.cli"))
+  data = base64encode(file("${path.module}/Configs/Keycloak/CLI/radius-ha.cli"))
 
   lifecycle {
     ignore_changes        = [name]
@@ -117,7 +117,7 @@ resource "docker_config" "KeycloakRADIUSHACLI" {
 
 resource "docker_config" "KeycloakRADIUSCLI" {
   name = "keycloak-radiuscli-${replace(timestamp(), ":", ".")}"
-  data = base64encode(file("${path.cwd}/Configs/Keycloak/CLI/radius.cli"))
+  data = base64encode(file("${path.module}/Configs/Keycloak/CLI/radius.cli"))
 
   lifecycle {
     ignore_changes        = [name]
@@ -138,7 +138,7 @@ resource "random_password" "RADIUSSecret" {
 resource "docker_config" "KeycloakRADIUSConfig" {
   name = "keycloak-radiusconfig-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.cwd}/Configs/Keycloak/Configs/radius.config",
+    templatefile("${path.module}/Configs/Keycloak/Configs/radius.config",
       {
         SECRET = "${random_password.RADIUSSecret.result}"
       }
