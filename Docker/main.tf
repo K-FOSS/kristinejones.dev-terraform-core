@@ -264,6 +264,7 @@ resource "docker_service" "Keycloak" {
       # Database Username
       secrets {
         secret_id   = docker_secret.KeycloakDBUser.id
+        secret_name = docker_secret.KeycloakDBUser.name
 
         file_name   = "/run/secrets/DB_USER"
         file_uid    = "1000"
@@ -274,6 +275,7 @@ resource "docker_service" "Keycloak" {
       # Database Password
       secrets {
         secret_id   = docker_secret.KeycloakDBPassword.id
+        secret_name = docker_secret.KeycloakDBPassword.name
 
         file_name   = "/run/secrets/DB_PASSWORD"
         file_uid    = "1000"
