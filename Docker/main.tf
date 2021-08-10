@@ -210,7 +210,7 @@ resource "docker_service" "Keycloak" {
       }
 
       # dir    = "/root"
-      # user   = "root"
+      user   = "root"
       # groups = ["docker", "foogroup"]
 
       # privileges {
