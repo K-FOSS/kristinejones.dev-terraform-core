@@ -87,6 +87,9 @@ module "Docker" {
   KeycloakModule = module.Keycloak
   StolonKeycloakRole = module.Database.KeycloakRole
   StolonKeycloakDB = module.Database.KeycloakDB
+
+  StolonBitwardenRole = module.Database.BitwardenRole
+  StolonBitwardenDB = module.Database.BitwardenDB
 }
 
 module "Tinkerbell" {

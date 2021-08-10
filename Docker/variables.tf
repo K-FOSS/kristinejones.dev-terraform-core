@@ -17,3 +17,11 @@ variable "StolonKeycloakRole" {
 variable "StolonKeycloakDB" {
   
 }
+
+variable "StolonBitwardenRole" {
+
+}
+
+variable "StolonBitwardenDB" {
+  
+}

@@ -10,10 +10,10 @@ output "KeycloakDB" {
   value = postgresql_database.KeycloakDB
 }
 
-# output "BitwardenRole" {
-#   value = postgresql_role.BitwardenUser
-# }
+output "BitwardenRole" {
+  value = postgresql_role.BitwardenUser
+}
 
-# output "BitwardenDB" {
-#   value = postgresql_database.BitwardenDB
-# }
+output "BitwardenDB" {
+  value = postgresql_database.BitwardenDB
+}

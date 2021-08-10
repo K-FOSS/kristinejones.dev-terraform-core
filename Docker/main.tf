@@ -33,6 +33,10 @@ provider "docker" {
 #
 # Networks
 #
+data "docker_network" "publicSpineNet" {
+  name = "publicSpineNet"
+}
+
 data "docker_network" "AAASpineNet" {
   name = "AAASpineNet"
 }
@@ -343,6 +347,126 @@ resource "docker_service" "Keycloak" {
   mode {
     replicated {
       replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+#
+# Bitwarden
+#
+resource "docker_service" "Bitwarden" {
+  name = "AAA-Bitwarden"
+
+  task_spec {
+    container_spec {
+      image = "vaultwarden/server:alpine"
+
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
+
+      hostname = "Bitwarden"
+
+      env = {
+        WEBSOCKET_ENABLED = "true"
+        LOG_LEVEL = "off"
+        ROCKET_PORT = "8080"
+        DATABASE_URL = "postgresql://${var.StolonBitwardenRole.name}:${var.StolonBitwardenRole.password}@tasks.StolonProxy:5432/${var.StolonBitwardenDB.name}"
+      }
+
+      # dir    = "/root"
+      user   = "1000:1000"
+      # groups = ["docker", "foogroup"]
+
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
+
+      # read_only = true
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/data"
+        source    = "bitwarden-backup"
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
+
+
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
+
+      #
+      # Stolon Database Secrets
+      #
+    }
+
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.publicSpineNet.id, data.docker_network.meshSpineNet.id]
+  }
+
+  mode {
+    replicated {
+      replicas = 1
     }
   }
 
