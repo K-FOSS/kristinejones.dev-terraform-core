@@ -404,7 +404,7 @@ resource "docker_service" "Bitwarden" {
       }
 
       # dir    = "/root"
-      user   = "1000:1000"
+      #user   = "1000:1000"
       # groups = ["docker", "foogroup"]
 
       # privileges {
