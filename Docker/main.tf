@@ -285,8 +285,8 @@ resource "docker_service" "Keycloak" {
         config_id   = docker_config.KeycloakEntrypointScript.id
         config_name = docker_config.KeycloakEntrypointScript.name
         file_name   = "/opt/radius/scripts/docker-entrypoint.sh"
-
-        file_mode = 0777
+        file_uid = 1000
+        file_mode = 7777
       }
 
       configs {
@@ -304,7 +304,7 @@ resource "docker_service" "Keycloak" {
         config_id   = docker_config.KeycloakRADIUSHACLI.id
         config_name = docker_config.KeycloakRADIUSHACLI.name
         file_name   = "/opt/radius/cli/radius-ha.cli"
-
+        file_uid = 1000
         file_mode = 0777
       }
 
@@ -312,12 +312,12 @@ resource "docker_service" "Keycloak" {
         config_id   = docker_config.KeycloakRADIUSCLI.id
         config_name = docker_config.KeycloakRADIUSCLI.name
         file_name   = "/opt/radius/cli/radius.cli"
-
+        file_uid = 1000
         file_mode = 0777
       }
     }
 
-    force_update = 0
+    force_update = 1
     runtime      = "container"
     networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id]
   }
