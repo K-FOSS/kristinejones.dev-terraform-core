@@ -1,5 +1,5 @@
-#!/bin/sh
-set -e
+#!/bin/bash
+
 export FILE=~/status
 if [ -f "$FILE" ]; then
     echo "$FILE exist"
