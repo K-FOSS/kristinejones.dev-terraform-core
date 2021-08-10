@@ -9,3 +9,11 @@ output "KeycloakRole" {
 output "KeycloakDB" {
   value = postgresql_database.KeycloakDB
 }
+
+output "BitwardenRole" {
+  value = postgresql_role.BitwardenUser
+}
+
+output "KeycloakDB" {
+  value = postgresql_database.KeycloakDB
+}

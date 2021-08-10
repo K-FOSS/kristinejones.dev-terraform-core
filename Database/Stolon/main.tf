@@ -88,3 +88,39 @@ resource "vault_generic_secret" "KeycloakDB" {
 }
 EOT
 }
+
+#
+# Bitwarden
+#
+resource "random_password" "StolonBitwardenPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "BitwardenUser" {
+  name     = "bitwarden"
+
+  login    = true
+  password = random_password.StolonBitwardenPassword.result
+}
+
+resource "postgresql_database" "BitwardenDB" {
+  name     = "bitwarden"
+
+  owner = postgresql_role.BitwardenUser.name
+
+  encoding = "UTF8"
+}
+
+resource "vault_generic_secret" "BitwardenDB" {
+  path = "keycloak/BitwardenDB"
+
+  data_json = <<EOT
+{
+  "username":   "${postgresql_role.BitwardenUser.name}",
+  "password": "${postgresql_role.BitwardenUser.password}"
+}
+EOT
+}
+
