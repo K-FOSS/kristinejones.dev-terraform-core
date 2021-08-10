@@ -57,7 +57,7 @@ resource "docker_secret" "KeycloakDBUser" {
   )
 
   lifecycle {
-    ignore_changes        = ["name"]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
@@ -69,7 +69,7 @@ resource "docker_secret" "KeycloakDBPassword" {
   )
 
   lifecycle {
-    ignore_changes        = ["name"]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
@@ -100,7 +100,7 @@ resource "docker_config" "KeycloakEntrypointScript" {
   )
 
   lifecycle {
-    ignore_changes        = ["name"]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
@@ -110,7 +110,7 @@ resource "docker_config" "KeycloakRADIUSHACLI" {
   data = base64encode(file("${path.cwd}/Configs/Keycloak/CLI/radius-ha.cli"))
 
   lifecycle {
-    ignore_changes        = ["name"]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
@@ -120,7 +120,7 @@ resource "docker_config" "KeycloakRADIUSCLI" {
   data = base64encode(file("${path.cwd}/Configs/Keycloak/CLI/radius.cli"))
 
   lifecycle {
-    ignore_changes        = ["name"]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
@@ -146,7 +146,7 @@ resource "docker_config" "KeycloakRADIUSConfig" {
   )
 
   lifecycle {
-    ignore_changes        = ["name"]
+    ignore_changes        = [name]
     create_before_destroy = true
   }
 }
