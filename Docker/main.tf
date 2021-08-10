@@ -168,8 +168,6 @@ resource "docker_service" "Keycloak" {
       #   value = "baz"
       # }
 
-
-      args  = ["-b=0.0.0.0", "-Dkeycloak.profile.feature.account2=enabled", "-Dkeycloak.profile.feature.account_api=enabled"]
       command = ["/opt/radius/scripts/docker-entrypoint.sh"]
 
       hostname = "Keycloak"
@@ -247,16 +245,6 @@ resource "docker_service" "Keycloak" {
         read_only = true
       }
 
-      stop_signal       = "SIGTERM"
-      stop_grace_period = "25s"
-
-      healthcheck {
-        test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-        interval = "5s"
-        timeout  = "2s"
-        retries  = 4
-      }
-
       # hosts {
       #   host = "testhost"
       #   ip   = "10.0.1.0"
@@ -298,7 +286,7 @@ resource "docker_service" "Keycloak" {
         config_name = docker_config.KeycloakEntrypointScript.name
         file_name   = "/opt/radius/scripts/docker-entrypoint.sh"
 
-        file_mode = 0555
+        file_mode = 0777
       }
 
       configs {
@@ -306,7 +294,7 @@ resource "docker_service" "Keycloak" {
         config_name = docker_config.KeycloakRADIUSConfig.name
         file_name   = "/config/radius.config"
 
-        file_mode = 0555
+        file_mode = 0777
       }
 
       #
@@ -317,7 +305,7 @@ resource "docker_service" "Keycloak" {
         config_name = docker_config.KeycloakRADIUSHACLI.name
         file_name   = "/opt/radius/cli/radius-ha.cli"
 
-        file_mode = 0555
+        file_mode = 0777
       }
 
       configs {
@@ -325,7 +313,7 @@ resource "docker_service" "Keycloak" {
         config_name = docker_config.KeycloakRADIUSCLI.name
         file_name   = "/opt/radius/cli/radius.cli"
 
-        file_mode = 0555
+        file_mode = 0777
       }
     }
 
