@@ -14,6 +14,6 @@ output "BitwardenRole" {
   value = postgresql_role.BitwardenUser
 }
 
-output "KeycloakDB" {
-  value = postgresql_database.KeycloakDB
+output "BitwardenDB" {
+  value = postgresql_database.BitwardenDB
 }
