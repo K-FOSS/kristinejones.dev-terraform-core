@@ -263,7 +263,7 @@ resource "docker_service" "Keycloak" {
       
       # Database Username
       secrets {
-        secret_id   = docker_secret.KeycloakDBUser.name
+        secret_id   = docker_secret.KeycloakDBUser.id
 
         file_name   = "/run/secrets/DB_USER"
         file_uid    = "1000"
@@ -273,7 +273,7 @@ resource "docker_service" "Keycloak" {
 
       # Database Password
       secrets {
-        secret_id   = docker_secret.KeycloakDBPassword.name
+        secret_id   = docker_secret.KeycloakDBPassword.id
 
         file_name   = "/run/secrets/DB_PASSWORD"
         file_uid    = "1000"
@@ -311,7 +311,7 @@ resource "docker_service" "Keycloak" {
         config_id   = docker_config.KeycloakRADIUSCLI.id
 
         file_name   = "/opt/radius/cli/radius.cli"
-        file_uid = 1000
+        file_uid = "1000"
         file_mode = 0777
       }
     }
