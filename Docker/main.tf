@@ -384,7 +384,7 @@ resource "docker_service" "Bitwarden" {
 
   task_spec {
     container_spec {
-      image = "vaultwarden/server:webauthn"
+      image = "vaultwarden/server:alpine"
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
