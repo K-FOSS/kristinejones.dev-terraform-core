@@ -25,6 +25,368 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
+#
+# Networks
+#
+data "docker_network" "AAASpineNet" {
+  name = "AAASpineNet"
+}
+
+data "docker_network" "protectedSpineNet" {
+  name = "protectedSpineNet"
+}
+
+
+#
+# Keycloak
+#
+
+#
+# Keycloak Database Secrets
+#
+
+resource "docker_secret" "KeycloakDBUser" {
+  name = "keycloak-dbuser-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    "${var.StolonKeycloakRole.name}"
+  )
+
+  lifecycle {
+    ignore_changes        = ["name"]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_secret" "KeycloakDBPassword" {
+  name = "keycloak-dbpassword-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    "${var.StolonKeycloakRole.password}"
+  )
+
+  lifecycle {
+    ignore_changes        = ["name"]
+    create_before_destroy = true
+  }
+}
+
+#
+# Keycloak Initial Admin Secret
+#
+
+data "vault_generic_secret" "KeycloakAdmin" {
+  path = "keycloak/KEYCLOAK_ADMIN"
+}
+
+#
+# Keycloak Configuration
+#
+
+#
+# Keycloak Bootstrap Scripts
+#
+resource "docker_config" "KeycloakEntrypointScript" {
+  name = "keycloak-entrypointscript-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.cwd}/Configs/Keycloak/Scripts/Entrypoint.sh",
+      {
+        version = "1.3.10"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = ["name"]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_config" "KeycloakRADIUSHACLI" {
+  name = "keycloak-radiushacli-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.cwd}/Configs/Keycloak/CLI/radius-ha.cli"))
+
+  lifecycle {
+    ignore_changes        = ["name"]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_config" "KeycloakRADIUSCLI" {
+  name = "keycloak-radiuscli-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.cwd}/Configs/Keycloak/CLI/radius.cli"))
+
+  lifecycle {
+    ignore_changes        = ["name"]
+    create_before_destroy = true
+  }
+}
+
+#
+# RADIUS Configuration
+#
+
+resource "random_password" "RADIUSSecret" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "docker_config" "KeycloakRADIUSConfig" {
+  name = "keycloak-radiusconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.cwd}/Configs/Keycloak/Configs/radius.config",
+      {
+        SECRET = "${random_password.RADIUSSecret.result}"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = ["name"]
+    create_before_destroy = true
+  }
+}
+
+
+resource "docker_service" "Keycloak" {
+  name = "AAA-Keycloak"
+
+  task_spec {
+    container_spec {
+      image = "quay.io/keycloak/keycloak:latest"
+
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
+
+
+      args  = ["-b=0.0.0.0", "-Dkeycloak.profile.feature.account2=enabled", "-Dkeycloak.profile.feature.account_api=enabled"]
+      command = ["/opt/radius/scripts/docker-entrypoint.sh"]
+
+      hostname = "Keycloak"
+
+      env = {
+        PROXY_ADDRESS_FORWARDING = "TRUE"
+
+        #
+        # Database
+        #
+        DB_VENDOR = "postgres"
+        DB_ADDR = "tasks.StolonProxy"
+        DB_PORT = "5432"
+        DB_DATABASE = "${var.StolonKeycloakDB.name}"
+
+        #
+        # Database Auth
+        #
+        DB_USER_FILE = "/run/secrets/DB_USER"
+        DB_PASSWORD_FILE = "/run/secrets/DB_PASSWORD"
+        DB_SCHEMA = "public"
+
+        #
+        # Initial Admin User
+        #
+        # TODO: Remove this from Vault and Autogenerate within Terraform with random_password
+        #
+        # The reason this isn't done already is because this is a migration from an existing Swarm Stack Service that I'm moving to Terraform
+        #
+        KEYCLOAK_USER = "${data.vault_generic_secret.KeycloakAdmin.data["USERNAME"]}"
+        KEYCLOAK_PASSWORD = "${data.vault_generic_secret.KeycloakAdmin.data["PASSWORD"]}"
+
+        #
+        # Clustering
+        #
+        # TODO: Learn more about Keycloak Clustering, and Caching
+        #
+        DOCKER_SWARM = "true"
+
+        #
+        # Misc
+        #
+        KEYCLOAK_STATISTICS = "all"
+        TZ = "America/Winnipeg"
+        "keycloak.profile.feature.upload_scripts" = "enabled"
+      }
+
+      # dir    = "/root"
+      # user   = "root"
+      # groups = ["docker", "foogroup"]
+
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
+
+      # read_only = true
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+
+      stop_signal       = "SIGTERM"
+      stop_grace_period = "25s"
+
+      healthcheck {
+        test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+        interval = "5s"
+        timeout  = "2s"
+        retries  = 4
+      }
+
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
+
+
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
+
+      #
+      # Stolon Database Secrets
+      #
+      
+      # Database Username
+      secrets {
+        secret_id   = docker_secret.KeycloakDBUser.id
+        secret_name = docker_secret.KeycloakDBUser.name
+        file_name   = "/run/secrets/DB_USER"
+        file_uid    = "0"
+        file_gid    = "0"
+        file_mode   = 0777
+      }
+
+      # Database Password
+      secrets {
+        secret_id   = docker_secret.KeycloakDBPassword.id
+        secret_name = docker_secret.KeycloakDBPassword.name
+        file_name   = "/run/secrets/DB_PASSWORD"
+        file_uid    = "0"
+        file_gid    = "0"
+        file_mode   = 0777
+      }
+
+      configs {
+        config_id   = docker_config.KeycloakEntrypointScript.id
+        config_name = docker_config.KeycloakEntrypointScript.name
+        file_name   = "/opt/radius/scripts/docker-entrypoint.sh"
+
+        file_mode = 0555
+      }
+
+      configs {
+        config_id   = docker_config.KeycloakRADIUSConfig.id
+        config_name = docker_config.KeycloakRADIUSConfig.name
+        file_name   = "/config/radius.config"
+
+        file_mode = 0555
+      }
+
+      #
+      # RADIUS CLI
+      #
+      configs {
+        config_id   = docker_config.KeycloakRADIUSHACLI.id
+        config_name = docker_config.KeycloakRADIUSHACLI.name
+        file_name   = "/opt/radius/cli/radius-ha.cli"
+
+        file_mode = 0555
+      }
+
+      configs {
+        config_id   = docker_config.KeycloakRADIUSCLI.id
+        config_name = docker_config.KeycloakRADIUSCLI.name
+        file_name   = "/opt/radius/cli/radius.cli"
+
+        file_mode = 0555
+      }
+    }
+
+    resources {
+      limits {
+        nano_cpus    = 1000000
+        memory_bytes = 536870912
+      }
+
+      reservation {
+        nano_cpus    = 1000000
+        memory_bytes = 536870912
+      }
+    }
+
+    restart_policy = {
+      condition    = "on-failure"
+      delay        = "3s"
+      max_attempts = 4
+      window       = "10s"
+    }
+
+    force_update = 0
+    runtime      = "container"
+    networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"

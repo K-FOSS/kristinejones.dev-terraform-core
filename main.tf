@@ -67,11 +67,7 @@ module "Minio" {
   minioPort = 443
 }
 
-module "Docker" {
-  source = "./Docker"
 
-  minioURL = "https://s3core.kristianjones.dev:9443"
-}
 
 # module "Unifi" {
 #   source = "./Network/Unifi"
@@ -83,6 +79,14 @@ module "Docker" {
 
 module "Database" {
   source = "./Database/Stolon"
+}
+
+module "Docker" {
+  source = "./Docker"
+
+  KeycloakModule = module.Keycloak
+  StolonKeycloakRole = module.Database.KeycloakRole
+  StolonKeycloakDB = module.Database.KeycloakDB
 }
 
 module "Tinkerbell" {

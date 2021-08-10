@@ -6,8 +6,14 @@
 #   description = "Postgres SQL Root Database Minio Bucket"
 # }
 
-variable "minioURL" {
-  type = string
+variable "KeycloakModule" {
+  
+}
 
-  default = "https://s3core.kristianjones.dev:443"
+variable "StolonKeycloakRole" {
+
+}
+
+variable "StolonKeycloakDB" {
+  
 }
