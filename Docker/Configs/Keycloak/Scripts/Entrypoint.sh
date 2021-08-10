@@ -1,3 +1,4 @@
+#!/bin/sh
 set -e
 export FILE=~/status
 if [ -f "$FILE" ]; then
