@@ -41,6 +41,10 @@ data "docker_network" "protectedSpineNet" {
   name = "protectedSpineNet"
 }
 
+data "docker_network" "meshSpineNet" {
+  name = "meshSpineNet"
+}
+
 
 #
 # Keycloak
@@ -328,7 +332,7 @@ resource "docker_service" "Keycloak" {
 
     force_update = 1
     runtime      = "container"
-    networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id]
+    networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id, data.docker_network.meshSpineNet.id]
   }
 
   mode {
