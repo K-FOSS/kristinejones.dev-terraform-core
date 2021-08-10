@@ -9,7 +9,3 @@ output "KeycloakRole" {
 output "KeycloakDB" {
   value = postgresql_database.KeycloakDB
 }
-
-output "KeycloakRole" {
-  value = postgresql_role.KeycloakUser
-}
