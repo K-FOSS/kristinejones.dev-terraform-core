@@ -263,35 +263,34 @@ resource "docker_service" "Keycloak" {
       
       # Database Username
       secrets {
-        secret_id   = docker_secret.KeycloakDBUser.id
-        secret_name = docker_secret.KeycloakDBUser.name
+        secret_id   = docker_secret.KeycloakDBUser.name
+
         file_name   = "/run/secrets/DB_USER"
-        file_uid    = "0"
+        file_uid    = "1000"
         file_gid    = "0"
         file_mode   = 0777
       }
 
       # Database Password
       secrets {
-        secret_id   = docker_secret.KeycloakDBPassword.id
-        secret_name = docker_secret.KeycloakDBPassword.name
+        secret_id   = docker_secret.KeycloakDBPassword.name
+
         file_name   = "/run/secrets/DB_PASSWORD"
-        file_uid    = "0"
+        file_uid    = "1000"
         file_gid    = "0"
         file_mode   = 0777
       }
 
       configs {
         config_id   = docker_config.KeycloakEntrypointScript.id
-        config_name = docker_config.KeycloakEntrypointScript.name
+        
         file_name   = "/opt/radius/scripts/docker-entrypoint.sh"
-        file_uid = 1000
+        file_uid = "1000"
         file_mode = 7777
       }
 
       configs {
         config_id   = docker_config.KeycloakRADIUSConfig.id
-        config_name = docker_config.KeycloakRADIUSConfig.name
         file_name   = "/config/radius.config"
 
         file_mode = 0777
@@ -302,15 +301,15 @@ resource "docker_service" "Keycloak" {
       #
       configs {
         config_id   = docker_config.KeycloakRADIUSHACLI.id
-        config_name = docker_config.KeycloakRADIUSHACLI.name
+
         file_name   = "/opt/radius/cli/radius-ha.cli"
-        file_uid = 1000
+        file_uid = "1000"
         file_mode = 0777
       }
 
       configs {
         config_id   = docker_config.KeycloakRADIUSCLI.id
-        config_name = docker_config.KeycloakRADIUSCLI.name
+
         file_name   = "/opt/radius/cli/radius.cli"
         file_uid = 1000
         file_mode = 0777
