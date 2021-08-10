@@ -456,6 +456,12 @@ resource "docker_service" "Bitwarden" {
       #
       # Stolon Database Secrets
       #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
     }
 
     force_update = 1
