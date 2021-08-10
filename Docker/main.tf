@@ -152,7 +152,7 @@ resource "docker_service" "Keycloak" {
 
   task_spec {
     container_spec {
-      image = "alpine:latest"
+      image = "quay.io/keycloak/keycloak:latest"
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -260,7 +260,7 @@ resource "docker_service" "Keycloak" {
         config_name = docker_config.KeycloakEntrypointScript.name
 
         file_name   = "/entry.sh"
-        file_uid = "0"
+        file_uid = "1000"
         file_mode = 7777
       }
       
