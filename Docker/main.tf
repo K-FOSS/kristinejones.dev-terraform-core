@@ -329,18 +329,6 @@ resource "docker_service" "Keycloak" {
       }
     }
 
-    resources {
-      limits {
-        nano_cpus    = 1000000
-        memory_bytes = 536870912
-      }
-
-      reservation {
-        nano_cpus    = 1000000
-        memory_bytes = 536870912
-      }
-    }
-
     force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id]
