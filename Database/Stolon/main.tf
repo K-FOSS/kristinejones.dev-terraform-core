@@ -122,3 +122,24 @@ resource "vault_generic_secret" "BitwardenDB" {
 EOT
 }
 
+#
+# OpenNMS
+# 
+resource "random_password" "StolonOpenNMSPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "OpenNMSUser" {
+  name     = "opennms"
+
+  login    = true
+  password = random_password.StolonOpenNMSPassword.result
+}
+
+resource "postgresql_database" "OpenNMSDB" {
+  name     = "bitwarden"
+
+  owner = postgresql_role.OpenNMSUser.name
+}
