@@ -784,8 +784,6 @@ resource "docker_service" "OpenNMS" {
         config_name = docker_config.OpenNMSPropertiesConfig.name
 
         file_name   = "/opt/opennms/etc/opennms.properties"
-        file_uid = "10001"
-        file_mode = 7777
       }
 
 
