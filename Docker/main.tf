@@ -710,8 +710,8 @@ resource "docker_config" "OpenNMSDatasourceConfig" {
 
         DATABASE_NAME = "${var.StolonOpenNMSDB.name}",
 
-        DATABASE_USER = "${var.StolonOpenNMSRole.name}",
-        DATABASE_PASS = "${var.StolonOpenNMSRole.password}",
+        DATABASE_USERNAME = "${var.StolonOpenNMSRole.name}",
+        DATABASE_PASSWORD = "${var.StolonOpenNMSRole.password}",
         
         #
         # Postgres ADMIN
