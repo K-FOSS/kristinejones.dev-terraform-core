@@ -632,7 +632,7 @@ resource "docker_volume" "TFTPData" {
 
   lifecycle {
     ignore_changes        = [name, labels, id, name, driver]
-    create_before_destroy = true
+    prevent_destroy = true
   }
 }
 
