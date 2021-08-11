@@ -63,8 +63,16 @@ resource "docker_network" "OpenNMSIntNetwork" {
   
   driver = "overlay"
 
+  scope = "swarm"
+
+  internal = false
+
   ipam_config {
     subnet = "172.30.240.64/27"
+
+    gateway = "172.30.240.65"
+
+    aux_address {}
   }
 }
 
