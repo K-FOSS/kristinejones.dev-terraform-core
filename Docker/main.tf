@@ -685,8 +685,6 @@ resource "docker_service" "TFTPd" {
   # }
 
   endpoint_spec {
-    mode = "dnsrr"
-
     ports {
       name           = "tftp"
       protocol       = "udp"
