@@ -740,8 +740,6 @@ resource "docker_service" "OpenNMS" {
       args = ["-s"]
       hostname = "OpenNMS"
 
-      user   = "1000"
-
       env = {
         #
         # Database
