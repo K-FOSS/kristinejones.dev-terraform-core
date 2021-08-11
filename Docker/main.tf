@@ -764,6 +764,8 @@ resource "docker_service" "OpenNMS" {
         # MISC
         #
         TZ = "America/Winnipeg"
+
+        OPENNMS_HTTP_URL = "https://opennms.kristianjones.dev"
       }
 
       #
