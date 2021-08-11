@@ -72,7 +72,7 @@ resource "docker_network" "OpenNMSIntNetwork" {
 
     gateway = "172.30.240.65"
 
-    aux_address {}
+    aux_address = []
   }
 }
 
@@ -989,6 +989,10 @@ resource "docker_service" "OpenNMS" {
     force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.OpenNMSIntNetwork.id]
+
+    log_driver {
+      name = "loki"
+    }
   }
 
   mode {
