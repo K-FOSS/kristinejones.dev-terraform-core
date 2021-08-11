@@ -758,7 +758,7 @@ resource "docker_service" "OpenNMS" {
         # TODO: Determine if OpenNMS User Suffices
         #
         POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}"
-        POSTGRES_PASS = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+        POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
 
         #
         # MISC
