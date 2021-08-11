@@ -534,7 +534,7 @@ resource "docker_service" "AlpineScriptTest1" {
       #   value = "baz"
       # }
 
-      command = [""]
+      command = ["/entry.sh"]
       args = []
 
       hostname = "AlpineScriptTest{{.Task.Slot}}"
