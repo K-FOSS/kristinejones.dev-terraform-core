@@ -744,18 +744,28 @@ resource "docker_service" "OpenNMS" {
 
       env = {
         #
+        # Database
+        #
+        POSTGRES_HOST = "tasks.StolonProxy",
+        POSTGRES_PORT = 5432,
+
+        OPENNMS_DBNAME = "${var.StolonOpenNMSDB.name}"
+
+        OPENNMS_DBUSER = "${var.StolonOpenNMSRole.name}"
+        OPENNMS_DBPASS = "${var.StolonOpenNMSRole.password}"
+        
+        #
+        # Postgres ADMIN
+        #
+        # TODO: Determine if OpenNMS User Suffices
+        #
+        POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}"
+        POSTGRES_PASS = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+
+        #
         # MISC
         #
         TZ = "America/Winnipeg"
-      }
-
-      configs {
-        config_id   = docker_config.OpenNMSDatasourceConfig.id
-        config_name = docker_config.OpenNMSDatasourceConfig.name
-
-        file_name   = "/opt/opennms/etc/opennms-datasources.xml"
-        file_uid = "1000"
-        file_mode = 7777
       }
 
       #
