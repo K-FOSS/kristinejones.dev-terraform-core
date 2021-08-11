@@ -53,6 +53,20 @@ data "docker_network" "meshSpineNet" {
   name = "meshSpineNet"
 }
 
+#
+# Terraform Managed Networks
+#
+resource "docker_network" "OpenNMSIntNetwork" {
+  name = "opennms-intnetwork"
+
+  attachable = true
+  
+  driver = "overlay"
+
+  ipam_config {
+    subnet = "172.30.240.64/27"
+  }
+}
 
 #
 # Keycloak
@@ -781,6 +795,83 @@ resource "docker_config" "OpenNMSPropertiesConfig" {
 }
 
 
+resource "docker_service" "OpenNMSCassandra" {
+  name = "OpenNMSCassandra"
+
+  task_spec {
+    container_spec {
+      image = "cassandra:3.11.11"
+      hostname = "OpenNMSCassandra"
+
+      env = {
+        CASSANDRA_CLUSTER_NAME = "opennms-newts"
+        CASSANDRA_DC = "opennms-lab"
+        CASSANDRA_RACK = "opennms-lab-rack"
+        CASSANDRA_ENDPOINT_SNITCH = "GossipingPropertyFileSnitch"
+
+        #
+        # JMX
+        #
+        # TODO: What's this doing
+        #
+        LOCAL_JMX = "false"
+        JMX_HOST = "127.0.0.1"
+
+        #
+        # MISC
+        #
+        TZ = "America/Winnipeg"
+      }
+
+      mounts {
+        target    = "/var/lib/cassandra"
+        source    = var.OpenNMSCassandraBucket.bucket
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [docker_network.OpenNMSIntNetwork.id]
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
 resource "docker_service" "OpenNMS" {
   name = "OpenNMS"
 
@@ -887,7 +978,7 @@ resource "docker_service" "OpenNMS" {
 
     force_update = 0
     runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.OpenNMSIntNetwork.id]
   }
 
   mode {

@@ -78,3 +78,8 @@ resource "minio_s3_bucket" "OpenNMSConfig" {
   bucket = "opennms-config"
   acl    = "private"
 }
+
+resource "minio_s3_bucket" "OpenNMSCassandra" {
+  bucket = "opennms-cassandradata"
+  acl    = "private"
+}

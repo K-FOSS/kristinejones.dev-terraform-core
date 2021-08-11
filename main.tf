@@ -110,6 +110,7 @@ module "Docker" {
   OpenNMSDataBucket = module.Minio.OpenNMSData
   OpenNMSCoreDataBucket = module.Minio.OpenNMSCoreData
   OpenNMSConfigBucket = module.Minio.OpenNMSConfig
+  OpenNMSCassandraBucket = module.Minio.OpenNMSCassandra
 
   # Database
   StolonOpenNMSRole = module.Database.OpenNMSRole

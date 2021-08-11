@@ -60,6 +60,10 @@ variable "OpenNMSConfigBucket" {
 
 }
 
+variable "OpenNMSCassandraBucket" {
+
+}
+
 variable "StolonOpenNMSRole" {
 
 }

@@ -17,3 +17,7 @@ output "OpenNMSCoreData" {
 output "OpenNMSConfig" {
   value = minio_s3_bucket.OpenNMSConfig
 }
+
+output "OpenNMSCassandra" {
+  value = minio_s3_bucket.OpenNMSCassandra
+}
