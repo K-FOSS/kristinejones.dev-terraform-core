@@ -544,7 +544,7 @@ resource "docker_service" "AlpineScriptTest1" {
       }
 
       # dir    = "/root"
-      user   = "1000"
+      user   = "root"
       # groups = ["docker", "foogroup"]
 
       # privileges {
