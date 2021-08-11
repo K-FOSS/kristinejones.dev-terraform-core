@@ -730,6 +730,46 @@ resource "docker_config" "OpenNMSDatasourceConfig" {
   }
 }
 
+resource "docker_config" "OpenNMSHorizionConfig" {
+  name = "opennms-horizionconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/OpenNMS/horizon-config.yaml",
+      {
+        DATABASE_HOST = "tasks.StolonProxy",
+        DATABASE_PORT = 5432,
+
+        DATABASE_NAME = "${var.StolonOpenNMSDB.name}",
+
+        DATABASE_USERNAME = "${var.StolonOpenNMSRole.name}",
+        DATABASE_PASSWORD = "${var.StolonOpenNMSRole.password}",
+        
+        #
+        # Postgres ADMIN
+        #
+        # TODO: Determine if OpenNMS User Suffices
+        #
+        POSTGRES_USERNAME = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
+        POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_config" "OpenNMSConfigConfig" {
+  name = "opennms-configconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/OpenNMS/confd.toml"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
 resource "docker_config" "OpenNMSPropertiesConfig" {
   name = "opennms-properties-${replace(timestamp(), ":", ".")}"
   data = base64encode(file("${path.module}/Configs/OpenNMS/opennms-datasources.xml"))
@@ -779,12 +819,29 @@ resource "docker_service" "OpenNMS" {
         OPENNMS_HTTP_URL = "https://opennms.kristianjones.dev"
       }
 
+      #
+      # https://github.com/opennms-forge/stack-play/blob/master/full-stack/container-fs/horizon/etc/conf.d/confd.toml
+      #
       configs {
-        config_id   = docker_config.OpenNMSPropertiesConfig.id
-        config_name = docker_config.OpenNMSPropertiesConfig.name
+        config_id   = docker_config.OpenNMSConfigConfig.id
+        config_name = docker_config.OpenNMSConfigConfig.name
 
-        file_name   = "/opt/opennms/etc/opennms.properties"
+        file_name   = "/etc/confd/confd.toml"
       }
+
+      configs {
+        config_id   = docker_config.OpenNMSHorizionConfig.id
+        config_name = docker_config.OpenNMSHorizionConfig.name
+
+        file_name   = "/opt/opennms-overlay/confd/horizon-config.yaml"
+      }
+
+      # configs {
+      #   config_id   = docker_config.OpenNMSPropertiesConfig.id
+      #   config_name = docker_config.OpenNMSPropertiesConfig.name
+
+      #   file_name   = "/opt/opennms/etc/opennms.properties"
+      # }
 
 
       #

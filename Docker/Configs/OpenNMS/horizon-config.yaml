@@ -1,0 +1,17 @@
+---
+postgres:
+  host: ${DATABASE_HOST}
+  port: ${DATABASE_PORT}
+  user: ${POSTGRES_USERNAME}
+  password: ${POSTGRES_PASSWORD}
+
+opennms:
+  dbname: ${DATABASE_NAME}
+  dbuser: ${DATABASE_USERNAME}
+  dbpass: ${DATABASE_PASSWORD}
+
+  timeseries:
+    strategy: newts
+
+  rrd:
+    storebyforeignsource: true
