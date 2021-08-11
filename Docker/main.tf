@@ -2,7 +2,7 @@ terraform {
   required_providers {
     docker = {
       source = "kreuzwerker/docker"
-      version = "2.14.0"
+      version = "2.15.0"
     }
 
     minio = {
@@ -500,6 +500,127 @@ resource "docker_service" "Bitwarden" {
     mode = "dnsrr"
   }
 }
+
+#
+# Alpine Lab
+#
+
+#
+# Script/Config Test #1
+#
+
+resource "docker_config" "AlpineScriptTest1Entry" {
+  name = "alpinelab-scripttest1-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/AlpineTests/AlpineScriptTest1/entry.sh"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_service" "AlpineScriptTest1" {
+  name = "AlpineScriptTest"
+
+  task_spec {
+    container_spec {
+      image = "alpine:3.14.1"
+
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
+
+      command = [""]
+      args = []
+
+      hostname = "AlpineScriptTest{{.Task.Slot}}"
+
+      env = {
+        TEST = "HELLO{{.Task.Slot}}"
+      }
+
+      # dir    = "/root"
+      user   = "1000"
+      # groups = ["docker", "foogroup"]
+
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
+
+
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
+
+      configs {
+        config_id   = docker_config.AlpineScriptTest1Entry.id
+        config_name = docker_config.AlpineScriptTest1Entry.name
+
+        file_name   = "/entry.sh"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
+
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
+  }
+
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
