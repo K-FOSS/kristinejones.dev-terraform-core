@@ -631,7 +631,7 @@ resource "docker_volume" "TFTPData" {
   driver = "s3core-storage"
 
   lifecycle {
-    ignore_changes        = [name]
+    ignore_changes        = [name, labels, id, name, driver]
     create_before_destroy = true
   }
 }
