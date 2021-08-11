@@ -628,10 +628,9 @@ resource "docker_service" "AlpineScriptTest1" {
 resource "docker_volume" "TFTPData" {
   name = var.TFTPBucket.bucket
 
-  driver = "s3core-storage"
+  driver = "s3core-storage:latest"
 
   lifecycle {
-    ignore_changes        = [name, labels, id, name, driver]
     prevent_destroy = true
   }
 }
@@ -649,7 +648,7 @@ resource "docker_service" "TFTPd" {
 
       mounts {
         target    = "/data"
-        source    = var.TFTPBucket.bucket
+        source    = docker_volume.TFTPData.name
         type      = "volume"
 
         volume_options {
