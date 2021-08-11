@@ -139,7 +139,7 @@ resource "postgresql_role" "OpenNMSUser" {
 }
 
 resource "postgresql_database" "OpenNMSDB" {
-  name     = "bitwarden"
+  name     = "opennms"
 
   owner = postgresql_role.OpenNMSUser.name
 }
