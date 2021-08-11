@@ -72,7 +72,7 @@ resource "docker_network" "OpenNMSIntNetwork" {
 
     gateway = "172.30.240.65"
 
-    aux_address = []
+    aux_address = {}
   }
 }
 
