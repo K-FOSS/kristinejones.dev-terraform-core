@@ -101,6 +101,19 @@ module "Docker" {
   # TFTP
   #
   TFTPBucket = module.Minio.TFTPBucket
+
+  #
+  # OpenNMS
+  #
+
+  # Volumes
+  OpenNMSDataBucket = module.Minio.OpenNMSData
+  OpenNMSConfigBucket = module.Minio.OpenNMSConfig
+
+  # Database
+  StolonOpenNMSRole = module.Database.OpenNMSRole
+  StolonOpenNMSDB = module.Database.OpenNMSDB
+
 }
 
 module "Tinkerbell" {

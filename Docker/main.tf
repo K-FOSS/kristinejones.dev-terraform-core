@@ -26,6 +26,10 @@ data "vault_generic_secret" "minio" {
   path = "keycloak/MINIO"
 }
 
+data "vault_generic_secret" "pgAuth" {
+  path = "keycloak/STOLON"
+}
+
 provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
@@ -686,6 +690,140 @@ resource "docker_service" "TFTPd" {
       published_port = "69"
       publish_mode   = "ingress"
     }
+  }
+}
+
+#
+# OpenNMS
+#
+
+#
+# Datasource Configuration
+#
+resource "docker_config" "OpenNMSDatasourceConfig" {
+  name = "opennms-datasoruceconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/OpenNMS/opennms-datasources.xml",
+      {
+        DATABASE_HOST = "tasks.StolonProxy",
+        DATABASE_PORT = 5432,
+
+        DATABASE_NAME = "${var.StolonOpenNMSDB.name}",
+
+        DATABASE_USER = "${var.StolonOpenNMSRole.name}",
+        DATABASE_PASS = "${var.StolonOpenNMSRole.password}",
+        
+        #
+        # Postgres ADMIN
+        #
+        # TODO: Determine if OpenNMS User Suffices
+        #
+        POSTGRES_USERNAME = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
+        POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_service" "OpenNMS" {
+  name = "OpenNMS"
+
+  task_spec {
+    container_spec {
+      image = "opennms/horizon:bleeding"
+
+      args = ["-s"]
+      hostname = "OpenNMS"
+
+      user   = "1000"
+
+      env = {
+        #
+        # MISC
+        #
+        TZ = "America/Winnipeg"
+      }
+
+      configs {
+        config_id   = docker_config.OpenNMSDatasourceConfig.id
+        config_name = docker_config.OpenNMSDatasourceConfig.name
+
+        file_name   = "/opt/opennms/etc/opennms-datasources.xml"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
+      #
+      # OpenNMS Data Volume
+      #
+      # TODO: Determine Data Storage and if this is necessary
+      #
+      mounts {
+        target    = "/opennms-data"
+        source    = var.OpenNMSDataBucket.bucket
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+
+      #
+      # OpenNMS Config Volume
+      #
+      # TODO: Move as much as possible to dynamic configs
+      #
+      mounts {
+        target    = "/opt/opennms/etc"
+        source    = var.OpenNMSConfigBucket.bucket
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id]
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+
   }
 }
 

@@ -51,7 +51,25 @@ resource "minio_s3_bucket" "nextcloudcore" {
 #   acl    = "private"
 # }
 
+#
+# TFTPd
+#
+
 resource "minio_s3_bucket" "tftpData" {
   bucket = "tftp-data"
+  acl    = "private"
+}
+
+#
+# OpenNMS
+# 
+
+resource "minio_s3_bucket" "OpenNMSData" {
+  bucket = "opennms-data"
+  acl    = "private"
+}
+
+resource "minio_s3_bucket" "OpenNMSConfig" {
+  bucket = "opennms-config"
   acl    = "private"
 }
