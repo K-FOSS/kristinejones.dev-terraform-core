@@ -625,73 +625,69 @@ resource "docker_service" "AlpineScriptTest1" {
 # TFTP
 #
 
-# resource "docker_volume" "TFTPData" {
-#   name = "test"
-# }
+resource "docker_service" "TFTPd" {
+  name = "TFTPd"
 
-# resource "docker_service" "TFTPd" {
-#   name = "TFTPd"
+  task_spec {
+    container_spec {
+      image = "kristianfoss/programs-tftpd:tftpd-stable-scratch"
 
-#   task_spec {
-#     container_spec {
-#       image = "kristianfoss/programs-tftpd:tftpd-stable-scratch"
+      args = ["-E", "0.0.0.0", "8069", "tftpd", "-u", "user", "-c", "/data"]
 
-#       args = ["-E", "0.0.0.0", "8069", "tftpd", "-u", "user", "-c", "/data"]
+      user   = "1000"
 
-#       user   = "1000"
+      mounts {
+        target    = "/data"
+        source    = var.TFTPBucket.bucket
+        type      = "volume"
 
-#       mounts {
-#         target    = "/data"
-#         source    = var.TFTPBucket.bucket
-#         type      = "volume"
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+    }
 
-#         volume_options {
-#           driver_name = "s3core-storage"
-#         }
-#       }
-#     }
+    force_update = 0
+    runtime      = "container"
+  }
 
-#     force_update = 0
-#     runtime      = "container"
-#   }
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
 
-#   mode {
-#     replicated {
-#       replicas = 3
-#     }
-#   }
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
 
-#   #
-#   # TODO: Finetune this
-#   # 
-#   # update_config {
-#   #   parallelism       = 1
-#   #   delay             = "10s"
-#   #   failure_action    = "pause"
-#   #   monitor           = "5s"
-#   #   max_failure_ratio = "0.1"
-#   #   order             = "start-first"
-#   # }
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
 
-#   # rollback_config {
-#   #   parallelism       = 1
-#   #   delay             = "5ms"
-#   #   failure_action    = "pause"
-#   #   monitor           = "10h"
-#   #   max_failure_ratio = "0.9"
-#   #   order             = "stop-first"
-#   # }
-
-#   endpoint_spec {
-#     ports {
-#       name           = "tftp"
-#       protocol       = "udp"
-#       target_port    = "8069"
-#       published_port = "69"
-#       publish_mode   = "ingress"
-#     }
-#   }
-# }
+  endpoint_spec {
+    ports {
+      name           = "tftp"
+      protocol       = "udp"
+      target_port    = "8069"
+      published_port = "69"
+      publish_mode   = "ingress"
+    }
+  }
+}
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
