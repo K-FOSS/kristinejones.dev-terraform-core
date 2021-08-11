@@ -52,6 +52,10 @@ variable "OpenNMSDataBucket" {
 
 }
 
+variable "OpenNMSCoreDataBucket" {
+
+}
+
 variable "OpenNMSConfigBucket" {
 
 }

@@ -69,6 +69,11 @@ resource "minio_s3_bucket" "OpenNMSData" {
   acl    = "private"
 }
 
+resource "minio_s3_bucket" "OpenNMSCoreData" {
+  bucket = "opennms-coredata"
+  acl    = "private"
+}
+
 resource "minio_s3_bucket" "OpenNMSConfig" {
   bucket = "opennms-config"
   acl    = "private"

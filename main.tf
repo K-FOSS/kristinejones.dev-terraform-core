@@ -108,6 +108,7 @@ module "Docker" {
 
   # Volumes
   OpenNMSDataBucket = module.Minio.OpenNMSData
+  OpenNMSCoreDataBucket = module.Minio.OpenNMSCoreData
   OpenNMSConfigBucket = module.Minio.OpenNMSConfig
 
   # Database

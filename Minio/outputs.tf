@@ -10,6 +10,9 @@ output "OpenNMSData" {
   value = minio_s3_bucket.OpenNMSData
 }
 
+output "OpenNMSCoreData" {
+  value = minio_s3_bucket.OpenNMSCoreData
+}
 
 output "OpenNMSConfig" {
   value = minio_s3_bucket.OpenNMSConfig
