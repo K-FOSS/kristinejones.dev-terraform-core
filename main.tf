@@ -84,12 +84,23 @@ module "Database" {
 module "Docker" {
   source = "./Docker"
 
+  #
+  # Keycloak
+  #
   KeycloakModule = module.Keycloak
   StolonKeycloakRole = module.Database.KeycloakRole
   StolonKeycloakDB = module.Database.KeycloakDB
 
+  #
+  # Bitwarden
+  #
   StolonBitwardenRole = module.Database.BitwardenRole
   StolonBitwardenDB = module.Database.BitwardenDB
+
+  #
+  # TFTP
+  #
+  TFTPBucket = module.Minio.TFTPBucket
 }
 
 module "Tinkerbell" {

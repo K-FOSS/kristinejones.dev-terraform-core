@@ -621,6 +621,81 @@ resource "docker_service" "AlpineScriptTest1" {
   }
 }
 
+#
+# TFTP
+#
+
+resource "docker_volume" "TFTPData" {
+  name = var.TFTPBucket.bucket
+
+  driver = "s3core-storage"
+}
+
+resource "docker_service" "TFTPd" {
+  name = "TFTPd"
+
+  task_spec {
+    container_spec {
+      image = "kristianfoss/programs-tftpd:tftpd-stable-scratch"
+
+      args = ["-E", "0.0.0.0", "8069", "tftpd", "-u", "user", "-c", "/data"]
+
+      user   = "1000"
+
+      mounts {
+        target    = "/data"
+        source    = docker_volume.TFTPData.name
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+  }
+
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+
+    ports {
+      name           = "tftp"
+      protocol       = "udp"
+      target_port    = "8069"
+      published_port = "69"
+      publish_mode   = "ingress"
+    }
+  }
+}
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"

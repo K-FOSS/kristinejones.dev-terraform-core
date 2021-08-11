@@ -25,3 +25,7 @@ variable "StolonBitwardenRole" {
 variable "StolonBitwardenDB" {
   
 }
+
+variable "TFTPBucket" {
+  
+}
