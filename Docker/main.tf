@@ -893,6 +893,8 @@ resource "docker_service" "OpenNMS" {
 
         OPENNMS_DBUSER = "${var.StolonOpenNMSRole.name}"
         OPENNMS_DBPASS = "${var.StolonOpenNMSRole.password}"
+
+        OPENNMS_TIMESERIES_STRATEGY = "newts"
         
         #
         # Postgres ADMIN
