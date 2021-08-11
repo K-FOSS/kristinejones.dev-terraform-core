@@ -730,6 +730,17 @@ resource "docker_config" "OpenNMSDatasourceConfig" {
   }
 }
 
+resource "docker_config" "OpenNMSPropertiesConfig" {
+  name = "opennms-properties-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/OpenNMS/opennms-datasources.xml"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+
 resource "docker_service" "OpenNMS" {
   name = "OpenNMS"
 
@@ -767,6 +778,16 @@ resource "docker_service" "OpenNMS" {
 
         OPENNMS_HTTP_URL = "https://opennms.kristianjones.dev"
       }
+
+      configs {
+        config_id   = docker_config.OpenNMSPropertiesConfig.id
+        config_name = docker_config.OpenNMSPropertiesConfig.name
+
+        file_name   = "/opt/opennms/etc/opennms.properties"
+        file_uid = "10001"
+        file_mode = 7777
+      }
+
 
       #
       # OpenNMS Data Volume
