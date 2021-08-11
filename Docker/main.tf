@@ -63,8 +63,6 @@ resource "docker_network" "OpenNMSIntNetwork" {
   
   driver = "overlay"
 
-  scope = "swarm"
-
   internal = false
 
   ipam_config {
