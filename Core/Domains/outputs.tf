@@ -6,5 +6,5 @@
 # DNSSec
 #
 output "DNSSec" {
-  value = cloudflare_zone_dnssec.KJDevDNSSec
+  value = data.cloudflare_zone_dnssec.KJDevDNSSec
 }
