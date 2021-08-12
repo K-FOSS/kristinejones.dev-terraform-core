@@ -675,6 +675,12 @@ resource "docker_service" "TFTPd" {
       }
     }
 
+    resources {
+      limits {
+        memory_bytes = 16777216
+      }
+    }
+
     force_update = 0
     runtime      = "container"
 
