@@ -1110,7 +1110,7 @@ resource "docker_service" "OpenNMS" {
     container_spec {
       image = "opennms/horizon:28.0.2"
 
-      args = ["-f"]
+      args = ["-s"]
       hostname = "OpenNMS"
 
       env = {
