@@ -7,6 +7,33 @@ terraform {
   }
 }
 
+#
+# Generic Secrets
+#
+resource "vault_mount" "Terraform" {
+  path        = "TF_INFRA"
+
+  type        = "kv-v2"
+
+  description = "Terraform Consul Sync Core Secrets"
+}
+
+resource "vault_generic_secret" "TerraformTest" {
+  path = "${vault_mount.Terraform.path}/TMP_TEST"
+
+  data_json = jsonencode({
+    testing = "HelloWorld"
+    helloworld = "Testing123"
+  })
+}
+
+#
+# OpenID
+#
+
+#
+# Keycloak
+# 
 resource "vault_identity_oidc_key" "keycloak_provider_key" {
   name      = "keycloak"
   algorithm = "RS256"
@@ -107,8 +134,19 @@ data "vault_policy_document" "manager_policy" {
     capabilities = ["read"]
   }
 
+  #
+  # Postgres Database
+  # 
   rule {
     path         = "postgres/*"
+    capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  }
+
+  #
+  # Terraform Generic Secret
+  #
+  rule {
+    path         = "${vault_mount.Terraform.path}/*"
     capabilities = ["create", "read", "update", "delete", "list", "sudo"]
   }
 }
