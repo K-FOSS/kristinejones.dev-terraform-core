@@ -1108,7 +1108,7 @@ resource "docker_service" "OpenNMS" {
 
   task_spec {
     container_spec {
-      image = "opennms/horizon:bleeding"
+      image = "opennms/horizon:28.0.2"
 
       args = ["-s"]
       hostname = "OpenNMS"
