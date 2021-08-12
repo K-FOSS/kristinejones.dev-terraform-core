@@ -1271,6 +1271,35 @@ resource "docker_service" "OpenNMS" {
   }
 }
 
+#
+# ISC Network Infra
+# 
+
+#
+# Kea DHCP
+#
+
+resource "docker_config" "DHCPConfig" {
+  name = "network-dhcpcore-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/DHCP/config.jsonc",
+      {
+        DB_HOST = "tasks.StolonProxy",
+
+        DB_NAME = "${var.StolonDHCPDB.name}",
+
+        DB_USERNAME = "${var.StolonDHCPRole.name}",
+        DB_PASSWORD = "${var.StolonDHCPRole.password}"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"

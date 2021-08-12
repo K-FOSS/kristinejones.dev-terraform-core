@@ -143,3 +143,53 @@ resource "postgresql_database" "OpenNMSDB" {
 
   owner = postgresql_role.OpenNMSUser.name
 }
+
+#
+# ISC Network Infra
+#
+
+#
+# DHCP
+# 
+
+resource "random_password" "StolonDHCPPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "DHCPUser" {
+  name     = "dhcp"
+
+  login    = true
+  password = random_password.StolonDHCPPassword.result
+}
+
+resource "postgresql_database" "DHCPDB" {
+  name     = "dhcp"
+
+  owner = postgresql_role.DHCPUser.name
+}
+
+#
+# ISC Stork
+# 
+
+resource "random_password" "StolonStorkPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "StorkUser" {
+  name     = "stork"
+
+  login    = true
+  password = random_password.StolonStorkPassword.result
+}
+
+resource "postgresql_database" "StorkDB" {
+  name     = "stork"
+
+  owner = postgresql_role.StorkUser.name
+}

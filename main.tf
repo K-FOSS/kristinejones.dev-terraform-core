@@ -170,6 +170,16 @@ module "Docker" {
   StolonOpenNMSRole = module.Database.OpenNMSRole
   StolonOpenNMSDB = module.Database.OpenNMSDB
 
+
+  #
+  # ISC Network Infra
+  #
+
+  #
+  # ISC Kea
+  #
+  StolonDHCPRole = module.Database.DHCPRole
+  StolonDHCPDB = module.Database.DHCPDB
 }
 
 #

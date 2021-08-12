@@ -38,3 +38,18 @@ output "OpenNMSRole" {
 output "OpenNMSDB" {
   value = postgresql_database.OpenNMSDB
 }
+
+#
+# ISC Network Infra
+#
+
+#
+# DHCP
+#
+output "DHCPRole" {
+  value = postgresql_role.DHCPUser
+}
+
+output "DHCPDB" {
+  value = postgresql_database.DHCPDB
+}

@@ -1,0 +1,316 @@
+// This is an example configuration file for DHCPv4 server in Kea.
+// It demonstrates an advanced feature called shared network. Typically, for
+// each physical link there is one IPv4 subnet that the server is expected
+// to manage. However, in some cases there is a need to configure more subnets
+// in the same physical location. The most common use case is an existing
+// subnet that grew past its original assumptions and ran out of addresses,
+// so the sysadmin needs to add another subnet on top of existing one.
+{
+  "Dhcp4": {
+    "authoritative": false,
+
+    // As with any other configuration, you need to tell Kea the interface
+    // names, so it would listen to incoming traffic.
+    "interfaces-config": {
+      "interfaces": ["*"],
+      "dhcp-socket-type": "udp",
+      "outbound-interface": "use-routing",
+      "re-detect": false
+    },
+
+    "lease-database": {
+     "type": "postgresql",
+     "name": "${DB_NAME}",
+     "host": "${DB_HOST}",
+     "user": "${DB_USERNAME}",
+     "password": "${DB_PASSWORD}",
+     "reconnect-wait-time": 3000, // expressed in ms
+     "max-reconnect-tries": 3,
+     "on-fail": "stop-retry-exit",
+     "connect-timeout": 3
+    },
+
+
+    "option-def": [
+      {
+        // We define a short name, so the option can be referenced by name.
+        // The option has code 2 and resides within vendor space 25167.
+        // Its data is a plain string.
+        "name": "unifi-address",
+        "code": 1,
+        "space": "ubnt",
+        "type": "ipv4-address"
+      }
+    ],
+
+    "client-classes": [
+      {
+        "name": "ubnt",
+        "test": "substring(option[60].hex,0,4) == 'ubnt'",
+        "option-def": [
+          {
+            "name": "vendor-encapsulated-options",
+            "type": "empty",
+            "encapsulate": "ubnt",
+            "code": 43
+          }
+        ],
+        "option-data": [
+          {
+            "name": "unifi-address",
+            "space": "ubnt",
+            "data": "159.203.39.63"
+          },
+          {
+            "name": "vendor-encapsulated-options"
+          }
+        ]
+      },
+      {
+        "name": "vmhost-class1",
+        "next-server": "172.16.100.31",
+        "option-data": []
+      }
+    ],
+
+    // The shared networks definition starts here. shared-networks can
+    // contain a list of shared networks. There are many parameters
+    // that can be specified here, so this example may be overwhelming
+    // at first, but the only mandatory parameter for each shared
+    // network is name. It must be unique. Typically, each shared
+    // network also needs to have at least two subnets to be functional,
+    // but if you really want to, you can define a degraded shared
+    // network that has 1 or even 0 subnets. This may come in handy
+    // when migrating between regular subnets and shared networks
+    // or when debugging a problem. It is not recommended to use
+    // 1 subnet per shared network, as there is extra processing
+    // overhead for shared networks.
+    "shared-networks": [
+      {
+        // Shared network level authoritative flag.
+        "authoritative": false,
+
+        // Name of the shared network. It may be an arbitrary string
+        // and it must be unique among all shared networks.
+        "name": "spineoffice",
+
+        // You may specify interface name if the shared network is
+        // reachable directly from the server.
+        // You can specify many parameters that are allowed in subnet scope
+        // here. It's useful to put them here if they apply to all subnets
+        // in this shared network. It's likely that the most common
+        // parameter here will be option values defined with option-data.
+        "match-client-id": false,
+        "option-data": [],
+        "rebind-timer": 10800,
+
+        // If all the traffic coming from that shared network is reachable
+        // via relay and that relay always use the same IP address, you
+        // can specify that relay address here. Since this example shows
+        // a shared network reachable directly, we put 0.0.0.0 here.
+        // It would be better to skip the relay scope altogether, but
+        // it was left here for demonstration purposes.
+        "relay": {
+          "ip-address": "206.188.106.236"
+        },
+
+        // Timer values can be overridden here.
+        "renew-timer": 1800,
+        // "reservation-mode": "all",
+        // It is replaced by the "reservations-global",
+        // "reservations-in-subnet" and "reservations-out-of-pool"
+        // parameters.
+        // Specify if server should lookup global reservations.
+        // "reservations-global": false,
+        // // Specify if server should lookup in-subnet reservations.
+        // "reservations-in-subnet": true,
+        // // Specify if server can assume that all reserved addresses
+        // // are out-of-pool.
+        // // Ignored when reservations-in-subnet is false.
+        // "reservations-out-of-pool": false,
+        // "reservation-mode": "all",
+        // It is replaced by the "reservations-global",
+        // "reservations-in-subnet" and "reservations-out-of-pool"
+        // parameters.
+
+        "store-extended-info": true,
+        "subnet4": [
+          {
+            "id": 1,
+            "match-client-id": false,
+            "next-server": "0.0.0.0",
+            "server-hostname": "vps1-raw.kristinajones.dev",
+            "option-data": [
+              {
+                "name": "domain-name-servers",
+                "data": "172.16.21.41, 1.1.1.1, 1.0.0.1"
+              },
+              {
+                "name": "routers",
+                "data": "172.16.100.1"
+              },
+              {
+                "name": "ntp-servers",
+                "data": "162.159.200.123,162.159.200.1"
+              },
+              {
+                "name": "tftp-server-name",
+                "data": "vps1-raw.kristianjones.dev"
+              },
+              {
+                "name": "pcode",
+                "data": "CST6CDT,M3.2.0/2:00:00,M11.1.0/2:00:00"
+              },
+              {
+                "name": "tcode",
+                "data": "America/Winnipeg"
+              },
+              {
+                "name": "dhcp-server-identifier",
+                "data": "159.203.23.230"
+              }
+            ],
+            "pools": [
+              {
+                "pool": "172.16.100.100 - 172.16.100.240"
+              }
+            ],
+            "rebind-timer": 10800,
+            "reservations": [
+              {
+                "hw-address": "dc:a6:32:2e:bd:79",
+                "ip-address": "172.16.100.31"
+              },
+
+              // Randoms
+              {
+                "hw-address": "3c:8d:20:3d:a1:9b",
+                "ip-address": "172.16.100.41"
+              },
+              {
+                "hw-address": "50:02:91:b2:1a:39",
+                "ip-address": "172.16.100.42"
+              },
+              {
+                "hw-address": "c4:4f:33:cf:56:62",
+                "ip-address": "172.16.100.43"
+              },
+              {
+                "hw-address": "5c:52:1e:66:42:47",
+                "ip-address": "172.16.100.44"
+              },
+              {
+                "hw-address": "88:54:1f:13:ef:be",
+                "ip-address": "172.16.100.45"
+              },
+              {
+                "hw-address": "d8:8c:79:26:2b:24",
+                "ip-address": "172.16.100.46"
+              },
+              {
+                "hw-address": "44:c6:5d:b0:5d:c6",
+                "ip-address": "172.16.100.47"
+              },
+              {
+                "hw-address": "2c:26:17:d7:cb:b5",
+                "ip-address": "172.16.100.48"
+              },
+
+              // Important
+              {
+                "hw-address": "3a:05:90:29:77:5d",
+                "ip-address": "172.16.100.251"
+              },
+              // Amazon Device Fire TV?
+              {
+                "hw-address": "a0:d0:dc:5e:1a:8a",
+                "ip-address": "172.16.100.91"
+              },
+              // TBD?
+              {
+                "hw-address": "d0:03:df:89:da:c2",
+                "ip-address": "172.16.100.95"
+              },
+              {
+                "hw-address": "00:04:4b:f0:c7:ec",
+                "ip-address": "172.16.100.92"
+              },
+              // Shield?
+              {
+                "hw-address": "00:04:4b:f1:b2:4c",
+                "ip-address": "172.16.100.93"
+              },
+              // Bedroom Mini
+              {
+                "hw-address": "d4:f5:47:93:4f:13",
+                "ip-address": "172.16.100.81"
+              },
+              // kitchen1-display.office1.kristianjones.dev
+              {
+                "hw-address": "1c:f2:9a:2e:b2:f9",
+                "ip-address": "172.16.100.82"
+              },
+              {
+                "hw-address": "f8:0f:f9:60:05:15",
+                "ip-address": "172.16.100.83"
+              },
+              {
+                "hw-address": "d8:6c:63:54:b1:0c",
+                "ip-address": "172.16.100.84"
+              },
+              {
+                "hw-address": "00:e0:4c:79:61:d1",
+                "ip-address": "172.16.100.85"
+              },
+              {
+                "hw-address": "44:07:0b:57:2d:76",
+                "ip-address": "172.16.100.86"
+              },
+              {
+                "hw-address": "2a:b1:76:70:33:d3",
+                "ip-address": "172.16.100.87"
+              },
+              // kjdev-workpc1.kristianjones.dev
+              {
+                "hw-address": "cc:48:3a:b6:e5:6b",
+                "ip-address": "172.16.100.252"
+              },
+              // printer1.office1.kristianjones.dev
+              {
+                "hw-address": "e4:e7:49:b6:cb:50",
+                "ip-address": "172.16.100.253"
+              },
+              {
+                "hw-address": "b8:ae:ed:79:5e:1d",
+                "ip-address": "172.16.100.250",
+                "client-classes": ["vmhost-class1"]
+              }
+            ],
+
+            "renew-timer": 1800,
+            "subnet": "172.16.100.0/24",
+            "valid-lifetime": 3600
+          }
+        ],
+        "valid-lifetime": 3600
+      }
+    ], // end of shared-networks
+
+    "server-hostname": "vps1-raw.kristianjones.dev",
+
+    // The following configures logging. It assumes that messages with at
+    // least informational level (info, warn, error and fatal) should be
+    // logged to stdout.
+    "loggers": [
+      {
+        "name": "kea-dhcp4",
+        "output_options": [
+          {
+            "output": "stdout"
+          }
+        ],
+        "severity": "info"
+      }
+    ]
+  } // end of Dhcp4
+}

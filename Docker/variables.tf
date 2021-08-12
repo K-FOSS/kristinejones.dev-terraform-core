@@ -48,6 +48,10 @@ variable "TFTPBucket" {
 #
 # OpenNMS
 #
+
+#
+# Minio/S3 Buckets
+# 
 variable "OpenNMSDataBucket" {
 
 }
@@ -68,10 +72,30 @@ variable "OpenNMSCassandraBucket" {
 
 }
 
+#
+# Stolon/Postgres Database
+#
+
 variable "StolonOpenNMSRole" {
 
 }
 
 variable "StolonOpenNMSDB" {
+  
+}
+
+#
+# ISC Network Infra
+#
+
+#
+# ISC Kea DHCP Server
+#
+
+variable "StolonDHCPRole" {
+
+}
+
+variable "StolonDHCPDB" {
   
 }
