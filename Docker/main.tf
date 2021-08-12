@@ -1146,19 +1146,19 @@ resource "docker_service" "OpenNMS" {
       #
       # https://github.com/opennms-forge/stack-play/blob/master/full-stack/container-fs/horizon/etc/conf.d/confd.toml
       #
-      configs {
-        config_id   = docker_config.OpenNMSConfigConfig.id
-        config_name = docker_config.OpenNMSConfigConfig.name
+      # configs {
+      #   config_id   = docker_config.OpenNMSConfigConfig.id
+      #   config_name = docker_config.OpenNMSConfigConfig.name
 
-        file_name   = "/etc/confd/confd.toml"
-      }
+      #   file_name   = "/etc/confd/confd.toml"
+      # }
 
-      configs {
-        config_id   = docker_config.OpenNMSHorizionConfig.id
-        config_name = docker_config.OpenNMSHorizionConfig.name
+      # configs {
+      #   config_id   = docker_config.OpenNMSHorizionConfig.id
+      #   config_name = docker_config.OpenNMSHorizionConfig.name
 
-        file_name   = "/opt/opennms-overlay/confd/horizon-config.yaml"
-      }
+      #   file_name   = "/opt/opennms-overlay/confd/horizon-config.yaml"
+      # }
 
       configs {
         config_id   = docker_config.OpenNMSPropertiesConfig.id
