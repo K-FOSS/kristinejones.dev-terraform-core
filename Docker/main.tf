@@ -990,6 +990,10 @@ resource "docker_service" "OpenNMS" {
 
     log_driver {
       name = "loki"
+
+      options {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
     }
   }
 
