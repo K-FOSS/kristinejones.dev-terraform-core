@@ -1135,6 +1135,8 @@ resource "docker_service" "OpenNMS" {
         TZ = "America/Winnipeg"
 
         OPENNMS_HTTP_URL = "https://opennms.kristianjones.dev"
+
+        OPENNMS_HOME = "/opt/opennms"
       }
 
       #
