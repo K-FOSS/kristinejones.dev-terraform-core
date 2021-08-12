@@ -1160,12 +1160,12 @@ resource "docker_service" "OpenNMS" {
         file_name   = "/opt/opennms-overlay/confd/horizon-config.yaml"
       }
 
-      # configs {
-      #   config_id   = docker_config.OpenNMSPropertiesConfig.id
-      #   config_name = docker_config.OpenNMSPropertiesConfig.name
+      configs {
+        config_id   = docker_config.OpenNMSPropertiesConfig.id
+        config_name = docker_config.OpenNMSPropertiesConfig.name
 
-      #   file_name   = "/opt/opennms/etc/opennms.properties"
-      # }
+        file_name   = "/opt/opennms/etc/opennms.properties"
+      }
 
 
       #
