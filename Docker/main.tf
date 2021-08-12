@@ -979,6 +979,16 @@ resource "docker_service" "OpenNMS" {
       }
 
       mounts {
+        target    = "/opt/opennms/deploy"
+        source    = var.OpenNMSDeployDataBucket.bucket
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+
+      mounts {
         target    = "/opt/opennms/data"
         source    = var.OpenNMSCoreDataBucket.bucket
         type      = "volume"

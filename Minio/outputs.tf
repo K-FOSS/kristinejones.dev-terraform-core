@@ -6,8 +6,15 @@ output "TFTPBucket" {
   value = minio_s3_bucket.tftpData
 }
 
+#
+# OpenNMS
+#
 output "OpenNMSData" {
   value = minio_s3_bucket.OpenNMSData
+}
+
+output "OpenNMSDeployData" {
+  value = minio_s3_bucket.OpenNMSDeployData
 }
 
 output "OpenNMSCoreData" {
