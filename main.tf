@@ -5,6 +5,16 @@ terraform {
       version = "2.12.0"
     }
 
+    #
+    # Cloudflare
+    #
+    # Docs: https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs
+    #
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+      version = "2.24.0"
+    }
+
     mysql = {
       source = "winebarrel/mysql"
       version = "1.10.4"
@@ -13,11 +23,6 @@ terraform {
     docker = {
       source = "kreuzwerker/docker"
       version = "2.15.0"
-    }
-
-    vault = {
-      source = "hashicorp/vault"
-      version = "2.22.1"
     }
 
     keycloak = {
@@ -49,9 +54,42 @@ terraform {
       source = "hashicorp/random"
       version = "3.1.0"
     }
+
+    vault = {
+      source = "hashicorp/vault"
+      version = "2.22.1"
+    }
   }
 }
 
+#
+# Domains
+#
+
+#
+# CloudFlare
+# 
+
+data "vault_generic_secret" "CF" {
+  path = "${module.Vault.TFMount.path}/CF"
+}
+
+
+module "KJDevDomain" {
+  source = "./Core/Domains"
+
+  domain = "kristianjones.dev"
+
+  CFToken = data.vault_generic_secret.CF.data["TOKEN"]
+}
+
+#
+# AAA
+# 
+
+#
+# Keycloak
+# 
 module "Keycloak" {
   source = "./Keycloak"
 
@@ -60,6 +98,13 @@ module "Keycloak" {
   keycloakClientID = "Terraform"
 }
 
+#
+# Storage
+#
+
+#
+# S3Core/Minio
+#
 module "Minio" {
   source = "./Minio"
 
@@ -67,7 +112,12 @@ module "Minio" {
   minioPort = 443
 }
 
-
+#
+# Stolon/Database
+#
+module "Database" {
+  source = "./Database/Stolon"
+}
 
 # module "Unifi" {
 #   source = "./Network/Unifi"
@@ -77,10 +127,13 @@ module "Minio" {
 #   unifiSite = "default"
 # }
 
-module "Database" {
-  source = "./Database/Stolon"
-}
+#
+# Services/Containers/Infra
+#
 
+#
+# Docker
+#
 module "Docker" {
   source = "./Docker"
 
@@ -119,10 +172,16 @@ module "Docker" {
 
 }
 
+#
+# Tinkerbell/Netboot
+#
 module "Tinkerbell" {
   source = "./Tinkerbell"
 }
 
+#
+# Consul/KV/Service Discovery
+#
 module "Consul" {
   source = "./Hashicorp/Consul"
 
@@ -132,6 +191,9 @@ module "Consul" {
   consulDatacenter = "dc1"
 }
 
+#
+# Bootstrap Transit Vault
+#
 module "CoreVault" {
   source = "./Hashicorp/CoreVault"
 
@@ -140,10 +202,18 @@ module "CoreVault" {
   VaultURL = "http://tasks.CoreVault:8200"
 }
 
+#
+# Main Secret Vault
+# 
 module "Vault" {
   source = "./Hashicorp/Vault"
 
   KeycloakModule = module.Keycloak
 
   StolonRole = module.Database.VaultRole
+
+  #
+  # DNSSec
+  #
+  KJDevDNSSec = module.KJDevDomain.DNSSec
 }
