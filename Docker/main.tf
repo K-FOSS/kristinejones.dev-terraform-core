@@ -1110,7 +1110,7 @@ resource "docker_service" "OpenNMS" {
     container_spec {
       image = "opennms/horizon:28.0.2"
 
-      args = ["-s"]
+      args = ["-f"]
       hostname = "OpenNMS"
 
       env = {
@@ -1221,7 +1221,7 @@ resource "docker_service" "OpenNMS" {
 
     resources {
       limits {
-        memory_bytes = 1610611911
+        memory_bytes = 2310611911
       }
     }
 
