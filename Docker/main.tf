@@ -1009,7 +1009,7 @@ resource "docker_config" "OpenNMSConfigConfig" {
 
 resource "docker_config" "OpenNMSPropertiesConfig" {
   name = "opennms-properties-${replace(timestamp(), ":", ".")}"
-  data = base64encode(file("${path.module}/Configs/OpenNMS/opennms-datasources.xml"))
+  data = base64encode(file("${path.module}/Configs/OpenNMS/opennms.properties"))
 
   lifecycle {
     ignore_changes        = [name]
