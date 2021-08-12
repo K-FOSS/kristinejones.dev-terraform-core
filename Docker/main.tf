@@ -813,252 +813,252 @@ resource "docker_config" "OpenNMSPropertiesConfig" {
 }
 
 
-resource "docker_service" "OpenNMSCassandra" {
-  name = "OpenNMSCassandra"
+# resource "docker_service" "OpenNMSCassandra" {
+#   name = "OpenNMSCassandra"
 
-  task_spec {
-    container_spec {
-      image = "cassandra:3.11.11"
-      hostname = "OpenNMSCassandra"
+#   task_spec {
+#     container_spec {
+#       image = "cassandra:3.11.11"
+#       hostname = "OpenNMSCassandra"
 
-      env = {
-        CASSANDRA_CLUSTER_NAME = "opennms-newts"
-        CASSANDRA_DC = "opennms-lab"
-        CASSANDRA_RACK = "opennms-lab-rack"
-        CASSANDRA_ENDPOINT_SNITCH = "GossipingPropertyFileSnitch"
+#       env = {
+#         CASSANDRA_CLUSTER_NAME = "opennms-newts"
+#         CASSANDRA_DC = "opennms-lab"
+#         CASSANDRA_RACK = "opennms-lab-rack"
+#         CASSANDRA_ENDPOINT_SNITCH = "GossipingPropertyFileSnitch"
 
-        #
-        # JMX
-        #
-        # TODO: What's this doing
-        #
-        LOCAL_JMX = "false"
-        JMX_HOST = "127.0.0.1"
+#         #
+#         # JMX
+#         #
+#         # TODO: What's this doing
+#         #
+#         LOCAL_JMX = "false"
+#         JMX_HOST = "127.0.0.1"
 
-        #
-        # MISC
-        #
-        TZ = "America/Winnipeg"
-      }
+#         #
+#         # MISC
+#         #
+#         TZ = "America/Winnipeg"
+#       }
 
-      mounts {
-        target    = "/var/lib/cassandra"
-        source    = var.OpenNMSCassandraBucket.bucket
-        type      = "volume"
+#       mounts {
+#         target    = "/var/lib/cassandra"
+#         source    = var.OpenNMSCassandraBucket.bucket
+#         type      = "volume"
 
-        volume_options {
-          driver_name = "s3core-storage"
-        }
-      }
-    }
+#         volume_options {
+#           driver_name = "s3core-storage"
+#         }
+#       }
+#     }
 
-    force_update = 0
-    runtime      = "container"
+#     force_update = 0
+#     runtime      = "container"
 
-    networks     = [docker_network.OpenNMSIntNetwork.id]
+#     networks     = [docker_network.OpenNMSIntNetwork.id]
 
-    log_driver {
-      name = "loki"
+#     log_driver {
+#       name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  mode {
-    replicated {
-      replicas = 1
-    }
-  }
+#   mode {
+#     replicated {
+#       replicas = 1
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
-resource "docker_service" "OpenNMS" {
-  name = "OpenNMS"
+# resource "docker_service" "OpenNMS" {
+#   name = "OpenNMS"
 
-  task_spec {
-    container_spec {
-      image = "opennms/horizon:bleeding"
+#   task_spec {
+#     container_spec {
+#       image = "opennms/horizon:bleeding"
 
-      args = ["-s"]
-      hostname = "OpenNMS"
+#       args = ["-s"]
+#       hostname = "OpenNMS"
 
-      env = {
-        #
-        # Database
-        #
-        POSTGRES_HOST = "tasks.StolonProxy",
-        POSTGRES_PORT = 5432,
+#       env = {
+#         #
+#         # Database
+#         #
+#         POSTGRES_HOST = "tasks.StolonProxy",
+#         POSTGRES_PORT = 5432,
 
-        OPENNMS_DBNAME = "${var.StolonOpenNMSDB.name}"
+#         OPENNMS_DBNAME = "${var.StolonOpenNMSDB.name}"
 
-        OPENNMS_DBUSER = "${var.StolonOpenNMSRole.name}"
-        OPENNMS_DBPASS = "${var.StolonOpenNMSRole.password}"
+#         OPENNMS_DBUSER = "${var.StolonOpenNMSRole.name}"
+#         OPENNMS_DBPASS = "${var.StolonOpenNMSRole.password}"
 
-        OPENNMS_TIMESERIES_STRATEGY = "newts"
+#         OPENNMS_TIMESERIES_STRATEGY = "newts"
         
-        #
-        # Postgres ADMIN
-        #
-        # TODO: Determine if OpenNMS User Suffices
-        #
-        POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}"
-        POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+#         #
+#         # Postgres ADMIN
+#         #
+#         # TODO: Determine if OpenNMS User Suffices
+#         #
+#         POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}"
+#         POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
 
-        #
-        # MISC
-        #
-        TZ = "America/Winnipeg"
+#         #
+#         # MISC
+#         #
+#         TZ = "America/Winnipeg"
 
-        OPENNMS_HTTP_URL = "https://opennms.kristianjones.dev"
-      }
+#         OPENNMS_HTTP_URL = "https://opennms.kristianjones.dev"
+#       }
 
-      #
-      # https://github.com/opennms-forge/stack-play/blob/master/full-stack/container-fs/horizon/etc/conf.d/confd.toml
-      #
-      configs {
-        config_id   = docker_config.OpenNMSConfigConfig.id
-        config_name = docker_config.OpenNMSConfigConfig.name
+#       #
+#       # https://github.com/opennms-forge/stack-play/blob/master/full-stack/container-fs/horizon/etc/conf.d/confd.toml
+#       #
+#       configs {
+#         config_id   = docker_config.OpenNMSConfigConfig.id
+#         config_name = docker_config.OpenNMSConfigConfig.name
 
-        file_name   = "/etc/confd/confd.toml"
-      }
+#         file_name   = "/etc/confd/confd.toml"
+#       }
 
-      configs {
-        config_id   = docker_config.OpenNMSHorizionConfig.id
-        config_name = docker_config.OpenNMSHorizionConfig.name
+#       configs {
+#         config_id   = docker_config.OpenNMSHorizionConfig.id
+#         config_name = docker_config.OpenNMSHorizionConfig.name
 
-        file_name   = "/opt/opennms-overlay/confd/horizon-config.yaml"
-      }
+#         file_name   = "/opt/opennms-overlay/confd/horizon-config.yaml"
+#       }
 
-      # configs {
-      #   config_id   = docker_config.OpenNMSPropertiesConfig.id
-      #   config_name = docker_config.OpenNMSPropertiesConfig.name
+#       # configs {
+#       #   config_id   = docker_config.OpenNMSPropertiesConfig.id
+#       #   config_name = docker_config.OpenNMSPropertiesConfig.name
 
-      #   file_name   = "/opt/opennms/etc/opennms.properties"
-      # }
+#       #   file_name   = "/opt/opennms/etc/opennms.properties"
+#       # }
 
 
-      #
-      # OpenNMS Data Volume
-      #
-      # TODO: Determine Data Storage and if this is necessary
-      #
-      mounts {
-        target    = "/opennms-data"
-        source    = var.OpenNMSDataBucket.bucket
-        type      = "volume"
+#       #
+#       # OpenNMS Data Volume
+#       #
+#       # TODO: Determine Data Storage and if this is necessary
+#       #
+#       mounts {
+#         target    = "/opennms-data"
+#         source    = var.OpenNMSDataBucket.bucket
+#         type      = "volume"
 
-        volume_options {
-          driver_name = "s3core-storage"
-        }
-      }
+#         volume_options {
+#           driver_name = "s3core-storage"
+#         }
+#       }
 
-      mounts {
-        target    = "/opt/opennms/deploy"
-        source    = var.OpenNMSDeployDataBucket.bucket
-        type      = "volume"
+#       mounts {
+#         target    = "/opt/opennms/deploy"
+#         source    = var.OpenNMSDeployDataBucket.bucket
+#         type      = "volume"
 
-        volume_options {
-          driver_name = "s3core-storage"
-        }
-      }
+#         volume_options {
+#           driver_name = "s3core-storage"
+#         }
+#       }
 
-      # mounts {
-      #   target    = "/opt/opennms/data"
-      #   source    = var.OpenNMSCoreDataBucket.bucket
-      #   type      = "volume"
+#       # mounts {
+#       #   target    = "/opt/opennms/data"
+#       #   source    = var.OpenNMSCoreDataBucket.bucket
+#       #   type      = "volume"
 
-      #   volume_options {
-      #     driver_name = "s3core-storage"
-      #   }
-      # }
+#       #   volume_options {
+#       #     driver_name = "s3core-storage"
+#       #   }
+#       # }
 
-      #
-      # OpenNMS Config Volume
-      #
-      # TODO: Move as much as possible to dynamic configs
-      #
-      mounts {
-        target    = "/opt/opennms/etc"
-        source    = var.OpenNMSConfigBucket.bucket
-        type      = "volume"
+#       #
+#       # OpenNMS Config Volume
+#       #
+#       # TODO: Move as much as possible to dynamic configs
+#       #
+#       mounts {
+#         target    = "/opt/opennms/etc"
+#         source    = var.OpenNMSConfigBucket.bucket
+#         type      = "volume"
 
-        volume_options {
-          driver_name = "s3core-storage"
-        }
-      }
-    }
+#         volume_options {
+#           driver_name = "s3core-storage"
+#         }
+#       }
+#     }
 
-    force_update = 0
-    runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.OpenNMSIntNetwork.id]
+#     force_update = 0
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.OpenNMSIntNetwork.id]
 
-    log_driver {
-      name = "loki"
+#     log_driver {
+#       name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  mode {
-    replicated {
-      replicas = 1
-    }
-  }
+#   mode {
+#     replicated {
+#       replicas = 1
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
+#   endpoint_spec {
+#     mode = "dnsrr"
 
-  }
-}
+#   }
+# }
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
