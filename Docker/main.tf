@@ -543,107 +543,111 @@ resource "docker_config" "AlpineScriptTest1Entry" {
   }
 }
 
-resource "docker_service" "AlpineScriptTest1" {
-  name = "AlpineScriptTest"
+#
+# TODO: Get Docker Config Templates working in Provider
+#
 
-  task_spec {
-    container_spec {
-      image = "alpine:3.14.1"
+# resource "docker_service" "AlpineScriptTest1" {
+#   name = "AlpineScriptTest"
 
-      #
-      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-      #
-      # labels {
-      #   label = "foo.bar"
-      #   value = "baz"
-      # }
+#   task_spec {
+#     container_spec {
+#       image = "alpine:3.14.1"
 
-      command = ["/entry.sh"]
-      args = []
+#       #
+#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+#       #
+#       # labels {
+#       #   label = "foo.bar"
+#       #   value = "baz"
+#       # }
 
-      hostname = "AlpineScriptTest{{.Task.Slot}}"
+#       command = ["/entry.sh"]
+#       args = []
 
-      env = {
-        TEST = "HELLO{{.Task.Slot}}"
-      }
+#       hostname = "AlpineScriptTest{{.Task.Slot}}"
 
-      # dir    = "/root"
-      user   = "root"
-      # groups = ["docker", "foogroup"]
+#       env = {
+#         TEST = "HELLO{{.Task.Slot}}"
+#       }
 
-      # privileges {
-      #   se_linux_context {
-      #     disable = true
-      #     user    = "user-label"
-      #     role    = "role-label"
-      #     type    = "type-label"
-      #     level   = "level-label"
-      #   }
-      # }
+#       # dir    = "/root"
+#       user   = "root"
+#       # groups = ["docker", "foogroup"]
+
+#       # privileges {
+#       #   se_linux_context {
+#       #     disable = true
+#       #     user    = "user-label"
+#       #     role    = "role-label"
+#       #     type    = "type-label"
+#       #     level   = "level-label"
+#       #   }
+#       # }
 
 
-      # dns_config {
-      #   nameservers = ["1.1.1.1", "1.0.0.1"]
-      #   search      = ["kristianjones.dev"]
-      #   options     = ["timeout:3"]
-      # }
+#       # dns_config {
+#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
+#       #   search      = ["kristianjones.dev"]
+#       #   options     = ["timeout:3"]
+#       # }
 
-      configs {
-        config_id   = docker_config.AlpineScriptTest1Entry.id
-        config_name = docker_config.AlpineScriptTest1Entry.name
+#       configs {
+#         config_id   = docker_config.AlpineScriptTest1Entry.id
+#         config_name = docker_config.AlpineScriptTest1Entry.name
 
-        file_name   = "/entry.sh"
-        file_uid = "1000"
-        file_mode = 7777
-      }
+#         file_name   = "/entry.sh"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
 
-      #
-      # Stolon Database Secrets
-      #
-      # healthcheck {
-      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      #   interval = "5s"
-      #   timeout  = "2s"
-      #   retries  = 4
-      # }
-    }
+#       #
+#       # Stolon Database Secrets
+#       #
+#       # healthcheck {
+#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#       #   interval = "5s"
+#       #   timeout  = "2s"
+#       #   retries  = 4
+#       # }
+#     }
 
-    force_update = 1
-    runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id]
-  }
+#     force_update = 1
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id]
+#   }
 
-  mode {
-    replicated {
-      replicas = 3
-    }
-  }
+#   mode {
+#     replicated {
+#       replicas = 3
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
 #
 # TFTP
@@ -673,6 +677,14 @@ resource "docker_service" "TFTPd" {
 
     force_update = 0
     runtime      = "container"
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
   }
 
   mode {
@@ -844,6 +856,14 @@ resource "docker_service" "OpenNMSCassandra" {
     runtime      = "container"
 
     networks     = [docker_network.OpenNMSIntNetwork.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
   }
 
   mode {
