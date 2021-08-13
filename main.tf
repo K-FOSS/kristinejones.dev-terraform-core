@@ -186,6 +186,12 @@ module "Docker" {
   #
   StolonNetboxRole = module.Database.NetboxRole
   StolonNetboxDB = module.Database.NetboxDB
+
+  #
+  # Insights
+  # 
+  StolonGrafanaRole = module.Database.GrafanaRole
+  StolonGrafanaDB = module.Database.GrafanaDB
 }
 
 #

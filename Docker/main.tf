@@ -137,6 +137,221 @@ resource "docker_network" "meshIntSpineNet" {
   }
 }
 
+#
+# Insights Stack
+#
+# Network Space: 172.30.238.0/23
+#
+
+#
+# Networks
+#
+
+#
+# Insight Spine Network
+#
+# Reverse Proxy, Cross Service Communication
+#
+# Network Space: 172.30.239.128/25
+#
+data "docker_network" "insightsSpineNet" {
+  name = "insightsSpineNet"
+}
+
+#
+# Backend Network for Grafana Loki
+#
+# Network Space: 172.30.238.0/27
+#
+data "docker_network" "lokiSpineNet" {
+  name = "lokiSpineNet"
+}
+
+#
+# Grafana
+#
+# Website: https://grafana.com/
+# Docs: https://grafana.com/docs/grafana/latest/
+# Config Reference: https://grafana.com/docs/grafana/latest/administration/configuration/
+#
+
+# Grafana Main Configuration File
+resource "docker_config" "GrafanaIniConfig" {
+  name = "grafana-grafanaini-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/Insights/Grafana/Grafana.ini",
+      {
+        VERSION = "1.3.10"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_secret" "GrafanaDBName" {
+  name = "grafana-dbname-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    "${var.StolonGrafanaDB.name}"
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_secret" "GrafanaDBUser" {
+  name = "grafana-dbuser-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    "${var.StolonGrafanaRole.name}"
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_secret" "GrafanaDBPassword" {
+  name = "grafana-dbpassword-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    "${var.StolonGrafanaRole.password}"
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+
+resource "docker_service" "Grafana" {
+  name = "Grafana"
+
+  task_spec {
+    container_spec {
+      image = "grafana/grafana:8.0.3"
+
+      hostname = "Grafana"
+
+      env = {
+        GF_LOG_MODE = "console"
+
+        #
+        # Grafana Database
+        #
+        GF_DATABASE_NAME__FILE = "/run/secrets/DB_NAME"
+        GF_DATABASE_USER__FILE = "/run/secrets/DB_USER"
+        GF_DATABASE_PASSWORD__FILE = "/run/secrets/DB_PASSWORD"
+      }
+
+      #
+      # Grafana Configuration
+      #
+      configs {
+        config_id   = docker_config.GrafanaIniConfig.id
+        config_name = docker_config.GrafanaIniConfig.name
+
+        file_name   = "/etc/grafana/grafana.ini"
+      }
+
+      #
+      # Grafana Database
+      #
+      secrets {
+        secret_id   = docker_secret.GrafanaDBName.id
+        secret_name = docker_secret.GrafanaDBName.name
+
+        file_name   = "/run/secrets/DB_NAME"
+      }
+
+      secrets {
+        secret_id   = docker_secret.GrafanaDBUser.id
+        secret_name = docker_secret.GrafanaDBUser.name
+
+        file_name   = "/run/secrets/DB_USER"
+      }
+
+      secrets {
+        secret_id   = docker_secret.GrafanaDBPassword.id
+        secret_name = docker_secret.GrafanaDBPassword.name
+
+        file_name   = "/run/secrets/DB_PASSWORD"
+      }
+
+    }
+
+    #
+    # TODO: Fine Tune
+    #
+
+    # resources {
+    #   limits {
+    #     memory_bytes = 16777216
+    #   }
+    # }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [docker_network.meshIntSpineNet.id, data.docker_network.insightsSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+}
+
+#
+# Grafana Cortex
+#
+# Website: https://cortexmetrics.io/
+# Docs: https://cortexmetrics.io/docs/
+# Config Reference: https://cortexmetrics.io/docs/configuration/configuration-file/
+#
+
+
+#
+# Grafana Loki
+# 
+# Website:
+# Docs:
+# Config Reference: https://grafana.com/docs/loki/latest/configuration/
 
 #
 # AAA Stack

@@ -110,3 +110,18 @@ variable "StolonNetboxRole" {
 variable "StolonNetboxDB" {
   
 }
+
+#
+# Insights
+#
+
+#
+# Grafana
+#
+variable "StolonGrafanaRole" {
+
+}
+
+variable "StolonGrafanaDB" {
+  
+}

@@ -65,3 +65,19 @@ output "NetboxRole" {
 output "NetboxDB" {
   value = postgresql_database.NetboxDB
 }
+
+#
+# Insights
+#
+
+#
+# Grafana
+# 
+
+output "GrafanaRole" {
+  value = postgresql_role.GrafanaUser
+}
+
+output "GrafanaDB" {
+  value = postgresql_database.GrafanaDB
+}

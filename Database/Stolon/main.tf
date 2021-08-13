@@ -216,3 +216,30 @@ resource "postgresql_database" "NetboxDB" {
 
   owner = postgresql_role.NetboxUser.name
 }
+
+#
+# Insights
+#
+
+#
+# Grafana
+# 
+
+resource "random_password" "StolonGrafanaPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "GrafanaUser" {
+  name     = "grafana"
+
+  login    = true
+  password = random_password.StolonGrafanaPassword.result
+}
+
+resource "postgresql_database" "GrafanaDB" {
+  name     = "grafana"
+
+  owner = postgresql_role.GrafanaUser.name
+}
