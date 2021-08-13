@@ -112,6 +112,9 @@ protocol = "udp"
 bind = "0.0.0.0:69"
 protocol = "udp"
 
+  [servers.tftp.udp]
+  max_requests = 30
+
   [servers.tftp.discovery]
   kind = "static"
   static_list = [
