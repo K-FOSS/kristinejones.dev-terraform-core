@@ -1300,6 +1300,100 @@ resource "docker_config" "DHCPConfig" {
   }
 }
 
+resource "docker_service" "DHCP" {
+  name = "DHCP"
+
+  task_spec {
+    container_spec {
+      image = "kristianfjones/kea:vps1-core"
+
+      command = ["/usr/sbin/kea-dhcp4"]
+      args = ["-c", "/config/config.json"]
+
+      env = {
+        TZ = "America/Winnipeg"
+      }
+
+      configs {
+        config_id   = docker_config.DHCPConfig.id
+        config_name = docker_config.DHCPConfig.name
+
+        file_name   = "/config/config.json"
+      }
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    ports {
+      name           = "dchp1"
+      protocol       = "udp"
+      target_port    = "67"
+      published_port = "67"
+      publish_mode   = "ingress"
+    }
+
+    ports {
+      name           = "dhcp2"
+      protocol       = "udp"
+      target_port    = "68"
+      published_port = "68"
+      publish_mode   = "ingress"
+    }
+  }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"
