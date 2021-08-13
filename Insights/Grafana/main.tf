@@ -28,3 +28,18 @@ resource "grafana_data_source" "prometheus" {
 		query_timeout = "1"
 	}
 }
+
+resource "grafana_data_source" "Loki" {
+  type = "loki"
+  name = "loki"
+  url  = "http://tasks.LokiGateway:8080"
+
+  access_mode = "proxy"
+
+  #is_default = true
+
+  json_data {
+		http_method = "GET"
+		query_timeout = "1"
+	}
+}
