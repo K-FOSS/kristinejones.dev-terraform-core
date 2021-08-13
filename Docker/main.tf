@@ -316,8 +316,8 @@ resource "docker_service" "Keycloak" {
         #
         DOCKER_SWARM = "true"
 
-        CACHE_OWNERS_COUNT = "2"
-        CACHE_OWNERS_AUTH_SESSIONS_COUNT = "2"
+        CACHE_OWNERS_COUNT = "3"
+        CACHE_OWNERS_AUTH_SESSIONS_COUNT = "3"
         JGROUPS_DISCOVERY_PROTOCOL = "dns.DNS_PING"
         JGROUPS_DISCOVERY_PROPERTIES = "dns_query=tasks.AAA-Keycloak"
 
