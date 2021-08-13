@@ -719,16 +719,6 @@ resource "docker_service" "TFTPd" {
   #   max_failure_ratio = "0.9"
   #   order             = "stop-first"
   # }
-
-  endpoint_spec {
-    ports {
-      name           = "tftp"
-      protocol       = "udp"
-      target_port    = "8069"
-      published_port = "69"
-      publish_mode   = "ingress"
-    }
-  }
 }
 
 ###############
@@ -928,6 +918,10 @@ resource "docker_service" "TFTPd" {
 #     }
 #   }
 # }
+
+#
+# NetBox
+#
 
 
 #
@@ -1496,6 +1490,17 @@ resource "docker_service" "GoBetween" {
       published_port = "15853"
       publish_mode   = "host"
     }
+
+    #
+    # TODO: ReAdd TFTP
+    #
+    # ports {
+    #   name           = "tftp"
+    #   protocol       = "udp"
+    #   target_port    = "8069"
+    #   published_port = "69"
+    #   publish_mode   = "ingress"
+    # }
   }
 }
 
