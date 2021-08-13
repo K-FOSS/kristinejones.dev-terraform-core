@@ -738,7 +738,7 @@ resource "docker_service" "TFTPd" {
     container_spec {
       image = "kristianfoss/programs-tftpd:tftpd-stable-scratch"
 
-      args = ["-E", "0.0.0.0", "8069", "tftpd", "-u", "user", "-c", "/data", "-vvv"]
+      args = ["-E", "0.0.0.0", "8069", "tftpd", "-u", "user", "-c", "/data"]
 
       #
       # TODO: Get CHWON/CHMOD Volume/Init
