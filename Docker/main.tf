@@ -67,8 +67,8 @@ data "docker_network" "protectedSpineNet" {
 #
 # Network Space: 172.30.208.0/22
 #
-data "docker_network" "protectedSpineNet" {
-  name = "protectedSpineNet"
+data "docker_network" "secureSpineNet" {
+  name = "secureSpineNet"
 }
 
 #
