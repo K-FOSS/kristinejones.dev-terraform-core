@@ -10,6 +10,8 @@ terraform {
 provider "grafana" {
   url  = "http://${var.GrafanaHostname}:8080"
   auth = "${var.GrafanaUser}:${var.GrafanaPassword}"
+
+  org_id = 1
 }
 
 resource "grafana_data_source" "prometheus" {
