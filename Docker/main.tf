@@ -740,8 +740,6 @@ resource "docker_service" "TFTPd" {
 
       args = ["-E", "0.0.0.0", "8069", "tftpd", "-u", "user", "-c", "/data"]
 
-      user   = "1000"
-
       #
       # TODO: Get CHWON/CHMOD Volume/Init
       #
