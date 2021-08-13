@@ -923,6 +923,12 @@ resource "docker_service" "TFTPd" {
 # NetBox
 #
 
+resource "random_password" "NetBoxSecret" {
+  length           = 50
+  special          = true
+  override_special = "_%@"
+}
+
 resource "docker_service" "Netbox" {
   name = "Netbox"
 
@@ -938,6 +944,8 @@ resource "docker_service" "Netbox" {
 
         DB_USER = "${var.StolonOpenNMSRole.name}"
         DB_PASSWORD = "${var.StolonOpenNMSRole.password}"
+
+        SECRET_KEY = "${random_password.NetBoxSecret.result}"
       }
     }
 
