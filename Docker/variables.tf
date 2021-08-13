@@ -99,3 +99,14 @@ variable "StolonDHCPRole" {
 variable "StolonDHCPDB" {
   
 }
+
+#
+# NetBox
+#
+variable "StolonNetboxRole" {
+
+}
+
+variable "StolonNetboxDB" {
+  
+}

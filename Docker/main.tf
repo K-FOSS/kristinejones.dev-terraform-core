@@ -923,6 +923,76 @@ resource "docker_service" "TFTPd" {
 # NetBox
 #
 
+resource "docker_service" "Netbox" {
+  name = "Netbox"
+
+  task_spec {
+    container_spec {
+      image = "netboxcommunity/netbox:snapshot"
+
+      hostname = "Netbox"
+
+      env = {
+        DB_HOST = "tasks.StolonProxy"
+        DB_NAME = "${var.StolonNetboxDB.name}"
+
+        DB_USER = "${var.StolonOpenNMSRole.name}"
+        DB_PASSWORD = "${var.StolonOpenNMSRole.password}"
+      }
+    }
+
+    #
+    # TODO: Finetune this
+    #
+    # resources {
+    #   limits {
+    #     memory_bytes = 16777216
+    #   }
+    # }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+}
+
+
 
 #
 # OpenNMS

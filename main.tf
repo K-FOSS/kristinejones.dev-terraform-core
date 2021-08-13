@@ -180,6 +180,12 @@ module "Docker" {
   #
   StolonDHCPRole = module.Database.DHCPRole
   StolonDHCPDB = module.Database.DHCPDB
+
+  #
+  # NetBox
+  #
+  StolonNetboxRole = module.Database.NetboxRole
+  StolonNetboxDB = module.Database.NetboxDB
 }
 
 #
