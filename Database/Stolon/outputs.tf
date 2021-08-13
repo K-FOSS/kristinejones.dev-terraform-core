@@ -53,3 +53,15 @@ output "DHCPRole" {
 output "DHCPDB" {
   value = postgresql_database.DHCPDB
 }
+
+#
+# NetBox
+#
+
+output "NetboxRole" {
+  value = postgresql_role.NetboxUser
+}
+
+output "NetboxDB" {
+  value = postgresql_database.NetboxDB
+}

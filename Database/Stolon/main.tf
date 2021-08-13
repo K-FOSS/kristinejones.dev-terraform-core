@@ -193,3 +193,26 @@ resource "postgresql_database" "StorkDB" {
 
   owner = postgresql_role.StorkUser.name
 }
+
+#
+# NetBox
+# 
+
+resource "random_password" "StolonNetboxPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "NetboxUser" {
+  name     = "netbox"
+
+  login    = true
+  password = random_password.StolonNetboxPassword.result
+}
+
+resource "postgresql_database" "NetboxDB" {
+  name     = "netbox"
+
+  owner = postgresql_role.NetboxUser.name
+}
