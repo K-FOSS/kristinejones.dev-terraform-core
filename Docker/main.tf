@@ -1339,6 +1339,8 @@ resource "docker_service" "DHCP" {
     force_update = 0
     runtime      = "container"
 
+    networks     = [data.docker_network.meshSpineNet.id]
+
     log_driver {
       name = "loki"
 
