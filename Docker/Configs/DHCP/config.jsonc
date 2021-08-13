@@ -18,10 +18,10 @@
       "re-detect": false
     },
 
-    "control-socket": {
-      "socket-type": "http",
-      "socket-name": "http://0.0.0.0:8000/"
-    },
+    // "control-socket": {
+    //   "socket-type": "http",
+    //   "socket-name": "http://0.0.0.0:8000/"
+    // },
 
 
     "lease-database": {
