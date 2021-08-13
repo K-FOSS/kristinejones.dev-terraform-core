@@ -121,6 +121,19 @@ protocol = "udp"
     "tasks.TFTPd:8069"
   ]
 
+[servers.dhcp]
+bind = "0.0.0.0:67"
+protocol = "udp"
+
+  [servers.dhcp.udp]
+  max_requests = 30
+
+  [servers.dhcp.discovery]
+  kind = "static"
+  static_list = [
+    "tasks.DHCP:67"
+  ]
+
 #
 # -------------------- example ----------------------------- #
 

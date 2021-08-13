@@ -1034,6 +1034,10 @@ resource "docker_service" "TFTPd" {
   #   max_failure_ratio = "0.9"
   #   order             = "stop-first"
   # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
 }
 
 ###############
@@ -1731,7 +1735,7 @@ resource "docker_service" "DHCP" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1770,21 +1774,7 @@ resource "docker_service" "DHCP" {
   # }
 
   endpoint_spec {
-    ports {
-      name           = "dchp1"
-      protocol       = "udp"
-      target_port    = "67"
-      published_port = "67"
-      publish_mode   = "ingress"
-    }
-
-    ports {
-      name           = "dhcp2"
-      protocol       = "udp"
-      target_port    = "68"
-      published_port = "68"
-      publish_mode   = "ingress"
-    }
+    mode = "dnsrr"
   }
 }
 
@@ -1890,13 +1880,32 @@ resource "docker_service" "GoBetween" {
     }
 
     #
-    # TODO: ReAdd TFTP
+    # TFTP
     #
     ports {
       name           = "tftp"
       protocol       = "udp"
       target_port    = "69"
       published_port = "69"
+      publish_mode   = "ingress"
+    }
+
+    #
+    # DHCP
+    #
+    ports {
+      name           = "dchp1"
+      protocol       = "udp"
+      target_port    = "67"
+      published_port = "67"
+      publish_mode   = "ingress"
+    }
+
+    ports {
+      name           = "dhcp2"
+      protocol       = "udp"
+      target_port    = "68"
+      published_port = "68"
       publish_mode   = "ingress"
     }
   }
