@@ -59,6 +59,11 @@ terraform {
       source = "hashicorp/vault"
       version = "2.22.1"
     }
+
+    grafana = {
+      source = "grafana/grafana"
+      version = "1.13.3"
+    }
   }
 }
 
@@ -192,6 +197,18 @@ module "Docker" {
   # 
   StolonGrafanaRole = module.Database.GrafanaRole
   StolonGrafanaDB = module.Database.GrafanaDB
+}
+
+#
+# Insights
+#
+module "Grafana" {
+  source = "./Insights/Grafana"
+
+  GrafanaUser = "admin"
+  GrafanaPassword = "admin"
+
+  GrafanaHostname = "tasks.Grafana"
 }
 
 #
