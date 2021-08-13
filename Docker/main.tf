@@ -1731,6 +1731,16 @@ resource "docker_config" "DHCPCTRLConfig" {
   }
 }
 
+resource "docker_config" "DHCPEntryConfig" {
+  name = "network-dhcpentryconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/DHCP/entry.sh"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
 resource "docker_service" "DHCP" {
   name = "DHCP"
 
@@ -1738,8 +1748,9 @@ resource "docker_service" "DHCP" {
     container_spec {
       image = "kristianfjones/kea:vps1-core"
 
-      command = ["/usr/sbin/keactrl"]
-      args = ["start", "-c", "/config/keactrl.conf"]
+      command = ["/entry.sh"]
+
+      args = []
 
       env = {
         TZ = "America/Winnipeg"
@@ -1764,6 +1775,14 @@ resource "docker_service" "DHCP" {
         config_name = docker_config.DHCPCTRLConfig.name
 
         file_name   = "/config/kea-ctrl-agent.json"
+      }
+
+      configs {
+        config_id   = docker_config.DHCPEntryConfig.id
+        config_name = docker_config.DHCPEntryConfig.name
+
+        file_name   = "/entry.sh"
+        file_mode = 0777
       }
 
       mounts {
