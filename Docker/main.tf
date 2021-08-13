@@ -163,8 +163,22 @@ data "docker_network" "insightsSpineNet" {
 #
 # Network Space: 172.30.238.0/27
 #
-data "docker_network" "lokiSpineNet" {
-  name = "lokiSpineNet"
+resource "docker_network" "lokiSpineNet" {
+  name = "insights-lokispinenet"
+
+  attachable = true
+  
+  driver = "overlay"
+
+  internal = false
+
+  ipam_config {
+    subnet = "172.30.238.0/27"
+
+    gateway = "172.30.238.1"
+
+    aux_address = {}
+  }
 }
 
 #
