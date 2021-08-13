@@ -20,4 +20,9 @@ resource "grafana_data_source" "prometheus" {
   access_mode = "proxy"
 
   is_default = true
+
+  json_data {
+		http_method = "GET"
+		query_timeout = "1"
+	}
 }
