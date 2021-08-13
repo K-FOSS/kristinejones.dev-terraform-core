@@ -1396,6 +1396,109 @@ resource "docker_service" "DHCP" {
   }
 }
 
+#
+# Ingress
+#
+
+#
+# GoBetween
+#
+resource "docker_config" "GoBetweenConfig" {
+  name = "gobetween-coreconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/GoBetween/config.toml"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_service" "GoBetween" {
+  name = "GoBetween"
+
+  task_spec {
+    container_spec {
+      image = "yyyar/gobetween"
+
+      command = ["/gobetween"]
+      args = ["-c", "/Config/config.toml"]
+
+      env = {
+        TZ = "America/Winnipeg"
+      }
+
+      configs {
+        config_id   = docker_config.GoBetweenConfig.id
+        config_name = docker_config.GoBetweenConfig.name
+
+        file_name   = "/Config/config.toml"
+      }
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.publicSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    global = true
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    ports {
+      name           = "dnstest1"
+      protocol       = "udp"
+      target_port    = "15853"
+      published_port = "15853"
+      publish_mode   = "host"
+    }
+  }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"
