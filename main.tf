@@ -202,14 +202,14 @@ module "Docker" {
 #
 # Insights
 #
-module "Grafana" {
-  source = "./Insights/Grafana"
+# module "Grafana" {
+#   source = "./Insights/Grafana"
 
-  GrafanaUser = "admin"
-  GrafanaPassword = "admin"
+#   GrafanaUser = "admin"
+#   GrafanaPassword = "admin"
 
-  GrafanaHostname = "tasks.Grafana"
-}
+#   GrafanaHostname = "tasks.Grafana"
+# }
 
 #
 # Tinkerbell/Netboot
