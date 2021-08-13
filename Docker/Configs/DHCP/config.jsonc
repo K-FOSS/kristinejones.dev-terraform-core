@@ -18,6 +18,12 @@
       "re-detect": false
     },
 
+    "control-socket": {
+      "socket-type": "http",
+      "socket-url": "http://0.0.0.0:8000/"
+    },
+
+
     "lease-database": {
      "type": "postgresql",
      "name": "${DB_NAME}",
