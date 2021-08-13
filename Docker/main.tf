@@ -946,6 +946,11 @@ resource "docker_service" "Netbox" {
         DB_PASSWORD = "${var.StolonOpenNMSRole.password}"
 
         SECRET_KEY = "${random_password.NetBoxSecret.result}"
+
+        REMOTE_AUTH_ENABLED = "True"
+
+        REMOTE_AUTH_HEADER = "HTTP_X_TOKEN_USER_NAME"
+        REMOTE_AUTH_DEFAULT_PERMISSIONS = "None"
       }
     }
 
