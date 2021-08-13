@@ -1711,6 +1711,26 @@ resource "docker_config" "DHCPConfig" {
   }
 }
 
+resource "docker_config" "DHCPCTRLAgentConfig" {
+  name = "network-dhcpctrlagentconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/DHCP/keactrl.conf"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_config" "DHCPCTRLConfig" {
+  name = "network-dhcpctrlconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/DHCP/kea-ctrl-agent.jsonc"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
 resource "docker_service" "DHCP" {
   name = "DHCP"
 
@@ -1718,8 +1738,8 @@ resource "docker_service" "DHCP" {
     container_spec {
       image = "kristianfjones/kea:vps1-core"
 
-      command = ["/usr/sbin/kea-dhcp4"]
-      args = ["-c", "/config/config.json"]
+      command = ["/usr/sbin/keactrl"]
+      args = ["-c", "/config/keactrl.conf"]
 
       env = {
         TZ = "America/Winnipeg"
@@ -1729,7 +1749,21 @@ resource "docker_service" "DHCP" {
         config_id   = docker_config.DHCPConfig.id
         config_name = docker_config.DHCPConfig.name
 
-        file_name   = "/config/config.json"
+        file_name   = "/config/dhcp4.json"
+      }
+
+      configs {
+        config_id   = docker_config.DHCPCTRLAgentConfig.id
+        config_name = docker_config.DHCPCTRLAgentConfig.name
+
+        file_name   = "/config/keactrl.conf"
+      }
+
+      configs {
+        config_id   = docker_config.DHCPCTRLConfig.id
+        config_name = docker_config.DHCPCTRLConfig.name
+
+        file_name   = "/config/kea-ctrl-agent.json"
       }
 
       mounts {
