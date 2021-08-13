@@ -1739,7 +1739,7 @@ resource "docker_service" "DHCP" {
       image = "kristianfjones/kea:vps1-core"
 
       command = ["/usr/sbin/keactrl"]
-      args = ["-c", "/config/keactrl.conf"]
+      args = ["start", "-c", "/config/keactrl.conf"]
 
       env = {
         TZ = "America/Winnipeg"
