@@ -20,7 +20,7 @@
 
     "control-socket": {
       "socket-type": "http",
-      "socket-url": "http://0.0.0.0:8000/"
+      "socket-name": "http://0.0.0.0:8000/"
     },
 
 
