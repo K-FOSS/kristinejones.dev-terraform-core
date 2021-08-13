@@ -104,7 +104,10 @@ protocol = "udp"
     "1.1.1.1:53",
     "1.0.0.1:53"
   ]
-  
+
+#
+# TFTP Server
+#
 [servers.tftp]
 bind = "0.0.0.0:69"
 protocol = "udp"
@@ -115,10 +118,7 @@ protocol = "udp"
   [servers.tftp.discovery]
   kind = "static"
   static_list = [
-    "8.8.8.8:53",
-    "8.8.4.4:53",
-    "1.1.1.1:53",
-    "1.0.0.1:53"
+    "tasks.TFTPd:8069"
   ]
 
 #

@@ -37,21 +37,67 @@ provider "docker" {
 #
 # Networks
 #
+
+#
+# Network for containers being served directly to the 
+# outside world without any filtering. Top level applications 
+# and sub proxies occupy this class and all ingress proxies 
+# and their sub levels
+#
+# Network Space: 172.30.200.0/22
+#
 data "docker_network" "publicSpineNet" {
   name = "publicSpineNet"
 }
 
-data "docker_network" "AAASpineNet" {
-  name = "AAASpineNet"
-}
-
+#
+# Network for containers with AAA although 
+# no logging/tracking/auditing, 
+# and no ingress filtering (Storage/VPN)
+#
+# Network Space: 172.30.204.0/22
+#
 data "docker_network" "protectedSpineNet" {
   name = "protectedSpineNet"
 }
 
+#
+# Network for audited, strongly filtered, 
+# AAA and logged traffic (Storage, Insights, etc)
+#
+# Network Space: 172.30.208.0/22
+#
+data "docker_network" "protectedSpineNet" {
+  name = "protectedSpineNet"
+}
+
+#
+# Network for M2M Communication, also known as a backend network
+#
+# Network Space: 172.30.212.0/22
+#
+
 data "docker_network" "meshSpineNet" {
   name = "meshSpineNet"
 }
+
+#
+# Network for secured, audited, protected M2M communications
+#
+
+data "docker_network" "meshIntSpineNet" {
+  name = "meshIntSpineNet"
+}
+
+
+#
+# AAA Stack
+#
+
+
+
+
+
 
 #
 # Terraform Managed Networks
@@ -72,6 +118,20 @@ resource "docker_network" "OpenNMSIntNetwork" {
 
     aux_address = {}
   }
+}
+
+#
+# AAA Stack
+#
+
+##
+# 
+# AAA Spiune Network
+#
+# Network Space: 172.30.225.128/25
+#
+data "docker_network" "AAASpineNet" {
+  name = "AAASpineNet"
 }
 
 #
@@ -664,6 +724,9 @@ resource "docker_service" "TFTPd" {
 
       user   = "1000"
 
+      #
+      # TODO: Get CHWON/CHMOD Volume/Init
+      #
       mounts {
         target    = "/data"
         source    = var.TFTPBucket.bucket
@@ -683,6 +746,8 @@ resource "docker_service" "TFTPd" {
 
     force_update = 0
     runtime      = "container"
+
+    networks     = [data.docker_network.meshIntSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1529,7 +1594,7 @@ resource "docker_service" "GoBetween" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.publicSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.meshIntSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1577,13 +1642,13 @@ resource "docker_service" "GoBetween" {
     #
     # TODO: ReAdd TFTP
     #
-    # ports {
-    #   name           = "tftp"
-    #   protocol       = "udp"
-    #   target_port    = "8069"
-    #   published_port = "69"
-    #   publish_mode   = "ingress"
-    # }
+    ports {
+      name           = "tftp"
+      protocol       = "udp"
+      target_port    = "69"
+      published_port = "69"
+      publish_mode   = "ingress"
+    }
   }
 }
 
