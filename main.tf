@@ -187,6 +187,12 @@ module "Docker" {
   StolonDHCPDB = module.Database.DHCPDB
 
   #
+  # ISC Stork
+  #
+  StolonStorkRole = module.Database.StorkRole
+  StolonStorkDB = module.Database.StorkDB
+
+  #
   # NetBox
   #
   StolonNetboxRole = module.Database.NetboxRole

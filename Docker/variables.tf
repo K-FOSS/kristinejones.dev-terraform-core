@@ -101,6 +101,18 @@ variable "StolonDHCPDB" {
 }
 
 #
+# ISC Stork
+# 
+
+variable "StolonStorkRole" {
+
+}
+
+variable "StolonStorkDB" {
+  
+}
+
+#
 # NetBox
 #
 variable "StolonNetboxRole" {

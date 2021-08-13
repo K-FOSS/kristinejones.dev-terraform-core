@@ -55,6 +55,17 @@ output "DHCPDB" {
 }
 
 #
+# ISC Stork
+#
+output "StorkRole" {
+  value = postgresql_role.StorkUser
+}
+
+output "StorkDB" {
+  value = postgresql_database.StorkDB
+}
+
+#
 # NetBox
 #
 

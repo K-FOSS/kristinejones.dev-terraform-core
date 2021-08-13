@@ -1668,8 +1668,23 @@ resource "docker_service" "OpenNMS" {
 }
 
 #
-# ISC Network Infra
+# Network Stack
+#
+# Network Space: 172.30.240.0/23
 # 
+
+#
+# Network Stack Spine Network
+#
+# Network Space: 172.30.241.128/25
+#
+data "docker_network" "networkSpineNet" {
+  name = "networkSpineNet"
+}
+
+#
+# ISC Networking
+#
 
 #
 # Kea DHCP
@@ -1749,6 +1764,193 @@ resource "docker_service" "DHCP" {
   mode {
     replicated {
       replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+#
+# ISC Stork
+#
+
+resource "docker_service" "StorkServer" {
+  name = "StorkServer"
+
+  task_spec {
+    container_spec {
+      image = "registry.gitlab.isc.org/isc-projects/stork/server:latest"
+
+      #
+      # TODO: Finetune this
+      #
+      # command = ["/usr/sbin/kea-dhcp4"]
+      # args = ["-c", "/config/config.json"]
+
+      env = {
+        #
+        # Stork Database
+        #
+        STORK_DATABASE_HOST = "tasks.StolonProxy"
+        STORK_DATABASE_PORT = "5432"
+
+        STORK_DATABASE_NAME = "${var.StolonStorkDB.name}"
+
+        STORK_DATABASE_USER_NAME = "${var.StolonStorkRole.name}"
+        STORK_DATABASE_PASSWORD = "${var.StolonStorkRole.password}"
+
+        #
+        # MISC
+        #
+        TZ = "America/Winnipeg"
+      }
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    #
+    # TODO: Scale/Replicate
+    #
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+resource "docker_service" "StorkUI" {
+  name = "StorkUI"
+
+  task_spec {
+    container_spec {
+      image = "registry.gitlab.isc.org/isc-projects/stork/webui:latest"
+
+      #
+      # TODO: Finetune this
+      #
+      # command = ["/usr/sbin/kea-dhcp4"]
+      # args = ["-c", "/config/config.json"]
+
+      env = {
+        API_HOST = "tasks.StorkServer"
+        API_PORT = "8080"
+
+
+        #
+        # MISC
+        #
+        TZ = "America/Winnipeg"
+      }
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.networkSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    #
+    # TODO: Scale/Replicate
+    #
+    replicated {
+      replicas = 1
     }
   }
 
