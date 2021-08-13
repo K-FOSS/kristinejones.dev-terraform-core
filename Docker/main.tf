@@ -81,13 +81,6 @@ data "docker_network" "meshSpineNet" {
   name = "meshSpineNet"
 }
 
-#
-# Network for secured, audited, protected M2M communications
-#
-
-data "docker_network" "meshIntSpineNet" {
-  name = "meshIntSpineNet"
-}
 
 
 #
@@ -119,6 +112,31 @@ resource "docker_network" "OpenNMSIntNetwork" {
     aux_address = {}
   }
 }
+
+#
+# Network for secured, audited, protected M2M communications
+#
+# Network Space: 172.30.216.0/21
+#
+
+resource "docker_network" "meshIntSpineNet" {
+  name = "meshIntSpineNet"
+
+  attachable = true
+  
+  driver = "overlay"
+
+  internal = false
+
+  ipam_config {
+    subnet = "172.30.216.0/21"
+
+    gateway = "172.30.216.1"
+
+    aux_address = {}
+  }
+}
+
 
 #
 # AAA Stack
@@ -747,7 +765,7 @@ resource "docker_service" "TFTPd" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.meshIntSpineNet.id]
+    networks     = [docker_network.meshIntSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1594,7 +1612,7 @@ resource "docker_service" "GoBetween" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.meshIntSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
 
     log_driver {
       name = "loki"
