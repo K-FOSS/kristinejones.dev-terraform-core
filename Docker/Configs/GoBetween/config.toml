@@ -90,7 +90,7 @@ backend_connection_timeout = "0" # Backend connection timeout (ignored in udp)
 # ---------- udp example ----------- #
 
 [servers.dnstest]
-bind = "localhost:15853"
+bind = "0.0.0.0:15853"
 protocol = "udp"
 
   [servers.dnstest.udp]
