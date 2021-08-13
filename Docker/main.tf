@@ -312,7 +312,7 @@ resource "docker_service" "Grafana" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [docker_network.meshIntSpineNet.id, data.docker_network.insightsSpineNet.id]
+    networks     = [docker_network.meshIntSpineNet.id, data.docker_network.meshSpineNet.id, data.docker_network.insightsSpineNet.id]
 
     log_driver {
       name = "loki"
