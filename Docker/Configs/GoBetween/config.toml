@@ -93,10 +93,10 @@ backend_connection_timeout = "0" # Backend connection timeout (ignored in udp)
 bind = "localhost:15853"
 protocol = "udp"
 
-  [servers.udpsample.udp]
+  [servers.dnstest.udp]
   max_responses = 1
 
-  [servers.udpsample.discovery]
+  [servers.dnstest.discovery]
   kind = "static"
   static_list = [
     "8.8.8.8:53",
