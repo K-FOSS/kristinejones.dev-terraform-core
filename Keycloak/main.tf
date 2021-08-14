@@ -40,5 +40,8 @@ provider "keycloak" {
 module "kjdev-realm" {
   source = "./Realms/KJDev"
   
-  firstRun = true
+  #
+  # TODO: Find more seamless way of detecting this
+  #
+  firstRun = false
 }
