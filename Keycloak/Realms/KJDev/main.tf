@@ -87,12 +87,20 @@ module "FIDO2-Flow" {
   source = "./Authentication/Flows/FIDO2"
 
   realmID = "${keycloak_realm.kjdev.id}"
+
+  depends_on = [
+    keycloak_realm.kjdev.realm
+  ]
 }
 
 module "OpenLDAP" {
   source = "./UserFederation/OpenLDAP"
 
   realmID = "${keycloak_realm.kjdev.id}"
+  
+  depends_on = [
+    keycloak_realm.kjdev.realm
+  ]
 }
 
 module "MinioClient" {
@@ -100,7 +108,15 @@ module "MinioClient" {
 
   realmID = "${keycloak_realm.kjdev.id}"
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+
+  depends_on = [
+    keycloak_realm.kjdev.realm
+  ]
 }
+
+#
+# Hashicorp
+#
 
 module "CoreVaultClient" {
   source = "./Clients/CoreVault"
@@ -110,6 +126,10 @@ module "CoreVaultClient" {
   #
   realmName = "${keycloak_realm.kjdev.realm}"
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+
+  depends_on = [
+    keycloak_realm.kjdev.realm
+  ]
 }
 
 module "VaultClient" {
@@ -117,4 +137,8 @@ module "VaultClient" {
 
   realmName = "${keycloak_realm.kjdev.realm}"
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+
+  depends_on = [
+    keycloak_realm.kjdev.realm
+  ]
 }
