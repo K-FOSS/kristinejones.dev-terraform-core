@@ -101,12 +101,6 @@ module "Keycloak" {
   keycloakHostname = "keycloak.kristianjones.dev"
   
   keycloakClientID = "Terraform"
-
-  KeycloakService = module.Docker
-
-  depends_on = [
-    module.Docker.KeycloakService
-  ]
 }
 
 #

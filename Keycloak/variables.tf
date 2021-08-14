@@ -28,10 +28,3 @@ variable "keycloakClientSecret" {
 
   default = ""
 }
-
-#
-# Docker Module
-#
-variable "DockerModule" {
-  
-}
