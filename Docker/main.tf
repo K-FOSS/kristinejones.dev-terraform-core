@@ -563,7 +563,6 @@ resource "docker_service" "Keycloak" {
         CACHE_OWNERS_COUNT = "3"
         CACHE_OWNERS_AUTH_SESSIONS_COUNT = "3"
 
-        JGROUPS_DISCOVERY_EXTERNAL_IP = "Keycloak{{.Task.Slot}}"
         JGROUPS_DISCOVERY_PROTOCOL = "JDBC_PING"
         JGROUPS_DISCOVERY_PROPERTIES = "datasource_jndi_name=java:jboss/datasources/KeycloakDS"
 
