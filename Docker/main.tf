@@ -588,6 +588,15 @@ resource "docker_service" "Keycloak" {
       #   }
       # }
 
+      healthcheck {
+        test     = ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/master"]
+        interval = "5s"
+        timeout  = "2s"
+        retries  = 4
+
+        start_period = "2m"
+      }
+
       # read_only = true
 
       mounts {
@@ -741,14 +750,14 @@ resource "docker_service" "Keycloak" {
   #
   # TODO: Finetune this
   # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+  update_config {
+    parallelism       = 1
+    delay             = "1m"
+    failure_action    = "pause"
+    monitor           = "45s"
+    max_failure_ratio = "0.2"
+    order             = "start-first"
+  }
 
   # rollback_config {
   #   parallelism       = 1
