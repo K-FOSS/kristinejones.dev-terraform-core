@@ -195,20 +195,20 @@ resource "vault_identity_group_alias" "management_group_alias" {
 # Postgres Dynamic Database Credentials
 #
 
-resource "vault_mount" "db" {
-  path = "postgres"
-  type = "database"
-}
+# resource "vault_mount" "db" {
+#   path = "postgres"
+#   type = "database"
+# }
 
-resource "vault_database_secret_backend_connection" "postgres" {
-  backend       = vault_mount.db.path
-  name          = "postgres"
-  allowed_roles = ["${vault_identity_oidc_role.VaultManagementRole.name}"]
+# resource "vault_database_secret_backend_connection" "postgres" {
+#   backend       = vault_mount.db.path
+#   name          = "postgres"
+#   allowed_roles = ["${vault_identity_oidc_role.VaultManagementRole.name}"]
 
-  postgresql {
-    connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres?sslmode=disable"
-  }
-}
+#   postgresql {
+#     connection_url = "postgres://${var.StolonRole.name}:${var.StolonRole.password}@tasks.HashicorpWeb:5432/postgres?sslmode=disable"
+#   }
+# }
 
 #
 # Vault SSH
