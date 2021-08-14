@@ -11,5 +11,5 @@ output "KeycloakService" {
 }
 
 output "GrafanaService" {
-  vaule = docker_service.Grafana
+  value = docker_service.Grafana
 }
