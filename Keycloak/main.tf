@@ -35,6 +35,10 @@ provider "keycloak" {
   client_id          = "${var.keycloakClientID}"
   client_secret      = data.vault_generic_secret.keycloakClient.data["CLIENT_SECRET"]
   url                = "${var.keycloakProtocol}://${var.keycloakHostname}:${var.keycloakPort}"
+
+  depends_on = [
+    var.Docker.KeycloakService
+  ]
 }
 
 module "kjdev-realm" {
