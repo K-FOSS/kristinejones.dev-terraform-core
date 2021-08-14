@@ -30,11 +30,11 @@ resource "vault_generic_secret" "TerraformTest" {
 #
 # This resoucre depends on the variable provided by the Domains module, which depends on the Vault Mount, hopefully this will automatically determine dependencies.
 #
-resource "vault_generic_secret" "KJDevDNSSec" {
-  path = "${vault_mount.Terraform.path}/KJDevDNSSEC"
+# resource "vault_generic_secret" "KJDevDNSSec" {
+#   path = "${vault_mount.Terraform.path}/KJDevDNSSEC"
 
-  data_json = jsonencode(var.KJDevDNSSec)
-}
+#   data_json = jsonencode(var.KJDevDNSSec)
+# }
 
 #
 # OpenID

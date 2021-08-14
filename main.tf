@@ -75,18 +75,18 @@ terraform {
 # CloudFlare
 # 
 
-data "vault_generic_secret" "CF" {
-  path = "${module.Vault.TFMount.path}/CF"
-}
+# data "vault_generic_secret" "CF" {
+#   path = "${module.Vault.TFMount.path}/CF"
+# }
 
 
-module "KJDevDomain" {
-  source = "./Core/Domains"
+# module "KJDevDomain" {
+#   source = "./Core/Domains"
 
-  domain = "kristianjones.dev"
+#   domain = "kristianjones.dev"
 
-  CFToken = data.vault_generic_secret.CF.data["TOKEN"]
-}
+#   CFToken = data.vault_generic_secret.CF.data["TOKEN"]
+# }
 
 #
 # AAA
@@ -260,5 +260,5 @@ module "Vault" {
   #
   # DNSSec
   #
-  KJDevDNSSec = module.KJDevDomain.DNSSec
+  #KJDevDNSSec = module.KJDevDomain.DNSSec
 }
