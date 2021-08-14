@@ -186,7 +186,7 @@ resource "vault_identity_group" "VaultManagementGroup" {
 }
 
 resource "vault_identity_group_alias" "management_group_alias" {
-  name           = "management"
+  name           = var.KeycloakModule.KJDevRealm.VaultClientModule.ManagementRole.name
   mount_accessor = vault_jwt_auth_backend.keycloak.accessor
   canonical_id   = vault_identity_group.VaultManagementGroup.id
 }
