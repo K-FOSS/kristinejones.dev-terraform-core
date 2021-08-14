@@ -55,4 +55,4 @@ export JGROUPS_DISCOVERY_EXTERNAL_IP="$(hostname --ip-address | grep -oE '172.30
 
 echo "Discovery Extern = $JGROUPS_DISCOVERY_EXTERNAL_IP"
 
-exec /opt/jboss/tools/docker-entrypoint.sh -b=0.0.0.0 -Dkeycloak.profile.feature.account2=enabled -Dkeycloak.profile.feature.account_api=enabled -Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true
+exec /opt/jboss/tools/docker-entrypoint.sh -b=0.0.0.0 -Dkeycloak.profile.feature.account2=enabled -Dkeycloak.profile.feature.account_api=enabled -Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled
