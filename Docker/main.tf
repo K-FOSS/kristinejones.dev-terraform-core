@@ -496,7 +496,7 @@ resource "docker_service" "Keycloak" {
 
   task_spec {
     container_spec {
-      image = "ivanfranchin/keycloak-clustered:latest"
+      image = "quay.io/keycloak/keycloak:latest"
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
