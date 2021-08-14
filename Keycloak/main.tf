@@ -40,5 +40,5 @@ provider "keycloak" {
 module "kjdev-realm" {
   source = "./Realms/KJDev"
   
-  firstRun = false
+  firstRun = true
 }
