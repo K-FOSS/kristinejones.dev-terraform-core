@@ -211,14 +211,16 @@ module "Docker" {
 module "Grafana" {
   source = "./Insights/Grafana"
 
+  #
+  # Grafana Auth
+  #
   GrafanaUser = "admin"
   GrafanaPassword = "admin"
 
-  GrafanaHostname = "tasks.Grafana"
-
-  depends_on = [
-    module.Docker.GrafanaService
-  ]
+  #
+  # Connection
+  #
+  GrafanaHostname = "tasks.${module.Docker.GrafanaService.name}"
 }
 
 #
