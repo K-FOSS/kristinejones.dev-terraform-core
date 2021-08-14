@@ -490,6 +490,21 @@ resource "docker_config" "KeycloakRADIUSConfig" {
   }
 }
 
+#
+# JDBC CLI
+#
+
+resource "docker_config" "KeycloakJDBCPingCLI" {
+  name = "keycloak-jdbcpingcli-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/Keycloak/CLI/JDBC_PING.cli"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+
 
 resource "docker_service" "Keycloak" {
   name = "AAA-Keycloak"
@@ -672,6 +687,18 @@ resource "docker_service" "Keycloak" {
         config_name = docker_config.KeycloakRADIUSCLI.name
 
         file_name   = "/opt/radius/cli/radius.cli"
+        file_uid = "1000"
+        file_mode = 0777
+      }
+
+      # 
+      # JBDC CLI
+      # 
+      configs {
+        config_id   = docker_config.KeycloakJDBCPingCLI.id
+        config_name = docker_config.KeycloakJDBCPingCLI.name
+
+        file_name   = "/opt/jboss/tools/cli/jgroups/discovery/JDBC_PING.cli"
         file_uid = "1000"
         file_mode = 0777
       }
