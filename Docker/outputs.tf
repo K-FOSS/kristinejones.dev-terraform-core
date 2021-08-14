@@ -9,3 +9,7 @@
 output "KeycloakService" {
   value = docker_service.Keycloak
 }
+
+output "GrafanaService" {
+  vaule = docker_service.Grafana
+}
