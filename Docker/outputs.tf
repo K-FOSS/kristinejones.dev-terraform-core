@@ -5,3 +5,7 @@
 # output "PostgresDatabaseService" {
 #   value = docker_service.postgresDatabase
 # }
+
+output "KeycloakService" {
+  value = docker_service.Keycloak
+}
