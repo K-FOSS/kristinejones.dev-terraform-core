@@ -53,6 +53,6 @@ echo "Install HA..."
 
 export JGROUPS_DISCOVERY_EXTERNAL_IP="$(hostname --ip-address | grep -oE '172.30.225.([0-9]{1,3})')"
 
-echo "Discovery Extern = ${JGROUPS_DISCOVERY_EXTERNAL_IP}"
+echo "Discovery Extern = $JGROUPS_DISCOVERY_EXTERNAL_IP"
 
 exec /opt/jboss/tools/docker-entrypoint.sh -b=0.0.0.0 -Dkeycloak.profile.feature.account2=enabled -Dkeycloak.profile.feature.account_api=enabled -Dkeycloak.profile.feature.scripts=enabled
