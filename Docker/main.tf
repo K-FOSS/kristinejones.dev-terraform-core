@@ -496,7 +496,7 @@ resource "docker_service" "Keycloak" {
 
   task_spec {
     container_spec {
-      image = "quay.io/keycloak/keycloak:latest"
+      image = "ivanfranchin/keycloak-clustered:latest"
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -508,7 +508,7 @@ resource "docker_service" "Keycloak" {
 
       command = ["/entry.sh"]
 
-      hostname = "Keycloak"
+      hostname = "Keycloak{{.Task.Slot}}"
 
       env = {
         PROXY_ADDRESS_FORWARDING = "TRUE"
@@ -547,8 +547,10 @@ resource "docker_service" "Keycloak" {
 
         CACHE_OWNERS_COUNT = "3"
         CACHE_OWNERS_AUTH_SESSIONS_COUNT = "3"
-        JGROUPS_DISCOVERY_PROTOCOL = "dns.DNS_PING"
-        JGROUPS_DISCOVERY_PROPERTIES = "dns_query=tasks.AAA-Keycloak"
+
+        JGROUPS_DISCOVERY_EXTERNAL_IP = "Keycloak{{.Task.Slot}}"
+        JGROUPS_DISCOVERY_PROTOCOL = "JDBC_PING"
+        JGROUPS_DISCOVERY_PROPERTIES = "datasource_jndi_name=java:jboss/datasources/KeycloakDS"
 
         #
         # Misc
@@ -694,6 +696,14 @@ resource "docker_service" "Keycloak" {
     force_update = 1
     runtime      = "container"
     networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id, data.docker_network.meshSpineNet.id]
+  
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
   }
 
   mode {
