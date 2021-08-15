@@ -3,6 +3,7 @@
   "authPort": 1812,
   "accountPort": 1813,
   "useUdpRadius": true,
+  "numberThreads": 8,
   "radsec": {
     "privateKey": "/config/private.key",
     "certificate": "public.crt",

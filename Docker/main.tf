@@ -433,7 +433,7 @@ resource "docker_config" "KeycloakEntrypointScript" {
   data = base64encode(
     templatefile("${path.module}/Configs/Keycloak/Scripts/Entrypoint.sh",
       {
-        VERSION = "1.3.10"
+        VERSION = "1.3.11"
       }
     )
   )
