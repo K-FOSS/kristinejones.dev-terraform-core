@@ -135,6 +135,39 @@ protocol = "udp"
   ]
 
 #
+# Keycloak
+#
+[servers.radiusauth]
+bind = "0.0.0.0:1812"
+protocol = "udp"
+
+  [servers.radiusauth.udp]
+  max_requests = 30
+
+  [servers.radiusauth.discovery]
+  kind = "static"
+  static_list = [
+    "Keycloak1:1812",
+    "Keycloak2:1812",
+    "Keycloak3:1812"
+  ]
+
+[servers.radiusacct]
+bind = "0.0.0.0:1813"
+protocol = "udp"
+
+  [servers.radiusacct.udp]
+  max_requests = 30
+
+  [servers.radiusacct.discovery]
+  kind = "static"
+  static_list = [
+    "Keycloak1:1813",
+    "Keycloak2:1813",
+    "Keycloak3:1813"
+  ]
+
+#
 # -------------------- example ----------------------------- #
 
 ##

@@ -2259,6 +2259,25 @@ resource "docker_service" "GoBetween" {
       published_port = "68"
       publish_mode   = "ingress"
     }
+
+    #
+    # RADIUS
+    #
+    ports {
+      name           = "radius-auth"
+      protocol       = "udp"
+      target_port    = "1812"
+      published_port = "1812"
+      publish_mode   = "ingress"
+    }
+
+    ports {
+      name           = "radius-acct"
+      protocol       = "udp"
+      target_port    = "1813"
+      published_port = "1813"
+      publish_mode   = "ingress"
+    }
   }
 }
 
