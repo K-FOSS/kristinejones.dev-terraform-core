@@ -319,7 +319,7 @@
             "output": "stdout"
           }
         ],
-        "severity": "info"
+        "severity": "warn"
       }
     ]
   } // end of Dhcp4
