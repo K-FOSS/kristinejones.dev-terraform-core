@@ -756,7 +756,7 @@ resource "docker_service" "Keycloak" {
     failure_action    = "pause"
     monitor           = "45s"
     max_failure_ratio = "0.2"
-    order             = "start-first"
+    order             = "stop-first"
   }
 
   # rollback_config {
