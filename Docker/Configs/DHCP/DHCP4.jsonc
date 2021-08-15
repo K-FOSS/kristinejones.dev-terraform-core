@@ -8,34 +8,49 @@
 {
   "Dhcp4": {
     "authoritative": false,
-
     // As with any other configuration, you need to tell Kea the interface
     // names, so it would listen to incoming traffic.
     "interfaces-config": {
-      "interfaces": ["*"],
+      "interfaces": [
+        "*"
+      ],
       "dhcp-socket-type": "udp",
       "outbound-interface": "use-routing",
       "re-detect": false
     },
-
+    "hooks-libraries": [
+      {
+        "library": "/usr/lib/kea/hooks/libdhcp_lease_cmds.so",
+        "parameters": {}
+      },
+      {
+        "library": "/usr/lib/kea/hooks/libdhcp_stat_cmds.so",
+        "parameters": {}
+      }
+    ],
     "control-socket": {
       "socket-type": "unix",
       "socket-name": "/tmp/kea4-ctrl-socket"
     },
-
     "lease-database": {
-     "type": "postgresql",
-     "name": "${DB_NAME}",
-     "host": "${DB_HOST}",
-     "user": "${DB_USERNAME}",
-     "password": "${DB_PASSWORD}",
-     "reconnect-wait-time": 3000, // expressed in ms
-     "max-reconnect-tries": 3,
-     "on-fail": "stop-retry-exit",
-     "connect-timeout": 3
+      "type": "postgresql",
+      "name": "${DB_NAME}",
+      "host": "${DB_HOST}",
+      "user": "${DB_USERNAME}",
+      "password": "${DB_PASSWORD}",
+      "reconnect-wait-time": 3000, // expressed in ms
+      "max-reconnect-tries": 3,
+      "on-fail": "stop-retry-exit",
+      "connect-timeout": 3
     },
-
-
+    "expired-leases-processing": {
+      "reclaim-timer-wait-time": 10,
+      "flush-reclaimed-timer-wait-time": 25,
+      "hold-reclaimed-time": 3600,
+      "max-reclaim-leases": 100,
+      "max-reclaim-time": 250,
+      "unwarned-reclaim-cycles": 5
+    },
     "option-def": [
       {
         // We define a short name, so the option can be referenced by name.
@@ -47,7 +62,6 @@
         "type": "ipv4-address"
       }
     ],
-
     "client-classes": [
       {
         "name": "ubnt",
@@ -77,7 +91,6 @@
         "option-data": []
       }
     ],
-
     // The shared networks definition starts here. shared-networks can
     // contain a list of shared networks. There are many parameters
     // that can be specified here, so this example may be overwhelming
@@ -94,11 +107,9 @@
       {
         // Shared network level authoritative flag.
         "authoritative": false,
-
         // Name of the shared network. It may be an arbitrary string
         // and it must be unique among all shared networks.
         "name": "spineoffice",
-
         // You may specify interface name if the shared network is
         // reachable directly from the server.
         // You can specify many parameters that are allowed in subnet scope
@@ -108,7 +119,6 @@
         "match-client-id": false,
         "option-data": [],
         "rebind-timer": 10800,
-
         // If all the traffic coming from that shared network is reachable
         // via relay and that relay always use the same IP address, you
         // can specify that relay address here. Since this example shows
@@ -118,7 +128,6 @@
         "relay": {
           "ip-address": "206.188.106.236"
         },
-
         // Timer values can be overridden here.
         "renew-timer": 1800,
         // "reservation-mode": "all",
@@ -137,7 +146,6 @@
         // It is replaced by the "reservations-global",
         // "reservations-in-subnet" and "reservations-out-of-pool"
         // parameters.
-
         "store-extended-info": true,
         "subnet4": [
           {
@@ -186,7 +194,6 @@
                 "hw-address": "dc:a6:32:2e:bd:79",
                 "ip-address": "172.16.100.31"
               },
-
               // Randoms
               {
                 "hw-address": "3c:8d:20:3d:a1:9b",
@@ -220,7 +227,6 @@
                 "hw-address": "2c:26:17:d7:cb:b5",
                 "ip-address": "172.16.100.48"
               },
-
               // Important
               {
                 "hw-address": "3a:05:90:29:77:5d",
@@ -288,10 +294,11 @@
               {
                 "hw-address": "b8:ae:ed:79:5e:1d",
                 "ip-address": "172.16.100.250",
-                "client-classes": ["vmhost-class1"]
+                "client-classes": [
+                  "vmhost-class1"
+                ]
               }
             ],
-
             "renew-timer": 1800,
             "subnet": "172.16.100.0/24",
             "valid-lifetime": 3600
@@ -300,9 +307,7 @@
         "valid-lifetime": 3600
       }
     ], // end of shared-networks
-
     "server-hostname": "vps1-raw.kristianjones.dev",
-
     // The following configures logging. It assumes that messages with at
     // least informational level (info, warn, error and fatal) should be
     // logged to stdout.

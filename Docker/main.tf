@@ -1754,7 +1754,28 @@ data "docker_network" "networkSpineNet" {
 resource "docker_config" "DHCPConfig" {
   name = "network-dhcpcore-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.module}/Configs/DHCP/config.jsonc",
+    templatefile("${path.module}/Configs/DHCP/DHCP4.jsonc",
+      {
+        DB_HOST = "tasks.StolonProxy",
+
+        DB_NAME = "${var.StolonDHCPDB.name}",
+
+        DB_USERNAME = "${var.StolonDHCPRole.name}",
+        DB_PASSWORD = "${var.StolonDHCPRole.password}"
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_config" "DHCP6Config" {
+  name = "network-dhcp6-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/DHCP/DHCP6.jsonc",
       {
         DB_HOST = "tasks.StolonProxy",
 
@@ -1828,7 +1849,14 @@ resource "docker_service" "DHCP" {
         config_id   = docker_config.DHCPConfig.id
         config_name = docker_config.DHCPConfig.name
 
-        file_name   = "/config/dhcp4.json"
+        file_name   = "/config/DHCP4.json"
+      }
+
+      configs {
+        config_id   = docker_config.DHCP6Config.id
+        config_name = docker_config.DHCP6Config.name
+
+        file_name   = "/config/DHCP6.json"
       }
 
       configs {
