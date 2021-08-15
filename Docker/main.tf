@@ -588,14 +588,14 @@ resource "docker_service" "Keycloak" {
       #   }
       # }
 
-      healthcheck {
-        test     = ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/master"]
-        interval = "5s"
-        timeout  = "2s"
-        retries  = 4
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/master"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
 
-        start_period = "2m"
-      }
+      #   start_period = "2m"
+      # }
 
       # read_only = true
 
