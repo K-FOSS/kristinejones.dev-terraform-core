@@ -477,7 +477,7 @@ resource "random_password" "RADIUSSecret" {
 resource "docker_config" "KeycloakRADIUSConfig" {
   name = "keycloak-radiusconfig-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.module}/Configs/Keycloak/Configs/radius.config",
+    templatefile("${path.module}/Configs/Keycloak/Configs/radius.json",
       {
         SECRET = "${random_password.RADIUSSecret.result}"
       }

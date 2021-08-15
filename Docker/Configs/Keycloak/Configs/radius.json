@@ -10,6 +10,6 @@
   },
   "coa": {
     "port": 3799,
-    "useCoA": false
+    "useCoA": true
   }
 }
