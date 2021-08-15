@@ -1,4 +1,8 @@
 #!/bin/sh
+echo "HelloWorld"
+
+mkdir -p /var/lib/stork-agent/certs
+
 /usr/sbin/stork-agent register --server-url http://StorkServer:8080  --agent-address $HOSTNAME:8080
 
 
