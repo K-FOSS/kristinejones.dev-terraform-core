@@ -1813,6 +1813,8 @@ resource "docker_service" "DHCP" {
 
       args = []
 
+      hostname = "DHCP{{.Task.Slot}}"
+
       env = {
         STORK_AGENT_SERVER_TOKEN = "IRH8K2w4e84bPXcU9guLL7CUHnQcHnEf"
 
