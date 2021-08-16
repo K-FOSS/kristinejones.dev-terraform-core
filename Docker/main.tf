@@ -2565,6 +2565,8 @@ resource "docker_service" "OpenProjectProxy" {
         APP_HOST = "tasks.OpenProjectApp"
 
         OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
+
+        SERVER_NAME = "openproject.kristianjones.dev"
       }
     }
 
