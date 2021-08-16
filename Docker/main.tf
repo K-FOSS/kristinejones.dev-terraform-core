@@ -2573,7 +2573,7 @@ resource "docker_service" "OpenProjectProxy" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id,  data.docker_network.protectedSpineNet.id]
 
     log_driver {
       name = "loki"
