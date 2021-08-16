@@ -2477,7 +2477,7 @@ resource "docker_service" "OpenProjectSeeder" {
       }
     }
 
-    restart_policy = {
+    restart_policy {
       condition    = "on-failure"
       delay        = "3s"
       max_attempts = 4
