@@ -2477,6 +2477,14 @@ resource "docker_service" "OpenProjectSeeder" {
       }
     }
 
+    restart_policy = {
+      condition    = "on-failure"
+      delay        = "3s"
+      max_attempts = 4
+      window       = "10s"
+    }
+
+
     force_update = 0
     runtime      = "container"
 
