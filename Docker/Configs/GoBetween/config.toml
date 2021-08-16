@@ -130,6 +130,7 @@ protocol = "udp"
 
   [servers.dhcp1.udp]
   max_requests  = 30
+  transparent = true
 
   [servers.dhcp1.discovery]
   kind = "static"
@@ -145,6 +146,7 @@ protocol = "udp"
 
   [servers.dhcp2.udp]
   max_requests  = 100
+  transparent = true
 
   [servers.dhcp2.discovery]
   kind = "static"
