@@ -2325,7 +2325,7 @@ resource "docker_service" "OpenProjectApp" {
         #
         # TODO: LDAP Sync
         #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Name"
+        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
@@ -2381,7 +2381,7 @@ resource "docker_service" "OpenProjectWorker" {
         #
         # TODO: LDAP Sync
         #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Name"
+        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
@@ -2437,7 +2437,7 @@ resource "docker_service" "OpenProjectCRON" {
         #
         # TODO: LDAP Sync
         #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Name"
+        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
@@ -2487,7 +2487,7 @@ resource "docker_service" "OpenProjectSeeder" {
         #
         # TODO: LDAP Sync
         #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Name"
+        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
 
         RAILS_MIN_THREADS = "4"
         RAILS_MAX_THREADS = "16"
@@ -2591,7 +2591,7 @@ resource "docker_service" "OpenProjectProxy" {
         #
         # TODO: LDAP Sync
         #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Name"
+        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
