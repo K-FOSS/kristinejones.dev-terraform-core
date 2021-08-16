@@ -113,7 +113,7 @@ bind = "0.0.0.0:69"
 protocol = "udp"
 
   [servers.tftp.udp]
-  max_requests = 30
+  transparent = true
 
   [servers.tftp.discovery]
   kind = "static"
@@ -126,12 +126,14 @@ bind = "0.0.0.0:67"
 protocol = "udp"
 
   [servers.dhcp.udp]
-  max_requests = 30
+  transparent = true
 
   [servers.dhcp.discovery]
   kind = "static"
   static_list = [
-    "tasks.DHCP:67"
+    "DHCP1:67",
+    "DHCP2:67",
+    "DHCP3:67"
   ]
 
 #
@@ -142,7 +144,7 @@ bind = "0.0.0.0:1812"
 protocol = "udp"
 
   [servers.radiusauth.udp]
-  max_requests = 30
+  transparent = true
 
   [servers.radiusauth.discovery]
   kind = "static"
@@ -157,7 +159,7 @@ bind = "0.0.0.0:1813"
 protocol = "udp"
 
   [servers.radiusacct.udp]
-  max_requests = 30
+  transparent = true
 
   [servers.radiusacct.discovery]
   kind = "static"
