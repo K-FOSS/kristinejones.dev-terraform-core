@@ -769,7 +769,7 @@ resource "docker_service" "Keycloak" {
   # }
 
   endpoint_spec {
-    mode = "dnsrr"
+    mode = "vip"
 
 
     #
