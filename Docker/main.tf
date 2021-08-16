@@ -2321,11 +2321,6 @@ resource "docker_service" "OpenProjectApp" {
         USE_PUMA = "true"
 
         IMAP_ENABLED = "false"
-
-        #
-        # TODO: LDAP Sync
-        #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
@@ -2377,11 +2372,6 @@ resource "docker_service" "OpenProjectWorker" {
         USE_PUMA = "true"
 
         IMAP_ENABLED = "false"
-      
-        #
-        # TODO: LDAP Sync
-        #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
@@ -2433,11 +2423,6 @@ resource "docker_service" "OpenProjectCRON" {
         USE_PUMA = "true"
 
         IMAP_ENABLED = "false"
-
-        #
-        # TODO: LDAP Sync
-        #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
@@ -2483,11 +2468,6 @@ resource "docker_service" "OpenProjectSeeder" {
         RAILS_CACHE_STORE = "memcache"
         OPENPROJECT_CACHE__MEMCACHE__SERVER = "tasks.OpenProjectCache:11211"
         OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
-
-        #
-        # TODO: LDAP Sync
-        #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
 
         RAILS_MIN_THREADS = "4"
         RAILS_MAX_THREADS = "16"
@@ -2587,11 +2567,6 @@ resource "docker_service" "OpenProjectProxy" {
         OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
 
         SERVER_NAME = "openproject.kristianjones.dev"
-
-        #
-        # TODO: LDAP Sync
-        #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
