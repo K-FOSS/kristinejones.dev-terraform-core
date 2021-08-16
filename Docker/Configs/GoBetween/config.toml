@@ -10,9 +10,9 @@
 # Logging configuration
 #
 [logging]
-level = "info"    # "debug" | "info" | "warn" | "error"
+level = "debug"    # "debug" | "info" | "warn" | "error"
 output = "stdout" # "stdout" | "stderr" | "/path/to/gobetween.log"
-format = "text"   # (optional) "text" | "json"
+format = "json"   # (optional) "text" | "json"
 
 #
 # Pprof profiler configuration
@@ -41,7 +41,7 @@ cors = false    # cross-origin resource sharing
 # Metrics server configuration
 #
 [metrics]
-enabled = false # false | true
+enabled = true # false | true
 bind = ":9284"  # "host:port"
 
 #
@@ -124,17 +124,14 @@ protocol = "udp"
     "tasks.TFTPd:8069"
   ]
 
-[servers.dhcp]
+[servers.dhcp1]
 bind = "0.0.0.0:67"
 protocol = "udp"
 
-  [servers.dhcp.udp]
-  max_requests  = 100
-  max_responses = 100
+  [servers.dhcp1.udp]
+  max_requests  = 30
 
-  transparent = true
-
-  [servers.dhcp.discovery]
+  [servers.dhcp1.discovery]
   kind = "static"
   static_list = [
     "DHCP1:67",
@@ -142,42 +139,24 @@ protocol = "udp"
     "DHCP3:67"
   ]
 
+[servers.dhcp2]
+bind = "0.0.0.0:68"
+protocol = "udp"
+
+  [servers.dhcp2.udp]
+  max_requests  = 100
+
+  [servers.dhcp2.discovery]
+  kind = "static"
+  static_list = [
+    "DHCP1:68",
+    "DHCP2:68",
+    "DHCP3:68"
+  ]
+
 #
 # Keycloak
 #
-[servers.radiusauth]
-bind = "0.0.0.0:1812"
-protocol = "udp"
-
-  [servers.radiusauth.udp]
-  max_requests  = 100
-  max_responses = 100
-  transparent = true
-
-  [servers.radiusauth.discovery]
-  kind = "static"
-  static_list = [
-    "Keycloak1:1812",
-    "Keycloak2:1812",
-    "Keycloak3:1812"
-  ]
-
-[servers.radiusacct]
-bind = "0.0.0.0:1813"
-protocol = "udp"
-
-  [servers.radiusacct.udp]
-  max_requests  = 100
-  max_responses = 100
-  transparent = true
-
-  [servers.radiusacct.discovery]
-  kind = "static"
-  static_list = [
-    "Keycloak1:1813",
-    "Keycloak2:1813",
-    "Keycloak3:1813"
-  ]
 
 #
 # -------------------- example ----------------------------- #

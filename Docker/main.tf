@@ -2258,7 +2258,7 @@ resource "docker_service" "GoBetween" {
       protocol       = "udp"
       target_port    = "69"
       published_port = "69"
-      publish_mode   = "ingress"
+      publish_mode   = "host"
     }
 
     #
@@ -2269,7 +2269,7 @@ resource "docker_service" "GoBetween" {
       protocol       = "udp"
       target_port    = "67"
       published_port = "67"
-      publish_mode   = "ingress"
+      publish_mode   = "host"
     }
 
     ports {
@@ -2277,7 +2277,7 @@ resource "docker_service" "GoBetween" {
       protocol       = "udp"
       target_port    = "68"
       published_port = "68"
-      publish_mode   = "ingress"
+      publish_mode   = "host"
     }
   }
 }
@@ -2567,11 +2567,6 @@ resource "docker_service" "OpenProjectProxy" {
         OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
 
         SERVER_NAME = "openproject.kristianjones.dev"
-
-        #
-        # TODO: LDAP Sync
-        #
-        OPENPROJECT_AUTH__SOURCE__SSO_HEADER = "X-Token-User-Email"
       }
     }
 
