@@ -137,3 +137,15 @@ variable "StolonGrafanaRole" {
 variable "StolonGrafanaDB" {
   
 }
+
+#
+# OpenProject
+# 
+
+variable "StolonOpenProjectRole" {
+
+}
+
+variable "StolonOpenProjectDB" {
+  
+}

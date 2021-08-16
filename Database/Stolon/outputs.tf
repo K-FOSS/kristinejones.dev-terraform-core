@@ -92,3 +92,15 @@ output "GrafanaRole" {
 output "GrafanaDB" {
   value = postgresql_database.GrafanaDB
 }
+
+#
+# OpenProject
+#
+
+output "OpenProjectRole" {
+  value = postgresql_role.OpenProjectUser
+}
+
+output "OpenProjectDB" {
+  value = postgresql_database.OpenProjectDB
+}

@@ -203,6 +203,16 @@ module "Docker" {
   # 
   StolonGrafanaRole = module.Database.GrafanaRole
   StolonGrafanaDB = module.Database.GrafanaDB
+
+  #
+  # Business
+  #
+
+  #
+  # OpenProject
+  #
+  StolonOpenProjectRole = module.Database.OpenProjectRole
+  StolonOpenProjectDB = module.Database.OpenProjectDB
 }
 
 #

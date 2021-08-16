@@ -243,3 +243,26 @@ resource "postgresql_database" "GrafanaDB" {
 
   owner = postgresql_role.GrafanaUser.name
 }
+
+#
+# OpenProject
+#
+
+resource "random_password" "StolonOpenProjectPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "OpenProjectUser" {
+  name     = "openproject"
+
+  login    = true
+  password = random_password.StolonOpenProjectPassword.result
+}
+
+resource "postgresql_database" "OpenProjectDB" {
+  name     = "openproject"
+
+  owner = postgresql_role.OpenProjectUser.name
+}

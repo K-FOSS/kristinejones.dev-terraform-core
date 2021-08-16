@@ -2289,12 +2289,301 @@ resource "docker_service" "GoBetween" {
 #
 # ERPNext
 #
-
-#
 # TODO: Deploy ERPNext once Postgress Support rolls out
 #
 # Tracking https://github.com/frappe/erpnext/issues/24389
 #
+
+#
+# OpenProject
+#
+
+resource "docker_service" "OpenProjectApp" {
+  name = "OpenProjectApp"
+
+  task_spec {
+    container_spec {
+      image = "openproject/community:11"
+
+      hostname = "OpenProjectApp"
+
+      args = ["./docker/prod/web"]
+
+      env = {
+        DATABASE_URL = "postgres://${var.StolonOpenProjectRole.name}:${var.StolonOpenProjectRole.password}@tasks.StolonProxy/${var.StolonOpenProjectDB.name}?pool=20&encoding=unicode&reconnect=true"
+
+        RAILS_CACHE_STORE = "memcache"
+        OPENPROJECT_CACHE__MEMCACHE__SERVER = "tasks.OpenProjectCache:11211"
+        OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
+
+        RAILS_MIN_THREADS = "4"
+        RAILS_MAX_THREADS = "16"
+        USE_PUMA = "true"
+
+        IMAP_ENABLED = "false"
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+resource "docker_service" "OpenProjectWorker" {
+  name = "OpenProjectWorker"
+
+  task_spec {
+    container_spec {
+      image = "openproject/community:11"
+
+      hostname = "OpenProjectWorker"
+
+      args = ["./docker/prod/worker"]
+
+      env = {
+        DATABASE_URL = "postgres://${var.StolonOpenProjectRole.name}:${var.StolonOpenProjectRole.password}@tasks.StolonProxy/${var.StolonOpenProjectDB.name}?pool=20&encoding=unicode&reconnect=true"
+
+        RAILS_CACHE_STORE = "memcache"
+        OPENPROJECT_CACHE__MEMCACHE__SERVER = "tasks.OpenProjectCache:11211"
+        OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
+
+        RAILS_MIN_THREADS = "4"
+        RAILS_MAX_THREADS = "16"
+        USE_PUMA = "true"
+
+        IMAP_ENABLED = "false"
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+resource "docker_service" "OpenProjectCRON" {
+  name = "OpenProjectCRON"
+
+  task_spec {
+    container_spec {
+      image = "openproject/community:11"
+
+      hostname = "OpenProjectCRON"
+
+      args = ["./docker/prod/cron"]
+
+      env = {
+        DATABASE_URL = "postgres://${var.StolonOpenProjectRole.name}:${var.StolonOpenProjectRole.password}@tasks.StolonProxy/${var.StolonOpenProjectDB.name}?pool=20&encoding=unicode&reconnect=true"
+
+        RAILS_CACHE_STORE = "memcache"
+        OPENPROJECT_CACHE__MEMCACHE__SERVER = "tasks.OpenProjectCache:11211"
+        OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
+
+        RAILS_MIN_THREADS = "4"
+        RAILS_MAX_THREADS = "16"
+        USE_PUMA = "true"
+
+        IMAP_ENABLED = "false"
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+resource "docker_service" "OpenProjectSeeder" {
+  name = "OpenProjectSeeder"
+
+  task_spec {
+    container_spec {
+      image = "openproject/community:11"
+
+      hostname = "OpenProjectSeeder"
+
+      args = ["./docker/prod/seeder"]
+
+      env = {
+        DATABASE_URL = "postgres://${var.StolonOpenProjectRole.name}:${var.StolonOpenProjectRole.password}@tasks.StolonProxy/${var.StolonOpenProjectDB.name}?pool=20&encoding=unicode&reconnect=true"
+
+        RAILS_CACHE_STORE = "memcache"
+        OPENPROJECT_CACHE__MEMCACHE__SERVER = "tasks.OpenProjectCache:11211"
+        OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
+
+        RAILS_MIN_THREADS = "4"
+        RAILS_MAX_THREADS = "16"
+        USE_PUMA = "true"
+
+        IMAP_ENABLED = "false"
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+
+resource "docker_service" "OpenProjectCache" {
+  name = "OpenProjectCache"
+
+  task_spec {
+    container_spec {
+      image = "memcached"
+    }
+
+    resources {
+      limits {
+        memory_bytes = 16777216
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+resource "docker_service" "OpenProjectProxy" {
+  name = "OpenProjectProxy"
+
+  task_spec {
+    container_spec {
+      image = "openproject/community:11"
+
+      hostname = "OpenProjectProxy"
+
+      args = ["./docker/prod/proxy"]
+
+      env = {
+        APP_HOST = "tasks.OpenProjectApp"
+
+        OPENPROJECT_RAILS__RELATIVE__URL__ROOT = ""
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
