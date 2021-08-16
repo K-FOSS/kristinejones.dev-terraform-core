@@ -249,9 +249,8 @@ resource "postgresql_database" "GrafanaDB" {
 #
 
 resource "random_password" "StolonOpenProjectPassword" {
-  length           = 16
-  special          = true
-  override_special = "_%@"
+  length           = 20
+  special          = false
 }
 
 resource "postgresql_role" "OpenProjectUser" {
