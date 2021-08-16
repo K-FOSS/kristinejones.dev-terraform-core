@@ -94,6 +94,7 @@ bind = "0.0.0.0:15853"
 protocol = "udp"
 
   [servers.dnstest.udp]
+  max_requests  = 0
   max_responses = 1
 
   [servers.dnstest.discovery]
