@@ -33,7 +33,7 @@ resource "random_password" "CaddySSOClientSecret" {
 
 
 resource "keycloak_openid_client" "CaddySSO" {
-  realm_id            = data.keycloak_realm.KJDev
+  realm_id            = data.keycloak_realm.KJDev.id
 
   #
   # Client Credentials
