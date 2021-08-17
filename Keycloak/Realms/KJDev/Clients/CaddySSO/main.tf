@@ -49,7 +49,8 @@ resource "keycloak_openid_client" "CaddySSO" {
   access_type         = "CONFIDENTIAL"
   valid_redirect_uris = [
     "https://auth.kristianjones.dev/auth/oauth2/generic",
-    "https://auth.kristianjones.dev/auth/oauth2/generic/authorization-code-callback"
+    "https://auth.kristianjones.dev/auth/oauth2/generic/authorization-code-callback",
+    "https://auth.kristianjones.dev/auth/oauth2/keycloak/*"
   ]
 
   login_theme = "keycloak"
