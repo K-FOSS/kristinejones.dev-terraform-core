@@ -43,5 +43,5 @@ module "kjdev-realm" {
   #
   # TODO: Find more seamless way of detecting this
   #
-  firstRun = false
+  firstRun = true
 }
