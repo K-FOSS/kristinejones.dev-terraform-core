@@ -28,7 +28,7 @@ terraform {
 }
 
 data "keycloak_realm" "KJDev" {
-  realm = "${var.realmName}"
+  realm = var.realmName
 }
 
 resource "random_password" "VaultClientSecret" {

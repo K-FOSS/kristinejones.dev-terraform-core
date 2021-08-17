@@ -12,21 +12,25 @@ terraform {
   }
 }
 
+data "keycloak_realm" "KJDev" {
+  realm = var.realmName
+}
+
 resource "keycloak_authentication_flow" "fido2-flow" {
-  realm_id = "${var.realmID}"
+  realm_id = data.keycloak_realm.KJDev.id
   alias    = "Browser-FIDO2"
 }
 
 resource "keycloak_authentication_execution" "webauthn-cookies" {
-  realm_id          = "${var.realmID}"
-  parent_flow_alias = "${keycloak_authentication_flow.fido2-flow.alias}"
+  realm_id          = data.keycloak_realm.KJDev.id
+  parent_flow_alias = keycloak_authentication_flow.fido2-flow.alias
   authenticator     = "auth-cookie"
   requirement       = "ALTERNATIVE"
 }
 
 resource "keycloak_authentication_subflow" "webauth-forms" {
-  realm_id          = "${var.realmID}"
-  parent_flow_alias = "${keycloak_authentication_flow.fido2-flow.alias}"
+  realm_id          = data.keycloak_realm.KJDev.id
+  parent_flow_alias = keycloak_authentication_flow.fido2-flow.alias
   alias             = "Forms"
   requirement       = "ALTERNATIVE"
   depends_on        = [
@@ -35,14 +39,14 @@ resource "keycloak_authentication_subflow" "webauth-forms" {
 }
 
 resource "keycloak_authentication_execution" "webauth-form-username" {
-  realm_id          = "${var.realmID}"
-  parent_flow_alias = "${keycloak_authentication_subflow.webauth-forms.alias}"
+  realm_id          = data.keycloak_realm.KJDev.id
+  parent_flow_alias = keycloak_authentication_subflow.webauth-forms.alias
   authenticator     = "auth-username-form"
   requirement       = "REQUIRED"
 }
 
 resource "keycloak_authentication_subflow" "webauth-forms-webauthn" {
-  realm_id          = "${var.realmID}"
+  realm_id          = data.keycloak_realm.KJDev.id
   parent_flow_alias = keycloak_authentication_subflow.webauth-forms.alias
   alias             = "Passwordless_Or_2FA"
   requirement       = "REQUIRED"
@@ -52,15 +56,15 @@ resource "keycloak_authentication_subflow" "webauth-forms-webauthn" {
 }
 
 resource "keycloak_authentication_execution" "webauth-forms-fido2" {
-  realm_id          = "${var.realmID}"
-  parent_flow_alias = "${keycloak_authentication_subflow.webauth-forms-webauthn.alias}"
+  realm_id          = data.keycloak_realm.KJDev.id
+  parent_flow_alias = keycloak_authentication_subflow.webauth-forms-webauthn.alias
   authenticator     = "webauthn-authenticator-passwordless"
   requirement       = "ALTERNATIVE"
 }
 
 resource "keycloak_authentication_subflow" "webauth-forms-webauthn-fido2-password" {
-  realm_id          = "${var.realmID}"
-  parent_flow_alias = "${keycloak_authentication_subflow.webauth-forms-webauthn.alias}"
+  realm_id          = data.keycloak_realm.KJDev.id
+  parent_flow_alias = keycloak_authentication_subflow.webauth-forms-webauthn.alias
   alias             = "Password"
   requirement       = "ALTERNATIVE"
   depends_on        = [
@@ -69,7 +73,7 @@ resource "keycloak_authentication_subflow" "webauth-forms-webauthn-fido2-passwor
 }
 
 resource "keycloak_required_action" "required_action" {
-  realm_id = "${var.realmID}"
+  realm_id = data.keycloak_realm.KJDev.id
   alias    = "webauthn-register-passwordless"
   enabled  = true
   name     = "Webauthn Register Passwordless"

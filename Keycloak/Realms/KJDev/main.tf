@@ -86,7 +86,7 @@ resource "keycloak_realm" "kjdev" {
 module "FIDO2-Flow" {
   source = "./Authentication/Flows/FIDO2"
 
-  realmID = "${keycloak_realm.kjdev.id}"
+  realmName = keycloak_realm.kjdev.realm
 
   depends_on = [
     keycloak_realm.kjdev
@@ -96,17 +96,21 @@ module "FIDO2-Flow" {
 module "OpenLDAP" {
   source = "./UserFederation/OpenLDAP"
 
-  realmID = "${keycloak_realm.kjdev.id}"
+  realmName = keycloak_realm.kjdev.realm
   
   depends_on = [
     keycloak_realm.kjdev
   ]
 }
 
+#
+# Minion S3Core OpenID
+#
+
 module "MinioClient" {
   source = "./Clients/Minio"
 
-  realmID = "${keycloak_realm.kjdev.id}"
+  realmName = keycloak_realm.kjdev.realm
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
 
   depends_on = [
@@ -115,7 +119,34 @@ module "MinioClient" {
 }
 
 #
+# SSO
+#
+
+#
+# Legacy Caddy CoreAuth Proxy
+#
+
+module "CaddySSO" {
+  source = "./Clients/CaddySSO"
+
+  realmName = keycloak_realm.kjdev.realm
+  FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+
+  depends_on = [
+    keycloak_realm.kjdev
+  ]
+}
+
+#
+# TODO: Pomerium
+#
+ 
+#
 # Hashicorp
+#
+
+#
+# CoreVault Manager transit for Vault
 #
 
 module "CoreVaultClient" {
@@ -124,21 +155,37 @@ module "CoreVaultClient" {
   #
   # Keycloak Realm
   #
-  realmName = "${keycloak_realm.kjdev.realm}"
+  realmName = keycloak_realm.kjdev.realm
   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
 
   depends_on = [
     keycloak_realm.kjdev
   ]
 }
+
+#
+# Primary 3 Vault cluster
+#
 
 module "VaultClient" {
   source = "./Clients/Vault"
 
-  realmName = "${keycloak_realm.kjdev.realm}"
-  FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+  realmName = keycloak_realm.kjdev.realm
+  FIDO2FlowID = module.FIDO2-Flow.FIDO2Flow.id
 
   depends_on = [
     keycloak_realm.kjdev
   ]
 }
+
+# #
+# # Users
+# #
+
+# module "Users" {
+#   source = "./Users"
+
+#   realm = keycloak_realm.kjdev
+
+#   username = "kristianfjones"
+# }

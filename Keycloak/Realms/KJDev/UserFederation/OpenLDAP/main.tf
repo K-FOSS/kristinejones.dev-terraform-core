@@ -29,19 +29,28 @@ data "vault_generic_secret" "openldap" {
   path = "keycloak/OPENLDAP"
 }
 
+data "keycloak_realm" "KJDev" {
+  realm = var.realmName
+}
+
 resource "keycloak_ldap_user_federation" "openldap" {
   name     = "openldap"
-  realm_id = "${var.realmID}"
+  realm_id = data.keycloak_realm.KJDev.id
 
   enabled        = true
 
+  #
+  # TODO: Email stack integration?
+  #
   import_enabled = true
   trust_email = true
 
   edit_mode = "WRITABLE"
   sync_registrations = true
   
-
+  #
+  # TODO: Finetune this
+  #
   username_ldap_attribute = "uid"
   rdn_ldap_attribute      = "uid"
   uuid_ldap_attribute     = "entryUUID"
@@ -51,9 +60,16 @@ resource "keycloak_ldap_user_federation" "openldap" {
     "organizationalPerson",
   ]
 
+  #
+  # TODO: Consul Service Mesh & Boundary & GoBetweener
+  #
   connection_url  = "ldap://tasks.OpenLDAP"
   users_dn        = "ou=People,dc=kristianjones,dc=dev"
   bind_dn         = "cn=admin,dc=kristianjones,dc=dev"
+
+  #
+  # TODO: Keycloak Service Accounts?
+  #
   bind_credential = data.vault_generic_secret.openldap.data["PASSWORD"]
 
   connection_timeout = "5s"
