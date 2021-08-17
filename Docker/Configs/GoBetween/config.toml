@@ -113,7 +113,7 @@ protocol = "udp"
 bind = "0.0.0.0:69"
 protocol = "udp"
 
-  [servers.default.access]  # (optional)
+  [servers.tftp.access]  # (optional)
   default = "allow"         # (required) default access order
   rules = [                 # (required) list of access rules in
     "allow 206.214.229.0/24",  #   if no match, use 'default' order. ipv4 and ipv6 are supported
