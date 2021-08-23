@@ -349,8 +349,8 @@ alertmanager_storage:
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#supported-contents-and-default-values-of-the-config-file
 #
-runtime_config:
-  file: ./config/runtime.yaml
+# runtime_config:
+#   file: ./config/runtime.yaml
 
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#memberlist_config
