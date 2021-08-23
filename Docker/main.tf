@@ -2671,7 +2671,7 @@ resource "docker_service" "Wallabag" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.meshIntSpineNet.id]
 
     log_driver {
       name = "loki"
