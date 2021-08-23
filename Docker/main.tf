@@ -2646,7 +2646,7 @@ resource "docker_service" "Wallabag" {
         #
         # TODO: Determine if Wallabag User Suffices
         #
-        POSTGRES_USERNAME = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
+        POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
         POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
 
         #
