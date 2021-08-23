@@ -30,7 +30,7 @@ auth_enabled: false
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#server_config
 #
-server_config:
+server:
   #
   # HTTP Server
   #
