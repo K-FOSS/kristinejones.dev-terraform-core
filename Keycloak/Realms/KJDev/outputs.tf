@@ -31,6 +31,14 @@ output "VaultClientModule" {
 }
 
 #
+# RocketChat
+#
+
+output "RocketChatClientModule" {
+  value = module.RocketChatClient
+}
+
+#
 # NextCloud
 #
 

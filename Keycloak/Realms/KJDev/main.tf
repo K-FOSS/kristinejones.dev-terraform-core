@@ -178,6 +178,21 @@ module "VaultClient" {
   ]
 }
 
+#
+# RocketChat
+#
+
+module "RocketChatClient" {
+  source = "./Clients/RocketChat"
+
+  realmName = keycloak_realm.kjdev.realm
+  FIDO2FlowID = module.FIDO2-Flow.FIDO2Flow.id
+
+  depends_on = [
+    keycloak_realm.kjdev
+  ]
+}
+
 # #
 # # Users
 # #
