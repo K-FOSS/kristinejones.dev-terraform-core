@@ -99,6 +99,14 @@ distributor:
   # metric name.
   shard_by_all_labels: true
 
+  ring:
+    kvstore:
+      store: consul
+      prefix: cortex/collectors/
+      consul:
+        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+
+
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#querier_config
 #
