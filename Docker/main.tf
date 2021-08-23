@@ -322,7 +322,7 @@ resource "docker_service" "CortexDistributor" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 3
     }
   }
 
@@ -449,7 +449,7 @@ resource "docker_service" "CortexIngester" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 3
     }
   }
 
@@ -576,7 +576,7 @@ resource "docker_service" "CortexQuerier" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 3
     }
   }
 
@@ -830,7 +830,7 @@ resource "docker_service" "CortexCompactor" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 2
     }
   }
 
@@ -958,7 +958,7 @@ resource "docker_service" "CortexQueryFrontend" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 2
     }
   }
 
@@ -1335,7 +1335,7 @@ resource "docker_service" "CortexQueryScheduler" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 2
     }
   }
 
