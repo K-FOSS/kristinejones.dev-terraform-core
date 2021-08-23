@@ -183,7 +183,7 @@ resource "docker_service" "CortexMemcached" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -240,8 +240,8 @@ resource "docker_config" "CortexDistributorConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -306,7 +306,7 @@ resource "docker_service" "CortexDistributor" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -366,8 +366,8 @@ resource "docker_config" "CortexIngesterConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -433,7 +433,7 @@ resource "docker_service" "CortexIngester" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -493,8 +493,8 @@ resource "docker_config" "CortexQuerierConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -560,7 +560,7 @@ resource "docker_service" "CortexQuerier" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -620,8 +620,8 @@ resource "docker_config" "CortexStoreGatewayConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -687,7 +687,7 @@ resource "docker_service" "CortexStoreGateway" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -747,8 +747,8 @@ resource "docker_config" "CortexCompactorConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -814,7 +814,7 @@ resource "docker_service" "CortexCompactor" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [docker_network.meshIntSpineNet.id, data.docker_network.meshSpineNet.id, data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -875,8 +875,8 @@ resource "docker_config" "CortexQueryFrontendConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -942,7 +942,7 @@ resource "docker_service" "CortexQueryFrontend" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1002,8 +1002,8 @@ resource "docker_config" "CortexAlertManagerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -1065,7 +1065,7 @@ resource "docker_service" "CortexAlertManager" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1125,8 +1125,8 @@ resource "docker_config" "CortexRulerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -1192,7 +1192,7 @@ resource "docker_service" "CortexRuler" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1252,8 +1252,8 @@ resource "docker_config" "CortexQuerySchedulerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -1319,7 +1319,7 @@ resource "docker_service" "CortexQueryScheduler" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
@@ -1379,8 +1379,8 @@ resource "docker_config" "CortexPurgerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "consul.kristianjones.dev"
-        CONSUL_PORT = "443"
+        CONSUL_ADDR = "tasks.ConsulCore"
+        CONSUL_PORT = "8500"
 
         #
         # S3/Minio
@@ -1446,7 +1446,7 @@ resource "docker_service" "CortexPurger" {
     force_update = 0
     runtime      = "container"
 
-    networks     = [data.docker_network.insightsSpineNet.id]
+    networks     = [data.docker_network.meshSpineNet.id]
 
     log_driver {
       name = "loki"
