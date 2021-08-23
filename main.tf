@@ -213,6 +213,12 @@ module "Docker" {
   #
   StolonOpenProjectRole = module.Database.OpenProjectRole
   StolonOpenProjectDB = module.Database.OpenProjectDB
+
+  #
+  # Wallabag
+  # 
+  StolonWallabagRole = module.Database.WallabagRole
+  StolonWallabagDB = module.Database.WallabagDB
 }
 
 #
