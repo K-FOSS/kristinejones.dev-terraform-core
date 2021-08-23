@@ -2642,6 +2642,14 @@ resource "docker_service" "Wallabag" {
         SYMFONY__ENV__DATABASE_PASSWORD = "${var.StolonWallabagRole.password}"
 
         #
+        # Postgres ADMIN
+        #
+        # TODO: Determine if Wallabag User Suffices
+        #
+        POSTGRES_USERNAME = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
+        POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+
+        #
         # Secrets
         #
         SYMFONY__ENV__SECRET = "${random_password.WallabagSecret.result}"
