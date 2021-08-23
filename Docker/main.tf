@@ -2613,7 +2613,7 @@ resource "docker_service" "Wallabag" {
     container_spec {
       image = "wallabag/wallabag"
 
-      hotname = "Wallabag"
+      hostname = "Wallabag"
 
       #
       # TODO: Finetune this
