@@ -2640,8 +2640,8 @@ resource "docker_service" "RocketChat" {
         Accounts_OAuth_Custom_Keycloak_scope = "openid"
         Accounts_OAuth_Custom_Keycloak_access_token_param = "access_token"
         Accounts_OAuth_Custom_Keycloak_button_label_text = "KJDev"
-        Accounts_OAuth_Custom_Keycloak_token_sent_via = "Header"
-        Accounts_OAuth_Custom_Keycloak_identity_token_sent_via = "Header"
+        Accounts_OAuth_Custom_Keycloak_token_sent_via = "header"
+        Accounts_OAuth_Custom_Keycloak_identity_token_sent_via = "hseader"
       }
 
       # dir    = "/root"
