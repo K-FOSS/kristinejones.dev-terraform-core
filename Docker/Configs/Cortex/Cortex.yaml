@@ -320,7 +320,7 @@ alertmanager:
   # CLI flag: -experimental.alertmanager.enable-api
   enable_api: true
 
-  #external_url: cortexalerts.kristianjones.dev
+  external_url: tasks.CortexAlertManager:8080
 
   # Shard tenants across multiple alertmanager instances.
   # CLI flag: -alertmanager.sharding-enabled
