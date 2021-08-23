@@ -1,0 +1,366 @@
+# Comma-separated list of Cortex modules to load. The alias 'all' can be used in
+# the list to load a number of core modules and will enable single-binary mode.
+# Use '-modules' command line flag to get a list of available modules, and to
+# see which modules are included in 'all'.
+# CLI flag: -target
+target: ${CORTEX_TARGET}
+
+#
+# API
+#
+api:
+  # Use GZIP compression for API responses. Some endpoints serve large YAML or
+  # JSON blobs which can benefit from compression.
+  # CLI flag: -api.response-compression-enabled
+  response_compression_enabled: false
+
+  # HTTP URL path under which the Alertmanager ui and api will be served.
+  # CLI flag: -http.alertmanager-http-prefix
+  alertmanager_http_prefix: /alertmanager
+
+  # HTTP URL path under which the Prometheus api will be served.
+  # CLI flag: -http.prometheus-http-prefix
+  prometheus_http_prefix: /prometheus
+
+#
+# TODO: Figure out SSO & M2M
+#
+auth_enabled: false
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#server_config
+#
+server_config:
+  #
+  # HTTP Server
+  #
+  http_listen_address: 0.0.0.0
+  http_listen_port: 8080
+
+  #
+  # GRPC Server
+  #
+  grpc_listen_address: 0.0.0.0
+  grpc_listen_port: 8085
+
+  #
+  # Logs
+  #
+  # Output log messages in the given format. Valid formats: [logfmt, json]
+  # CLI flag: -log.format
+  log_format: logfmt
+
+  # Only log messages with the given severity or above. Valid levels: [debug, info, warn, error]
+  # CLI flag: -log.level
+  log_level: <string> | default = "info"]
+
+  # Optionally log the source IPs.
+  # CLI flag: -server.log-source-ips-enabled
+  log_source_ips_enabled: false
+
+  # Header field storing the source IPs. Only used if
+  # server.log-source-ips-enabled is true. If not set the default Forwarded,
+  # X-Real-IP and X-Forwarded-For headers are used
+  # CLI flag: -server.log-source-ips-header
+  log_source_ips_header: ''
+
+  # Regex for matching the source IPs. Only used if server.log-source-ips-enabled
+  # is true. If not set the default Forwarded, X-Real-IP and X-Forwarded-For
+  # headers are used
+  # CLI flag: -server.log-source-ips-regex
+  log_source_ips_regex: ''
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#distributor_config
+#
+distributor:
+  pool:
+    # How frequently to clean up clients for ingesters that have gone away.
+    # CLI flag: -distributor.client-cleanup-period
+    client_cleanup_period: 15s
+
+    # Run a health check on each ingester client during periodic cleanup.
+    # CLI flag: -distributor.health-check-ingesters
+    health_check_ingesters: true
+
+  #
+  # TODO: What is this?
+  # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#distributor_config
+  #
+  # ha_tracker:
+  #   enable_ha_tracker: true
+  #   kvstore:
+  #     store: consul
+  #     consul:
+  #       host: tasks.ConsulCore:8500
+  #   replication_factor: 1
+
+  # Distribute samples based on all labels, as opposed to solely by user and
+  # metric name.
+  shard_by_all_labels: true
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#querier_config
+#
+querier:
+  query_ingesters_within: 3h
+
+  # Used when the blocks sharding is disabled.
+  #store_gateway_addresses: CortexStoreGateway1:9008,CortexStoreGateway2:9009
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#ingester_client_config
+#
+ingester_client:
+  grpc_client_config:
+    # Configure the client to allow messages up to 100MB.
+    max_recv_msg_size: 104857600
+    max_send_msg_size: 104857600
+    grpc_compression: gzip
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#ingester_config
+#
+ingester:
+  lifecycler:
+    # We want to start immediately.
+    join_after: 0
+    final_sleep: 0s
+    num_tokens: 512
+
+    ring:
+      kvstore:
+        store: consul
+        consul:
+          host: ${CONSUL_ADDR}:${CONSUL_PORT}
+      replication_factor: 1
+
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#flusher_config
+#
+# TODO: Learn about this
+#
+#flusher:
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#storage_config
+#
+storage:
+  engine: blocks
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#limits_config
+#
+limits:
+  # Limit max query time range to 31d
+  max_query_length: 744h
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#frontend_worker_config
+#
+frontend_worker:
+  frontend_address: "tasks.CortexQueryFrontend:8085"
+  match_max_concurrent: true
+
+  # By setting scheduler_address, querier worker would use scheduler instead of frontend.
+  # scheduler_address: "query-scheduler:9012"
+
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#query_frontend_config
+#
+frontend:
+  query_stats_enabled: true
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#query_range_config
+#
+query_range:
+  split_queries_by_interval: 24h
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#table_manager_config
+#
+# TODO: Learn about this
+#
+#table_manager:
+
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#blocks_storage_config
+#
+blocks_storage:
+  backend: s3
+
+  tsdb:
+    dir: /tmp/cortex-tsdb-ingester
+    ship_interval: 1m
+    block_ranges_period: [2h]
+    retention_period: 3h
+    max_exemplars: 5000
+
+  bucket_store:
+    sync_dir: /tmp/cortex-tsdb-querier
+    consistency_delay: 5s
+
+    index_cache:
+      backend: memcached
+      memcached:
+        addresses: dns+CortexMemcached:11211
+
+    chunks_cache:
+      backend: memcached
+      memcached:
+        addresses: dns+CortexMemcached:11211
+
+    metadata_cache:
+      backend: memcached
+      memcached:
+        addresses: dns+CortexMemcached:11211
+
+  s3:
+    endpoint: s3core.kristianjones.dev:9000
+    bucket_name: cortex-tsdb
+    access_key_id: ${MINIO_ACCESSKEY}
+    secret_access_key: ${MINIO_SECRETKEY}
+    insecure: true
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#compactor_config
+#
+compactor:
+  compaction_interval: 30s
+  data_dir: /tmp/cortex-compactor
+  consistency_delay: 1m
+  sharding_enabled: true
+  cleanup_interval: 1m
+  tenant_cleanup_delay: 1m
+  sharding_ring:
+    kvstore:
+      store: consul
+      consul:
+        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+
+
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#store_gateway_config
+#
+store_gateway:
+  sharding_enabled: true
+  sharding_ring:
+    replication_factor: 1
+    heartbeat_period: 5s
+    heartbeat_timeout: 15s
+    kvstore:
+      store: consul
+      consul:
+        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#purger_config
+#
+# TODO: Learn about this
+#
+#purger:
+
+#
+# TODO: Learn about this
+#
+tenant_federation:
+  # If enabled on all Cortex services, queries can be federated across multiple
+  # tenants. The tenant IDs involved need to be specified separated by a `|`
+  # character in the `X-Scope-OrgID` header (experimental).
+  # CLI flag: -tenant-federation.enabled
+  enabled: false
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#ruler_config
+#
+ruler:
+  enable_api: true
+  enable_sharding: true
+  ring:
+    heartbeat_period: 5s
+    heartbeat_timeout: 15s
+    kvstore:
+      store: consul
+      consul:
+        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+
+  alertmanager_url: http://CortexAlertManager1:8080/alertmanager,http://CortexAlertManager2:8080/alertmanager,http://CortexAlertManager3:8080/alertmanager
+  enable_alertmanager_v2: false
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#ruler_storage_config
+#
+ruler_storage:
+  backend: s3
+  s3:
+    bucket_name: cortex-ruler
+    endpoint: s3core.kristianjones.dev:9000
+    access_key_id: ${MINIO_ACCESSKEY}
+    secret_access_key: ${MINIO_SECRETKEY}
+    insecure: true
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#configs_config
+#
+# TODO: Learn about this
+#
+#configs:
+
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#alertmanager_config
+#
+alertmanager:
+  # Enable the experimental alertmanager config api.
+  # CLI flag: -experimental.alertmanager.enable-api
+  enable_api: true
+
+  #external_url: cortexalerts.kristianjones.dev
+
+  # Shard tenants across multiple alertmanager instances.
+  # CLI flag: -alertmanager.sharding-enabled
+  sharding_enabled: true
+  sharding_ring:
+    replication_factor: 3
+    heartbeat_period: 5s
+    heartbeat_timeout: 15s
+    kvstore:
+      store: consul
+      consul:
+        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#alertmanager_storage_config
+#
+alertmanager_storage:
+  backend: s3
+  s3:
+    bucket_name: cortex-alertmanager
+    endpoint: s3core.kristianjones.dev:9000
+    access_key_id: ${MINIO_ACCESSKEY}
+    secret_access_key: ${MINIO_SECRETKEY}
+    insecure: true
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#supported-contents-and-default-values-of-the-config-file
+#
+runtime_config:
+  file: ./config/runtime.yaml
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#memberlist_config
+#
+# TODO: Determine if this along with a for each with Terraform for hostnames based on repliacs is worth it
+#
+# memberlist
+
+
+#
+# TODO: Learn about this, and determine if useful/necessary
+#
+#query_scheduler:
