@@ -106,7 +106,7 @@ querier:
   query_ingesters_within: 3h
 
   # Used when the blocks sharding is disabled.
-  #store_gateway_addresses: CortexStoreGateway1:9008,CortexStoreGateway2:9009
+  store_gateway_addresses: CortexStoreGateway1:8085,CortexStoreGateway2:8085,CortexStoreGateway3:8085
 
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#ingester_client_config
@@ -131,6 +131,7 @@ ingester:
     ring:
       kvstore:
         store: consul
+        prefix: cortex/collectors/
         consul:
           host: ${CONSUL_ADDR}:${CONSUL_PORT}
       replication_factor: 1
@@ -239,6 +240,7 @@ compactor:
   sharding_ring:
     kvstore:
       store: consul
+      prefix: cortex/collectors/
       consul:
         host: ${CONSUL_ADDR}:${CONSUL_PORT}
 
@@ -255,6 +257,7 @@ store_gateway:
     heartbeat_timeout: 15s
     kvstore:
       store: consul
+      prefix: cortex/collectors/
       consul:
         host: ${CONSUL_ADDR}:${CONSUL_PORT}
 
@@ -286,6 +289,7 @@ ruler:
     heartbeat_timeout: 15s
     kvstore:
       store: consul
+      prefix: cortex/rulers/
       consul:
         host: ${CONSUL_ADDR}:${CONSUL_PORT}
 
@@ -331,6 +335,7 @@ alertmanager:
     heartbeat_timeout: 15s
     kvstore:
       store: consul
+      prefix: cortex/alertmanagers/
       consul:
         host: ${CONSUL_ADDR}:${CONSUL_PORT}
 

@@ -703,7 +703,7 @@ resource "docker_service" "CortexStoreGateway" {
       #
       # TODO: Scale this
       #
-      replicas = 1
+      replicas = 3
     }
   }
 
