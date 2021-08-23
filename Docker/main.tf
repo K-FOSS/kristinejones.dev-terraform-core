@@ -240,8 +240,8 @@ resource "docker_config" "CortexDistributorConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -366,8 +366,8 @@ resource "docker_config" "CortexIngesterConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -493,8 +493,8 @@ resource "docker_config" "CortexQuerierConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -620,8 +620,8 @@ resource "docker_config" "CortexStoreGatewayConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -747,8 +747,8 @@ resource "docker_config" "CortexCompactorConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -875,8 +875,8 @@ resource "docker_config" "CortexQueryFrontendConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -1002,8 +1002,8 @@ resource "docker_config" "CortexAlertManagerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -1125,8 +1125,8 @@ resource "docker_config" "CortexRulerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -1252,8 +1252,8 @@ resource "docker_config" "CortexQuerySchedulerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
@@ -1379,8 +1379,8 @@ resource "docker_config" "CortexPurgerConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL_ADDR = "consul.kristianjones.dev"
+        CONSUL_PORT = "443"
 
         #
         # S3/Minio
