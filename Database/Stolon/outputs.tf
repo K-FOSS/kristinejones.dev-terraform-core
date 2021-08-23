@@ -104,3 +104,15 @@ output "OpenProjectRole" {
 output "OpenProjectDB" {
   value = postgresql_database.OpenProjectDB
 }
+
+#
+# Wallabag
+#
+
+output "WallabagRole" {
+  value = postgresql_role.WallabagUser
+}
+
+output "WallabagDB" {
+  value = postgresql_database.WallabagDB
+}

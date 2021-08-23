@@ -2595,6 +2595,129 @@ resource "docker_service" "OpenProjectProxy" {
 }
 
 #
+# Wallabag
+#
+# Website: https://wallabag.org/en/
+# Docs: https://doc.wallabag.org/en/
+
+resource "random_password" "WallabagSecret" {
+  length           = 20
+  special          = true
+}
+
+
+resource "docker_service" "Wallabag" {
+  name = "Wallabag"
+
+  task_spec {
+    container_spec {
+      image = "wallabag/wallabag"
+
+      hotname = "Wallabag"
+
+      #
+      # TODO: Finetune this
+      #
+      # command = ["/usr/sbin/kea-dhcp4"]
+      # args = ["-c", "/config/config.json"]
+
+      env = {
+        #
+        # Instance Config
+        #
+        SYMFONY__ENV__DOMAIN_NAME = "https://wallabag.kristianjones.dev"
+
+        #
+        # Database
+        #
+
+        SYMFONY__ENV__DATABASE_DRIVER = "pdo_pgsql"
+
+        SYMFONY__ENV__DATABASE_HOST = "tasks.StolonProxy"
+        SYMFONY__ENV__DATABASE_PORT = "5432"
+
+        SYMFONY__ENV__DATABASE_NAME = "${var.StolonWallabagDB.name}"
+
+        SYMFONY__ENV__DATABASE_USER = "${var.StolonWallabagRole.name}"
+        SYMFONY__ENV__DATABASE_PASSWORD = "${var.StolonWallabagRole.password}"
+
+        #
+        # Secrets
+        #
+        SYMFONY__ENV__SECRET = "${random_password.WallabagSecret.result}"
+
+
+        #
+        # MISC
+        #
+        TZ = "America/Winnipeg"
+      }
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+    }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    #
+    # TODO: Scale/Replicate
+    #
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+#
 # RocketChat
 #
 # Chat Platform
@@ -2743,6 +2866,170 @@ resource "docker_service" "RocketChat" {
     mode = "dnsrr"
   }
 }
+
+#
+# Core Infrastructure
+#
+
+#
+# Hashicorp
+#
+
+#
+# Consul
+#
+
+# data "docker_network" "hashicorpSpineNet" {
+#   name = "hashicorpSpineNet"
+# }
+
+# resource "docker_service" "Consul" {
+#   name = "Consul"
+
+#   task_spec {
+#     container_spec {
+#       image = "consul:1.10.1"
+
+#       #
+#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+#       #
+#       # labels {
+#       #   label = "foo.bar"
+#       #   value = "baz"
+#       # }
+
+#       hostname = "Consul{{.Task.Slot}}"
+
+#       env = {
+#         PORT = "8080"
+
+#         ROOT_URL = "https://chat.kristianjones.dev"
+
+#         MONGO_URL = "mongodb://RocketChatDB1:27017,RocketChatDB2:27017,RocketChatDB3:27017/rocketchat?replicaSet=rs0&w=majority"
+#         MONGO_OPLOG_URL = "mongodb://RocketChatDB1:27017,RocketChatDB2:27017,RocketChatDB3:27017/local?replicaSet=rs0"
+#         MOLECULER_LOG_LEVEL = "warn"
+
+#         Accounts_OAuth_Custom_Keycloak = "true"
+#         Accounts_OAuth_Custom_Keycloak_id = "${var.KeycloakModule.KJDevRealm.RocketChatClientModule.OpenIDClient.client_id}"
+#         Accounts_OAuth_Custom_Keycloak_secret = "${var.KeycloakModule.KJDevRealm.RocketChatClientModule.OpenIDClient.client_secret}"
+#         Accounts_OAuth_Custom_Keycloak_url = "https://keycloak.kristianjones.dev/auth"
+#         Accounts_OAuth_Custom_Keycloak_token_path = "/realms/KJDev/protocol/openid-connect/token"
+#         Accounts_OAuth_Custom_Keycloak_identity_path = "/realms/KJDev/protocol/openid-connect/userinfo"
+#         Accounts_OAuth_Custom_Keycloak_authorize_path = "/realms/KJDev/protocol/openid-connect/auth"
+#         Accounts_OAuth_Custom_Keycloak_scope = "openid"
+#         Accounts_OAuth_Custom_Keycloak_access_token_param = "access_token"
+#         Accounts_OAuth_Custom_Keycloak_button_label_text = "KJDev"
+#         Accounts_OAuth_Custom_Keycloak_token_sent_via = "header"
+#         Accounts_OAuth_Custom_Keycloak_identity_token_sent_via = "default"
+#       }
+
+#       # dir    = "/root"
+#       user   = "1000"
+#       # groups = ["docker", "foogroup"]
+
+#       # privileges {
+#       #   se_linux_context {
+#       #     disable = true
+#       #     user    = "user-label"
+#       #     role    = "role-label"
+#       #     type    = "type-label"
+#       #     level   = "level-label"
+#       #   }
+#       # }
+
+#       # read_only = true
+
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
+
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
+
+#       mounts {
+#         target    = "/app/uploads"
+#         source    = "rocketchat-data"
+#         type      = "volume"
+
+#         volume_options {
+#           driver_name = "s3core-storage"
+#         }
+#       }
+
+#       # hosts {
+#       #   host = "testhost"
+#       #   ip   = "10.0.1.0"
+#       # }
+
+
+#       # dns_config {
+#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
+#       #   search      = ["kristianjones.dev"]
+#       #   options     = ["timeout:3"]
+#       # }
+
+#       #
+#       # Stolon Database Secrets
+#       #
+#       # healthcheck {
+#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#       #   interval = "5s"
+#       #   timeout  = "2s"
+#       #   retries  = 4
+#       # }
+#     }
+
+#     force_update = 1
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id, data.docker_network.rocketChatIntNet.id]
+
+#     log_driver {
+#       name = "loki"
+
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
+
+#   mode {
+#     replicated {
+#       replicas = 3
+#     }
+#   }
+
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
+
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
+
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"

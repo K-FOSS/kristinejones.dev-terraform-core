@@ -149,3 +149,15 @@ variable "StolonOpenProjectRole" {
 variable "StolonOpenProjectDB" {
   
 }
+
+#
+# Wallabag
+#
+
+variable "StolonWallabagRole" {
+
+}
+
+variable "StolonWallabagDB" {
+  
+}

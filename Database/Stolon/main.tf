@@ -265,3 +265,25 @@ resource "postgresql_database" "OpenProjectDB" {
 
   owner = postgresql_role.OpenProjectUser.name
 }
+
+#
+# Wallabag
+#
+
+resource "random_password" "StolonWallabagPassword" {
+  length           = 20
+  special          = false
+}
+
+resource "postgresql_role" "WallabagUser" {
+  name     = "wallabag"
+
+  login    = true
+  password = random_password.StolonWallabagPassword.result
+}
+
+resource "postgresql_database" "WallabagDB" {
+  name     = "wallabag"
+
+  owner = postgresql_role.WallabagUser.name
+}
