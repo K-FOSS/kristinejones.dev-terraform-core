@@ -245,6 +245,40 @@ resource "postgresql_database" "GrafanaDB" {
 }
 
 #
+# Nextcloud
+# 
+
+resource "random_password" "StolonNextCloudPassword" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "postgresql_role" "NextCloudUser" {
+  name     = "nextcloud"
+
+  login    = true
+  password = random_password.StolonNextCloudPassword.result
+}
+
+resource "postgresql_database" "NextCloudDB" {
+  name     = "nextcloud"
+
+  owner = postgresql_role.NextCloudUser.name
+}
+
+resource "vault_generic_secret" "NextCloudDB" {
+  path = "keycloak/NextCloudDB"
+
+  data_json = <<EOT
+{
+  "username":   "${postgresql_role.NextCloudUser.name}",
+  "password": "${postgresql_role.NextCloudUser.password}"
+}
+EOT
+}
+
+#
 # OpenProject
 #
 

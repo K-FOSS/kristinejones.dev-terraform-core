@@ -94,6 +94,22 @@ output "GrafanaDB" {
 }
 
 #
+# Business Service
+#
+
+#
+# NextCloud
+#
+
+output "NextcloudRole" {
+  value = postgresql_role.NextCloudUser
+}
+
+output "NextcloudDB" {
+  value = postgresql_database.NextCloudDB
+}
+
+#
 # OpenProject
 #
 
