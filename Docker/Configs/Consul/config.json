@@ -20,20 +20,7 @@
   },
   "connect": { "enabled": true },
   "auto_config": {
-    "authorization": {
-      "enabled": true,
-      "static": {
-        "jwt_validation_pub_keys": [
-          "-----BEGIN CERTIFICATE-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsroNIWasf/FbIbwFwoYx5RxKL+cKsKJ5UPej+SQ7taJryoK1Cu1I5yvRPrFAW0anyDzVL8ZOASBCDuEp37h95g==\n-----END CERTIFICATE-----\n"
-        ],
-        "bound_issuer": "auto-config-cluster",
-        "bound_audiences": ["audience"],
-        "claim_mappings": {
-          "sub": "node"
-        },
-        "claim_assertions": ["value.node == \"$node\""]
-      }
-    }
+    "enabled": true
   },
   "encrypt": "${SECRET_KEY}",
   "verify_incoming": false,
