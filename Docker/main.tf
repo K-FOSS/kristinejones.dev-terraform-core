@@ -4244,7 +4244,7 @@ resource "random_password" "ConsulSecret" {
 }
 
 locals {
-  consulSecret = base64encode(random_password.ConsulSecret.value)
+  consulSecret = "${base64encode(random_password.ConsulSecret.value)}"
 }
 
 # data "docker_network" "hashicorpSpineNet" {
