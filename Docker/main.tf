@@ -4259,9 +4259,7 @@ resource "docker_config" "Consul1Config" {
         #
         # General
         #
-        JOIN_HOSTS = jsonencode({
-          "retry_join": [for host in tolist(["Consul2", "Consul3"]) : "${host}"],
-        })
+        JOIN_HOSTS = jsonencode([for host in tolist(["Consul2", "Consul3"]) : "${host}"])
 
         NODE_NAME = "Consul1"
 
@@ -4437,9 +4435,7 @@ resource "docker_config" "Consul2Config" {
         #
         # General
         #
-        JOIN_HOSTS = jsonencode({
-          "retry_join": [for host in tolist(["Consul1", "Consul3"]) : "${host}"]
-        })
+        JOIN_HOSTS = jsonencode([for host in tolist(["Consul1", "Consul3"]) : "${host}"])
 
         NODE_NAME = "Consul2"
 
