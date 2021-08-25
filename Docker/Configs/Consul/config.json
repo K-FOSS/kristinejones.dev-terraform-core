@@ -19,8 +19,8 @@
     }
   },
   "connect": { "enabled": true },
-  "auto_config": {
-    "enabled": true
+  "autopilot": {
+    "cleanup_dead_servers": true
   },
   "encrypt": "${SECRET_KEY}",
   "verify_incoming": false,
