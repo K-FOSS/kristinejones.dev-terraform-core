@@ -4259,11 +4259,11 @@ resource "docker_config" "Consul1Config" {
         #
         # General
         #
-        JOIN_HOSTS = "${jsonencode({
+        JOIN_HOSTS = jsonencode({
           "retry_join": [for host in tolist(["Consul2", "Consul3"]) : "${host}"],
-        })}",
+        })
 
-        NODE_NAME = "Consul1",
+        NODE_NAME = "Consul1"
 
         SECRET_KEY = local.consulSecret
       }
@@ -4435,11 +4435,11 @@ resource "docker_config" "Consul2Config" {
         #
         # General
         #
-        JOIN_HOSTS = "${jsonencode({
+        JOIN_HOSTS = jsonencode({
           "retry_join": [for host in tolist(["Consul1", "Consul3"]) : "${host}"]
-        })}",
+        })
 
-        NODE_NAME = "Consul2",
+        NODE_NAME = "Consul2"
 
         SECRET_KEY = local.consulSecret
       }
@@ -4610,11 +4610,11 @@ resource "docker_config" "Consul3Config" {
         #
         # General
         #
-        JOIN_HOSTS = "${jsonencode({
+        JOIN_HOSTS = jsonencode({
           "retry_join": [for host in tolist(["Consul1", "Consul2"]) : "${host}"],
-        })}",
+        })
     
-        NODE_NAME = "Consul3",
+        NODE_NAME = "Consul3"
 
         SECRET_KEY = local.consulSecret
       }
