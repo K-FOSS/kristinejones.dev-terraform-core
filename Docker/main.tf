@@ -1697,6 +1697,114 @@ resource "docker_service" "Grafana" {
 }
 
 #
+# cAdvisor
+#
+# Repo: https://github.com/google/cadvisor
+#
+
+resource "docker_service" "cAdvisor" {
+  name = "cAdvisor"
+
+  task_spec {
+    container_spec {
+      image = "gcr.io/cadvisor/cadvisor:v0.40.0"
+
+      hostname = "cAdvisor"
+
+      env = {
+      }
+
+      mounts {
+        target    = "/"
+        source    = "/"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/var/run"
+        source    = "/var/run"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/sys"
+        source    = "/sys"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/var/lib/docker"
+        source    = "/var/lib/docker"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/dev/disk"
+        source    = "/dev/disk"
+        type      = "bind"
+        read_only = true
+      }
+    }
+
+    #
+    # TODO: Fine Tune
+    #
+
+    # resources {
+    #   limits {
+    #     memory_bytes = 16777216
+    #   }
+    # }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [docker_network.meshIntSpineNet.id, data.docker_network.meshSpineNet.id, data.docker_network.insightsSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    global = true
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+#
 # Grafana Cortex
 #
 # Website: https://cortexmetrics.io/
