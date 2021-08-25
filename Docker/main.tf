@@ -4285,7 +4285,7 @@ resource "docker_service" "Consul1" {
     container_spec {
       image = "consul:1.10.1"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=hcl", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -4353,7 +4353,7 @@ resource "docker_service" "Consul1" {
         config_id   = docker_config.Consul1Config.id
         config_name = docker_config.Consul1Config.name
 
-        file_name   = "/Config/Config.hcl"
+        file_name   = "/Config/Config.json"
       }
 
       # hosts {
@@ -4463,7 +4463,7 @@ resource "docker_service" "Consul2" {
     container_spec {
       image = "consul:1.10.1"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=hcl", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -4531,7 +4531,7 @@ resource "docker_service" "Consul2" {
         config_id   = docker_config.Consul2Config.id
         config_name = docker_config.Consul2Config.name
 
-        file_name   = "/Config/Config.hcl"
+        file_name   = "/Config/Config.json"
       }
 
       # hosts {
@@ -4640,7 +4640,7 @@ resource "docker_service" "Consul3" {
     container_spec {
       image = "consul:1.10.1"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=hcl", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -4708,7 +4708,7 @@ resource "docker_service" "Consul3" {
         config_id   = docker_config.Consul2Config.id
         config_name = docker_config.Consul2Config.name
 
-        file_name   = "/Config/Config.hcl"
+        file_name   = "/Config/Config.json"
       }
 
       # hosts {
