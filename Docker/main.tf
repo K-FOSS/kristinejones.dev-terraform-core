@@ -4332,7 +4332,7 @@ resource "docker_service" "Consul1" {
 
       mounts {
         target    = "/Data"
-        source    = "consul{{.Task.Slot}}-data"
+        source    = "consul1-data"
         type      = "volume"
 
         volume_options {
@@ -4508,7 +4508,7 @@ resource "docker_service" "Consul2" {
 
       mounts {
         target    = "/Data"
-        source    = "consul{{.Task.Slot}}-data"
+        source    = "consul2-data"
         type      = "volume"
 
         volume_options {
@@ -4683,7 +4683,7 @@ resource "docker_service" "Consul3" {
 
       mounts {
         target    = "/Data"
-        source    = "consul{{.Task.Slot}}-data"
+        source    = "consul3-data"
         type      = "volume"
 
         volume_options {
