@@ -4270,6 +4270,8 @@ resource "docker_config" "Consul1Config" {
     )
   )
 
+  depends_on = [random_password.ConsulSecret.result]
+
   lifecycle {
     ignore_changes        = [name]
     create_before_destroy = true
@@ -4446,6 +4448,8 @@ resource "docker_config" "Consul2Config" {
     )
   )
 
+  depends_on = [random_password.ConsulSecret.result]
+
   lifecycle {
     ignore_changes        = [name]
     create_before_destroy = true
@@ -4620,6 +4624,8 @@ resource "docker_config" "Consul3Config" {
       }
     )
   )
+
+  depends_on = [random_password.ConsulSecret.result]
 
   lifecycle {
     ignore_changes        = [name]
