@@ -28,3 +28,23 @@ output "OpenNMSConfig" {
 output "OpenNMSCassandra" {
   value = minio_s3_bucket.OpenNMSCassandra
 }
+
+#
+# RocketChat
+#
+
+#
+# Consul
+#
+
+output "Consul1Data" {
+  value = minio_s3_bucket.Consul1Data
+}
+
+output "Consul2Data" {
+  value = minio_s3_bucket.Consul2Data
+}
+
+output "Consul3Data" {
+  value = minio_s3_bucket.Consul3Data
+}

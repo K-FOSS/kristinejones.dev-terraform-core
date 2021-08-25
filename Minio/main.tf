@@ -88,3 +88,28 @@ resource "minio_s3_bucket" "OpenNMSCassandra" {
   bucket = "opennms-cassandradata"
   acl    = "private"
 }
+
+#
+# RocketChat
+#
+# TODO: Move RocketChat S3 to Terraform & Dynamic Credentials
+#
+
+#
+# Consul
+#
+
+resource "minio_s3_bucket" "Consul1Data" {
+  bucket = "consul1-data"
+  acl    = "private"
+}
+
+resource "minio_s3_bucket" "Consul2Data" {
+  bucket = "consul2-data"
+  acl    = "private"
+}
+
+resource "minio_s3_bucket" "Consul3Data" {
+  bucket = "consul3-data"
+  acl    = "private"
+}

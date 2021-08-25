@@ -4233,157 +4233,546 @@ resource "docker_service" "RocketChat" {
 # Consul
 #
 
+#
+# Consul Cluster Secret
+# base64encode("Hello World")
+# 
+
+resource "random_password" "ConsulSecret" {
+  length           = 32
+  special          = false
+}
+
+locals {
+  consulSecret = base64encode(random_password.ConsulSecret.value)
+}
+
 # data "docker_network" "hashicorpSpineNet" {
 #   name = "hashicorpSpineNet"
 # }
 
-# resource "docker_service" "Consul" {
-#   name = "Consul"
+resource "docker_config" "Consul1Config" {
+  name = "consul1-config-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/Consul/config.json",
+      {
+        #
+        # General
+        #
+        JOIN_HOSTS = "${jsonencode({
+          "retry_join": [for host in tolist(["Consul2", "Consul3"]) : "${host}"],
+        })}",
 
-#   task_spec {
-#     container_spec {
-#       image = "consul:1.10.1"
+        NODE_NAME = "Consul1",
 
-#       #
-#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-#       #
-#       # labels {
-#       #   label = "foo.bar"
-#       #   value = "baz"
-#       # }
+        SECRET_KEY = local.consulSecret
+      }
+    )
+  )
 
-#       hostname = "Consul{{.Task.Slot}}"
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
 
-#       env = {
-#         PORT = "8080"
+resource "docker_service" "Consul1" {
+  name = "Consul1"
 
-#         ROOT_URL = "https://chat.kristianjones.dev"
+  task_spec {
+    container_spec {
+      image = "consul:1.10.1"
 
-#         MONGO_URL = "mongodb://RocketChatDB1:27017,RocketChatDB2:27017,RocketChatDB3:27017/rocketchat?replicaSet=rs0&w=majority"
-#         MONGO_OPLOG_URL = "mongodb://RocketChatDB1:27017,RocketChatDB2:27017,RocketChatDB3:27017/local?replicaSet=rs0"
-#         MOLECULER_LOG_LEVEL = "warn"
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=hcl", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
 
-#         Accounts_OAuth_Custom_Keycloak = "true"
-#         Accounts_OAuth_Custom_Keycloak_id = "${var.KeycloakModule.KJDevRealm.RocketChatClientModule.OpenIDClient.client_id}"
-#         Accounts_OAuth_Custom_Keycloak_secret = "${var.KeycloakModule.KJDevRealm.RocketChatClientModule.OpenIDClient.client_secret}"
-#         Accounts_OAuth_Custom_Keycloak_url = "https://keycloak.kristianjones.dev/auth"
-#         Accounts_OAuth_Custom_Keycloak_token_path = "/realms/KJDev/protocol/openid-connect/token"
-#         Accounts_OAuth_Custom_Keycloak_identity_path = "/realms/KJDev/protocol/openid-connect/userinfo"
-#         Accounts_OAuth_Custom_Keycloak_authorize_path = "/realms/KJDev/protocol/openid-connect/auth"
-#         Accounts_OAuth_Custom_Keycloak_scope = "openid"
-#         Accounts_OAuth_Custom_Keycloak_access_token_param = "access_token"
-#         Accounts_OAuth_Custom_Keycloak_button_label_text = "KJDev"
-#         Accounts_OAuth_Custom_Keycloak_token_sent_via = "header"
-#         Accounts_OAuth_Custom_Keycloak_identity_token_sent_via = "default"
-#       }
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
 
-#       # dir    = "/root"
-#       user   = "1000"
-#       # groups = ["docker", "foogroup"]
+      hostname = "Consul1"
 
-#       # privileges {
-#       #   se_linux_context {
-#       #     disable = true
-#       #     user    = "user-label"
-#       #     role    = "role-label"
-#       #     type    = "type-label"
-#       #     level   = "level-label"
-#       #   }
-#       # }
+      env = {
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
+      }
 
-#       # read_only = true
+      # dir    = "/root"
+      user   = "1000"
+      # groups = ["docker", "foogroup"]
 
-#       mounts {
-#         target    = "/etc/timezone"
-#         source    = "/etc/timezone"
-#         type      = "bind"
-#         read_only = true
-#       }
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
 
-#       mounts {
-#         target    = "/etc/localtime"
-#         source    = "/etc/localtime"
-#         type      = "bind"
-#         read_only = true
-#       }
+      # read_only = true
 
-#       mounts {
-#         target    = "/app/uploads"
-#         source    = "rocketchat-data"
-#         type      = "volume"
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
 
-#         volume_options {
-#           driver_name = "s3core-storage"
-#         }
-#       }
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
 
-#       # hosts {
-#       #   host = "testhost"
-#       #   ip   = "10.0.1.0"
-#       # }
+      mounts {
+        target    = "/Data"
+        source    = "consul{{.Task.Slot}}-data"
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+
+      #
+      # Docker Configs
+      # 
+
+      #
+      # Consul Configuration
+      #
+      configs {
+        config_id   = docker_config.Consul1Config.id
+        config_name = docker_config.Consul1Config.name
+
+        file_name   = "/Config/Config.hcl"
+      }
+
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
 
 
-#       # dns_config {
-#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
-#       #   search      = ["kristianjones.dev"]
-#       #   options     = ["timeout:3"]
-#       # }
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
 
-#       #
-#       # Stolon Database Secrets
-#       #
-#       # healthcheck {
-#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-#       #   interval = "5s"
-#       #   timeout  = "2s"
-#       #   retries  = 4
-#       # }
-#     }
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
 
-#     force_update = 1
-#     runtime      = "container"
-#     networks     = [data.docker_network.meshSpineNet.id, data.docker_network.rocketChatIntNet.id]
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
 
-#     log_driver {
-#       name = "loki"
+    log_driver {
+      name = "loki"
 
-#       options = {
-#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-#       }
-#     }
-#   }
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
 
-#   mode {
-#     replicated {
-#       replicas = 3
-#     }
-#   }
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
 
-#   #
-#   # TODO: Finetune this
-#   # 
-#   # update_config {
-#   #   parallelism       = 1
-#   #   delay             = "10s"
-#   #   failure_action    = "pause"
-#   #   monitor           = "5s"
-#   #   max_failure_ratio = "0.1"
-#   #   order             = "start-first"
-#   # }
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
 
-#   # rollback_config {
-#   #   parallelism       = 1
-#   #   delay             = "5ms"
-#   #   failure_action    = "pause"
-#   #   monitor           = "10h"
-#   #   max_failure_ratio = "0.9"
-#   #   order             = "stop-first"
-#   # }
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
 
-#   endpoint_spec {
-#     mode = "dnsrr"
-#   }
-# }
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+#
+# Consul2
+#
+
+
+resource "docker_config" "Consul2Config" {
+  name = "consul2-config-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/Consul/config.json",
+      {
+        #
+        # General
+        #
+        JOIN_HOSTS = "${jsonencode({
+          "retry_join": [for host in tolist(["Consul1", "Consul3"]) : "${host}"]
+        })}",
+
+        NODE_NAME = "Consul2",
+
+        SECRET_KEY = local.consulSecret
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_service" "Consul2" {
+  name = "Consul2"
+
+  task_spec {
+    container_spec {
+      image = "consul:1.10.1"
+
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=hcl", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
+
+      hostname = "Consul2"
+
+      env = {
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
+      }
+
+      # dir    = "/root"
+      user   = "1000"
+      # groups = ["docker", "foogroup"]
+
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
+
+      # read_only = true
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/Data"
+        source    = "consul{{.Task.Slot}}-data"
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+
+      #
+      # Docker Configs
+      # 
+
+      #
+      # Consul Configuration
+      #
+      configs {
+        config_id   = docker_config.Consul2Config.id
+        config_name = docker_config.Consul2Config.name
+
+        file_name   = "/Config/Config.hcl"
+      }
+
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
+
+
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
+
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
+
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
+#
+# Consul3
+#
+
+resource "docker_config" "Consul3Config" {
+  name = "consul3-config-${replace(timestamp(), ":", ".")}"
+  data = base64encode(
+    templatefile("${path.module}/Configs/Consul/config.json",
+      {
+        #
+        # General
+        #
+        JOIN_HOSTS = "${jsonencode({
+          "retry_join": [for host in tolist(["Consul1", "Consul2"]) : "${host}"],
+        })}",
+    
+        NODE_NAME = "Consul3",
+
+        SECRET_KEY = local.consulSecret
+      }
+    )
+  )
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+resource "docker_service" "Consul3" {
+  name = "Consul3"
+
+  task_spec {
+    container_spec {
+      image = "consul:1.10.1"
+
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=hcl", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
+
+      hostname = "Consul3"
+
+      env = {
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
+      }
+
+      # dir    = "/root"
+      user   = "1000"
+      # groups = ["docker", "foogroup"]
+
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
+
+      # read_only = true
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/Data"
+        source    = "consul{{.Task.Slot}}-data"
+        type      = "volume"
+
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
+
+      #
+      # Docker Configs
+      # 
+
+      #
+      # Consul Configuration
+      #
+      configs {
+        config_id   = docker_config.Consul2Config.id
+        config_name = docker_config.Consul2Config.name
+
+        file_name   = "/Config/Config.hcl"
+      }
+
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
+
+
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
+
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
+
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
+
 
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
