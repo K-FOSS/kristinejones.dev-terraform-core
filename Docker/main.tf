@@ -4303,7 +4303,7 @@ resource "docker_service" "Consul1" {
       }
 
       # dir    = "/root"
-      user   = "1000"
+      #user   = "1000"
       # groups = ["docker", "foogroup"]
 
       # privileges {
@@ -4481,7 +4481,7 @@ resource "docker_service" "Consul2" {
       }
 
       # dir    = "/root"
-      user   = "1000"
+      #user   = "1000"
       # groups = ["docker", "foogroup"]
 
       # privileges {
@@ -4658,7 +4658,7 @@ resource "docker_service" "Consul3" {
       }
 
       # dir    = "/root"
-      user   = "1000"
+      #user   = "1000"
       # groups = ["docker", "foogroup"]
 
       # privileges {
