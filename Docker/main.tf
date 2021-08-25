@@ -4699,8 +4699,8 @@ resource "docker_service" "Consul3" {
       # Consul Configuration
       #
       configs {
-        config_id   = docker_config.Consul2Config.id
-        config_name = docker_config.Consul2Config.name
+        config_id   = docker_config.Consul3Config.id
+        config_name = docker_config.Consul3Config.name
 
         file_name   = "/Config/Config.json"
       }
