@@ -31,7 +31,7 @@
         "claim_mappings": {
           "sub": "node"
         },
-        "claim_assertions": ["value.node == \"{{${node}}}\""]
+        "claim_assertions": ["value.node == \"$node\""]
       }
     }
   },
