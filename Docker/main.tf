@@ -1715,8 +1715,8 @@ resource "docker_service" "cAdvisor" {
       }
 
       mounts {
-        target    = "/"
-        source    = "/rootfs"
+        target    = "/rootfs"
+        source    = "/"
         type      = "bind"
         read_only = true
       }
