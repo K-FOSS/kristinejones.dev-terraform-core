@@ -8,7 +8,7 @@
   "addresses": {
     "http": "0.0.0.0"
   },
-  ${JOIN_HOSTS},
+  "rety_join": ${JOIN_HOSTS},
   "acl": {
     "enabled": true,
     "default_policy": "deny",
