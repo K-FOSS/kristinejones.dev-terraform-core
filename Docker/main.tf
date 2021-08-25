@@ -4285,7 +4285,7 @@ resource "docker_service" "Consul1" {
     container_spec {
       image = "consul:1.10.1"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.json"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -4463,7 +4463,7 @@ resource "docker_service" "Consul2" {
     container_spec {
       image = "consul:1.10.1"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.json"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -4640,7 +4640,7 @@ resource "docker_service" "Consul3" {
     container_spec {
       image = "consul:1.10.1"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.hcl"]
+      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.json"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
