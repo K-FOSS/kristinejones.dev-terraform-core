@@ -165,60 +165,60 @@ resource "docker_network" "meshIntSpineNet" {
 # Cortex Settings
 #
 locals {
-  CORTEX_LOG_LEVEL = ""
+  CORTEX_LOG_LEVEL = "WARN"
 
-  CORTEX_TARGETS = tomap([
-    {
+  CORTEX_TARGETS = tomap({
+    Distributor = {
       target = "distributor"
       replicas = 3
       name = "Distributor"
     },
-    {
+    Ingester = {
       target = "ingester"
       replicas = 3
       name = "Ingester"
     }, 
-    {
+    Querier = {
       target = "querier"
       replicas = 3
       name = "Querier"
     }, 
-    {
+    StoreGateway = {
       target = "store-gateway"
       replicas = 3
       name = "StoreGateway"
     }, 
-    {
+    Compactor = {
       target = "compactor"
       replicas = 3
       name = "Compactor"
     },
-    {
+    QueryFrontend = {
       target = "query-frontend"
       replicas = 3
       name = "QueryFrontend"
     },
-    {
+    AlertManager = {
       target = "alertmanager"
       replicas = 3
       name = "AlertManager"
     },
-    {
+    Ruler = {
       target = "ruler"
       replicas = 3
       name = "Ruler"
     },
-    {
+    QueryScheduler = {
       target = "query-scheduler"
       replicas = 3
       name = "QueryScheduler"
     }, 
-    {
+    Purger = {
       target = "purger"
       replicas = 1
       name = "Purger"
     }
-  ])
+  })
 }
 
 # 
