@@ -234,7 +234,7 @@ provider "consul" {
 
 
 #
-# Consul Ingress
+# Consul Mesh DC-DC Gateway
 #
 
 resource "docker_config" "ConsulMeshGatewayEntryScriptConfig" {
@@ -260,8 +260,8 @@ resource "docker_config" "ConsulMeshGatewayEntryScriptConfig" {
 #   local = true
 # }
 
-resource "docker_service" "ConsulIngressProxy" {
-  name = "ConsulIngressProxy"
+resource "docker_service" "ConsulMeshGateway" {
+  name = "ConsulMeshGateway"
 
   task_spec {
     container_spec {
@@ -277,7 +277,7 @@ resource "docker_service" "ConsulIngressProxy" {
       #   value = "baz"
       # }
 
-      hostname = "ConsulIngressProxy{{.Task.Slot}}"
+      hostname = "ConsulMeshGateway{{.Task.Slot}}"
 
       env = {
         CONSUL_BIND_INTERFACE = "eth0"
@@ -286,7 +286,7 @@ resource "docker_service" "ConsulIngressProxy" {
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
         CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
 
-        MESH_HOST = "ConsulIngressProxy{{.Task.Slot}}"
+        MESH_HOST = "ConsulMeshGateway{{.Task.Slot}}"
       }
 
       # dir    = "/root"
@@ -396,3 +396,7 @@ resource "docker_service" "ConsulIngressProxy" {
     mode = "dnsrr"
   }
 }
+
+#
+# Consul Ingress Gateway External-Service Mesh Gateway
+# 

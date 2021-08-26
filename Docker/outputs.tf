@@ -11,5 +11,5 @@ output "KeycloakService" {
 }
 
 output "GrafanaService" {
-  value = docker_service.Grafana
+  value = module.Grafana.GrafanaService
 }
