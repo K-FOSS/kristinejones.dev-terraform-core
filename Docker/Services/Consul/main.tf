@@ -453,7 +453,7 @@ resource "docker_service" "ConsulIngressGateway" {
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
         CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
 
-        MESH_HOST = "ConsulIngressGateway{{.Task.Slot}}"
+        INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
         SERVICE_NAME = "${consul_config_entry.GrafanaIngress.name}"
       }
 
@@ -565,7 +565,7 @@ resource "docker_service" "ConsulIngressGateway" {
 
     ports {
       name           = "grafana-ingress"
-      protocol       = "udp"
+      protocol       = "tcp"
       target_port    = "7880"
       published_port = "7880"
       publish_mode   = "ingress"
