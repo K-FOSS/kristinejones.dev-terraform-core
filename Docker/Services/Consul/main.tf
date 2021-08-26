@@ -70,7 +70,7 @@ resource "docker_service" "Consul" {
     container_spec {
       image = "consul:${var.Version}"
 
-      cmd = ["/entry.sh"]
+      command = ["/entry.sh"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
