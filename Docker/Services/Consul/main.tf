@@ -240,20 +240,7 @@ provider "consul" {
 resource "consul_acl_policy" "MeshGateway" {
   name        = "mesh-gateway"
   datacenters = ["dc1"]
-  rules       = <<-RULE
-    service_prefix "gateway" {
-      policy = "write"
-    }
-    service_prefix "" {
-      policy = "read"
-    }
-    node_prefix "" {
-      policy = "read"
-    }
-    agent_prefix "" {
-      policy = "read"
-    }
-    RULE
+  rules       = file("${path.module}/Consul/mesh-gateway-policy.hcl")
 }
 
 resource "consul_acl_token" "MeshGatewayPrimary" {
