@@ -264,7 +264,7 @@ resource "docker_service" "ConsulIngressProxy" {
         "-register",
         "-address=ConsulIngressProxy:8443",
         "-bind-address=IngressProxy=0.0.0.0:8443",
-        "-token=440f6734-e738-a8af-b987-4d87f3a14d86"
+        "-token=fb3772dd-a44b-2428-971c-c67f321fdcac"
       ]
 
       #
@@ -282,7 +282,7 @@ resource "docker_service" "ConsulIngressProxy" {
         CONSUL_CLIENT_INTERFACE = "eth0"
         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
-        CONSUL_HTTP_TOKEN = "440f6734-e738-a8af-b987-4d87f3a14d86"
+        CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
       }
 
       # dir    = "/root"
