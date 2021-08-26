@@ -235,7 +235,7 @@ provider "consul" {
 
 #
 # Consul Ingress
-# #
+#
 
 # resource "consul_acl_policy" "MeshGateway" {
 #   name        = "mesh-gateway"
@@ -249,136 +249,136 @@ provider "consul" {
 #   local = true
 # }
 
-# resource "docker_service" "ConsulIngressProxy" {
-#   name = "ConsulIngressProxy"
+resource "docker_service" "ConsulIngressProxy" {
+  name = "ConsulIngressProxy"
 
-#   task_spec {
-#     container_spec {
-#       image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
+  task_spec {
+    container_spec {
+      image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
 
-#       args = [
-#         "consul",
-#         "connect",
-#         "envoy",
-#         "-gateway=mesh",
-#         "-register",
-#         "-address=ConsulIngressProxy:8443",
-#         "-bind-address=IngressProxy=0.0.0.0:8443",
-#         "-token=${consul_acl_token.MeshGatewayPrimary.accessor_id}"
-#       ]
+      args = [
+        "consul",
+        "connect",
+        "envoy",
+        "-gateway=mesh",
+        "-register",
+        "-address=ConsulIngressProxy:8443",
+        "-bind-address=IngressProxy=0.0.0.0:8443",
+        "-token=440f6734-e738-a8af-b987-4d87f3a14d86"
+      ]
 
-#       #
-#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-#       #
-#       # labels {
-#       #   label = "foo.bar"
-#       #   value = "baz"
-#       # }
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
 
-#       hostname = "ConsulIngressProxy{{.Task.Slot}}"
+      hostname = "ConsulIngressProxy{{.Task.Slot}}"
 
-#       env = {
-#         CONSUL_BIND_INTERFACE = "eth0"
-#         CONSUL_CLIENT_INTERFACE = "eth0"
-#         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
-#         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
-#         CONSUL_HTTP_TOKEN = "${consul_acl_token.MeshGatewayPrimary.accessor_id}"
-#       }
+      env = {
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
+        CONSUL_HTTP_ADDR = "tasks.Consul:8500"
+        CONSUL_GRPC_ADDR = "tasks.Consul:8502"
+        CONSUL_HTTP_TOKEN = "440f6734-e738-a8af-b987-4d87f3a14d86"
+      }
 
-#       # dir    = "/root"
-#       #user   = "1000"
-#       # groups = ["docker", "foogroup"]
+      # dir    = "/root"
+      #user   = "1000"
+      # groups = ["docker", "foogroup"]
 
-#       # privileges {
-#       #   se_linux_context {
-#       #     disable = true
-#       #     user    = "user-label"
-#       #     role    = "role-label"
-#       #     type    = "type-label"
-#       #     level   = "level-label"
-#       #   }
-#       # }
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
 
-#       # read_only = true
+      # read_only = true
 
-#       mounts {
-#         target    = "/etc/timezone"
-#         source    = "/etc/timezone"
-#         type      = "bind"
-#         read_only = true
-#       }
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
 
-#       mounts {
-#         target    = "/etc/localtime"
-#         source    = "/etc/localtime"
-#         type      = "bind"
-#         read_only = true
-#       }
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
 
-#       # hosts {
-#       #   host = "testhost"
-#       #   ip   = "10.0.1.0"
-#       # }
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
 
 
-#       # dns_config {
-#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
-#       #   search      = ["kristianjones.dev"]
-#       #   options     = ["timeout:3"]
-#       # }
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
 
-#       #
-#       # Stolon Database Secrets
-#       #
-#       # healthcheck {
-#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-#       #   interval = "5s"
-#       #   timeout  = "2s"
-#       #   retries  = 4
-#       # }
-#     }
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
 
-#     force_update = 1
-#     runtime      = "container"
-#     networks     = [data.docker_network.meshSpineNet.id]
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
 
-#     log_driver {
-#       name = "loki"
+    log_driver {
+      name = "loki"
 
-#       options = {
-#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-#       }
-#     }
-#   }
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
 
-#   mode {
-#     replicated {
-#       replicas = 3
-#     }
-#   }
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
 
-#   #
-#   # TODO: Finetune this
-#   # 
-#   update_config {
-#     parallelism       = 1
-#     delay             = "120s"
-#     failure_action    = "pause"
-#     monitor           = "30s"
-#     max_failure_ratio = "0.1"
-#     order             = "stop-first"
-#   }
+  #
+  # TODO: Finetune this
+  # 
+  update_config {
+    parallelism       = 1
+    delay             = "120s"
+    failure_action    = "pause"
+    monitor           = "30s"
+    max_failure_ratio = "0.1"
+    order             = "stop-first"
+  }
 
-#   # rollback_config {
-#   #   parallelism       = 1
-#   #   delay             = "5ms"
-#   #   failure_action    = "pause"
-#   #   monitor           = "10h"
-#   #   max_failure_ratio = "0.9"
-#   #   order             = "stop-first"
-#   # }
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
 
-#   endpoint_spec {
-#     mode = "dnsrr"
-#   }
-# }
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
