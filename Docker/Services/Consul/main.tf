@@ -24,7 +24,7 @@ data "docker_network" "meshSpineNet" {
 resource "docker_config" "ConsulConfig" {
   name = "newconsul-config-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.module}/Configs/config.json",
+    templatefile("${path.module}/Configs/Consul/config.json",
       {
         SECRET_KEY = var.Secret
       }
@@ -39,7 +39,7 @@ resource "docker_config" "ConsulConfig" {
 
 resource "docker_config" "ConsulEntryScriptConfig" {
   name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
-  data = base64encode(file("${path.module}/Configs/start.sh"))
+  data = base64encode(file("${path.module}/Configs/Consul/start.sh"))
 
   lifecycle {
     ignore_changes        = [name]
@@ -237,6 +237,17 @@ provider "consul" {
 # Consul Ingress
 #
 
+resource "docker_config" "ConsulMeshGatewayEntryScriptConfig" {
+  name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/MeshGateway/start.sh"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+
 # resource "consul_acl_policy" "MeshGateway" {
 #   name        = "mesh-gateway"
 #   datacenters = ["dc1"]
@@ -256,17 +267,7 @@ resource "docker_service" "ConsulIngressProxy" {
     container_spec {
       image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
 
-      args = [
-        "consul",
-        "connect",
-        "envoy",
-        "-gateway=mesh",
-        "-register",
-        "-service=gateway-primary",
-        "-address=ConsulIngressProxy:8443",
-        "-bind-address=IngressProxy=0.0.0.0:8443",
-        "-token=fb3772dd-a44b-2428-971c-c67f321fdcac"
-      ]
+      command = ["/start.sh"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -284,6 +285,8 @@ resource "docker_service" "ConsulIngressProxy" {
         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
         CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
+
+        MESH_HOST = "ConsulIngressProxy{{.Task.Slot}}"
       }
 
       # dir    = "/root"
@@ -301,6 +304,16 @@ resource "docker_service" "ConsulIngressProxy" {
       # }
 
       # read_only = true
+
+      configs {
+        config_id   = docker_config.ConsulMeshGatewayEntryScriptConfig.id
+        config_name = docker_config.ConsulMeshGatewayEntryScriptConfig.name
+
+        file_name   = "/start.sh"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
 
       mounts {
         target    = "/etc/timezone"
