@@ -474,8 +474,8 @@ resource "docker_service" "ConsulIngressGateway" {
       # read_only = true
 
       configs {
-        config_id   = docker_config.ConsulMeshGatewayEntryScriptConfig.id
-        config_name = docker_config.ConsulMeshGatewayEntryScriptConfig.name
+        config_id   = docker_config.ConsulIngressGatewayEntryScriptConfig.id
+        config_name = docker_config.ConsulIngressGatewayEntryScriptConfig.name
 
         file_name   = "/start.sh"
         file_uid = "1000"
