@@ -1,7 +1,7 @@
 service {
   name = "grafana"
   id = "grafana-v1"
-  address = "Grafana"
+  address = "http://tasks.Grafana"
   port = 8080
   
   connect { 
