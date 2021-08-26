@@ -1,5 +1,10 @@
 terraform {
   required_providers {
+    consul = {
+      source = "hashicorp/consul"
+      version = "2.12.0"
+    }
+
     docker = {
       source = "kreuzwerker/docker"
       version = "2.15.0"
@@ -219,9 +224,43 @@ resource "docker_service" "Consul" {
   }
 }
 
+provider "consul" {
+  address    = "tasks.Consul:8500"
+  datacenter = "dc1"
+
+  token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+}
+
+
+
 #
 # Consul Ingress
 #
+
+resource "consul_acl_policy" "MeshGateway" {
+  name        = "mesh-gateway"
+  datacenters = ["dc1"]
+  rules       = <<-RULE
+    service_prefix "gateway" {
+      policy = "write"
+    }
+    service_prefix "" {
+      policy = "read"
+    }
+    node_prefix "" {
+      policy = "read"
+    }
+    agent_prefix "" {
+      policy = "read"
+    }
+    RULE
+}
+
+resource "consul_acl_token" "MeshGatewayPrimary" {
+  description = "mesh-gateway primary datacenter token"
+  policies = ["${consul_acl_policy.MeshGateway.name}"]
+  local = true
+}
 
 resource "docker_service" "ConsulIngressProxy" {
   name = "ConsulIngressProxy"
@@ -237,7 +276,8 @@ resource "docker_service" "ConsulIngressProxy" {
         "-gateway=mesh",
         "-register",
         "-address=ConsulIngressProxy:8443",
-        "-bind-address=IngressProxy=0.0.0.0:8443"
+        "-bind-address=IngressProxy=0.0.0.0:8443",
+        "-token=${consul_acl_token.MeshGatewayPrimary.accessor_id}"
       ]
 
       #
@@ -255,7 +295,7 @@ resource "docker_service" "ConsulIngressProxy" {
         CONSUL_CLIENT_INTERFACE = "eth0"
         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
-        CONSUL_HTTP_TOKEN = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+        CONSUL_HTTP_TOKEN = "${consul_acl_token.MeshGatewayPrimary.accessor_id}"
       }
 
       # dir    = "/root"
@@ -354,4 +394,8 @@ resource "docker_service" "ConsulIngressProxy" {
   endpoint_spec {
     mode = "dnsrr"
   }
+
+  depends_on = [
+    consul_acl_token.MeshGatewayPrimary
+  ]
 }
