@@ -306,7 +306,7 @@ module "Cortex" {
 
   Replicas = each.value.replicas
 
-  LogLevel = "WARN"
+  LogLevel = "warn"
 
   MinioCreds = {
     ACCESS_KEY = data.vault_generic_secret.MinioCreds.data["ACCESS_KEY"]
