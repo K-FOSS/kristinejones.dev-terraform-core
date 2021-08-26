@@ -3216,8 +3216,6 @@ module "NewConsul" {
   Version = "1.10.1"
 
   LogLevel = ""
-
-  depends_on = [random_password.ConsulSecret]
 }
 
 # resource "docker_plugin" "s3core-storage" {
