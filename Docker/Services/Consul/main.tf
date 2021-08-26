@@ -33,8 +33,6 @@ resource "docker_config" "ConsulConfig" {
     )
   )
 
-  depends_on = [random_password.ConsulSecret]
-
   lifecycle {
     ignore_changes        = [name]
     create_before_destroy = true
