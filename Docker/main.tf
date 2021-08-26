@@ -380,6 +380,11 @@ module "Grafana" {
 
     Name = var.StolonGrafanaDB.name
   }
+
+  Consul = {
+    Address = "tasks.Consul"
+    Token = ""
+  }
 }
 
 #
