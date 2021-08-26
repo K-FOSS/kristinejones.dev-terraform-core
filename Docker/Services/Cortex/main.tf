@@ -64,7 +64,7 @@ resource "docker_service" "Cortex" {
       #
       configs {
         config_id   = docker_config.CortexConfig.id
-        config_name = docker_config.CortexConfig.id
+        config_name = docker_config.CortexConfig.name
 
         file_name   = "/Configs/Config.yaml"
       }
