@@ -394,8 +394,4 @@ resource "docker_service" "ConsulIngressProxy" {
   endpoint_spec {
     mode = "dnsrr"
   }
-
-  depends_on = [
-    consul_acl_token.MeshGatewayPrimary.accessor_id
-  ]
 }
