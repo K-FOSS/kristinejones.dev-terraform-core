@@ -369,7 +369,7 @@ resource "docker_network" "lokiSpineNet" {
 module "Grafana" {
   source = "./Services/Grafana"
 
-  version = "8.0.3"
+  Version = "8.0.3"
 
   Database = {
     Hostname = "tasks.StolonProxy"
@@ -380,8 +380,6 @@ module "Grafana" {
 
     Name = var.StolonGrafanaDB.name
   }
-
-  
 }
 
 #
