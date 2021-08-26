@@ -262,6 +262,7 @@ resource "docker_service" "ConsulIngressProxy" {
         "envoy",
         "-gateway=mesh",
         "-register",
+        "-service=gateway-primary",
         "-address=ConsulIngressProxy:8443",
         "-bind-address=IngressProxy=0.0.0.0:8443",
         "-token=fb3772dd-a44b-2428-971c-c67f321fdcac"
