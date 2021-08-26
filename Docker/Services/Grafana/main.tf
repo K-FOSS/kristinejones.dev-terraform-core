@@ -174,7 +174,7 @@ resource "docker_service" "Grafana" {
 # Grafana Consul SideCar Service
 #
 resource "docker_config" "GrafanaSidecarEntryScriptConfig" {
-  name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
+  name = "grafanasidecar-entryconfig-${replace(timestamp(), ":", ".")}"
   data = base64encode(file("${path.module}/Configs/Sidecar/start.sh"))
 
   lifecycle {
@@ -184,7 +184,7 @@ resource "docker_config" "GrafanaSidecarEntryScriptConfig" {
 }
 
 resource "docker_config" "GrafanaSidecarServiceConfig" {
-  name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
+  name = "grafanasidecar-serviceconfig-${replace(timestamp(), ":", ".")}"
   data = base64encode(file("${path.module}/Configs/Sidecar/Grafana.hcl"))
 
   lifecycle {
