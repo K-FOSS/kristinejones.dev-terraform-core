@@ -1,5 +1,4 @@
 {
-  "node_name": "${NODE_NAME}",
   "server": true,
   "ui_config": {
     "enabled": true
@@ -8,7 +7,6 @@
   "addresses": {
     "http": "0.0.0.0"
   },
-  "retry_join": ${JOIN_HOSTS},
   "acl": {
     "enabled": true,
     "default_policy": "deny",

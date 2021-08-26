@@ -2,21 +2,6 @@
 # Server Config
 #
 
-variable "Name" {
-  type = string
-}
-
-variable "Peers" {
-}
-
-
-#
-# Storage
-#
-variable "Bucket" {
-  type = string
-}
-
 #
 # Crypto
 #

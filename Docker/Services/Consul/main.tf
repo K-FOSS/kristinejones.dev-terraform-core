@@ -17,17 +17,10 @@ data "docker_network" "meshSpineNet" {
 # }
 
 resource "docker_config" "ConsulConfig" {
-  name = "${lower(var.Name)}-config-${replace(timestamp(), ":", ".")}"
+  name = "newconsul-config-${replace(timestamp(), ":", ".")}"
   data = base64encode(
     templatefile("${path.module}/Configs/config.json",
       {
-        #
-        # General
-        #
-        JOIN_HOSTS = jsonencode([for host in tolist(var.Peers) : "${host}"])
-
-        NODE_NAME = var.Name
-
         SECRET_KEY = var.Secret
       }
     )
@@ -39,14 +32,45 @@ resource "docker_config" "ConsulConfig" {
   }
 }
 
+resource "docker_config" "ConsulEntryScriptConfig" {
+  name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/start.sh"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+
+locals {
+  CONSUL_NODES = tomap({
+    Consul1 = {
+      name = "Consul1"
+      peers = ["Consul2", "Consul3"]
+      bucket = "consul1-data"
+    },
+    Consul2 = {
+      name = "Consul2"
+      peers = ["Consul1", "Consul3"]
+      bucket = "consul2-data"
+    },
+    Consul3 = {
+      name = "Consul3"
+      peers = ["Consul1", "Consul2"]
+      bucket = "consul3-data"
+    },
+  })
+}
+
 resource "docker_service" "Consul" {
-  name = var.Name
+  name = "Consul"
 
   task_spec {
     container_spec {
       image = "consul:${var.Version}"
 
-      args = ["agent", "-server", "-disable-host-node-id", "-config-format=json", "-data-dir=/Data", "-config-file=/Config/Config.json", "-bootstrap-expect=3"]
+      cmd = ["/entry.sh"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
@@ -56,11 +80,12 @@ resource "docker_service" "Consul" {
       #   value = "baz"
       # }
 
-      hostname = var.Name
+      hostname = "Consul{{.Task.Slot}}"
 
       env = {
         CONSUL_BIND_INTERFACE = "eth0"
         CONSUL_CLIENT_INTERFACE = "eth0"
+        CONSUL_HOST = "Consul{{.Task.Slot}}"
       }
 
       # dir    = "/root"
@@ -79,6 +104,15 @@ resource "docker_service" "Consul" {
 
       # read_only = true
 
+      configs {
+        config_id   = docker_config.ConsulEntryScriptConfig.id
+        config_name = docker_config.ConsulEntryScriptConfig.name
+
+        file_name   = "/entry.sh"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
       mounts {
         target    = "/etc/timezone"
         source    = "/etc/timezone"
@@ -95,7 +129,7 @@ resource "docker_service" "Consul" {
 
       mounts {
         target    = "/Data"
-        source    = var.Bucket
+        source    = "consul{{.Task.Slot}}-data"
         type      = "volume"
 
         volume_options {
@@ -155,7 +189,7 @@ resource "docker_service" "Consul" {
 
   mode {
     replicated {
-      replicas = 1
+      replicas = 3
     }
   }
 

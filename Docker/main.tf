@@ -3205,16 +3205,6 @@ locals {
 module "NewConsul" {
   source = "./Services/Consul"
 
-  for_each = local.CONSUL_NODES
-
-  Name = each.value.name
-  Peers = each.value.peers
-
-  #
-  # Storage
-  #
-  Bucket = each.value.bucket
-
   #
   # Crypto
   #
