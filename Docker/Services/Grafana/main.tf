@@ -193,6 +193,8 @@ resource "docker_config" "GrafanaSidecarServiceConfig" {
   }
 }
 
+
+
 resource "docker_service" "GrafanaSidecar" {
   name = "GrafanaSidecar"
 
