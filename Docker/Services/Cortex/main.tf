@@ -21,6 +21,8 @@ resource "docker_config" "CortexConfig" {
         #
         CORTEX_TARGET = "${var.Target}"
 
+        LOG_LEVEL = "${var.LogLevel}"
+
         #
         # Clustering
         #

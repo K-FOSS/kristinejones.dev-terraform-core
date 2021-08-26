@@ -27,3 +27,8 @@ variable "Version" {
   type = string
   description = "Cortex Version to deploy"
 }
+
+variable "LogLevel" {
+  type = string
+  description = "Cortex LogLevel to deploy"
+}
