@@ -396,6 +396,6 @@ resource "docker_service" "ConsulIngressProxy" {
   }
 
   depends_on = [
-    consul_acl_token.MeshGatewayPrimary
+    consul_acl_token.MeshGatewayPrimary.accessor_id
   ]
 }
