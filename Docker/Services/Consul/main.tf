@@ -196,14 +196,14 @@ resource "docker_service" "Consul" {
   #
   # TODO: Finetune this
   # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+  update_config {
+    parallelism       = 1
+    delay             = "120s"
+    failure_action    = "pause"
+    monitor           = "30s"
+    max_failure_ratio = "0.1"
+    order             = "stop-first"
+  }
 
   # rollback_config {
   #   parallelism       = 1
