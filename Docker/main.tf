@@ -167,7 +167,7 @@ resource "docker_network" "meshIntSpineNet" {
 locals {
   CORTEX_LOG_LEVEL = ""
 
-  CORTEX_TARGETS = toset([
+  CORTEX_TARGETS = tomap([
     {
       target = "distributor"
       replicas = 3
