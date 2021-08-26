@@ -218,3 +218,139 @@ resource "docker_service" "Consul" {
     mode = "dnsrr"
   }
 }
+
+#
+# Consul Ingress
+#
+
+resource "docker_service" "ConsulIngressProxy" {
+  name = "ConsulIngressProxy"
+
+  task_spec {
+    container_spec {
+      image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
+
+      args = [
+        "consul",
+        "connect",
+        "envoy",
+        "-gateway=mesh",
+        "-register",
+        "-address=ConsulIngressProxy:8443",
+        "-bind-address=IngressProxy=0.0.0.0:8443"
+      ]
+
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
+
+      hostname = "ConsulIngressProxy{{.Task.Slot}}"
+
+      env = {
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
+        CONSUL_HTTP_ADDR = "tasks.Consul:8500"
+        CONSUL_GRPC_ADDR = "tasks.Consul:8502"
+      }
+
+      # dir    = "/root"
+      #user   = "1000"
+      # groups = ["docker", "foogroup"]
+
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
+
+      # read_only = true
+
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
+
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
+
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
+
+
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
+
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
+
+    force_update = 1
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  update_config {
+    parallelism       = 1
+    delay             = "120s"
+    failure_action    = "pause"
+    monitor           = "30s"
+    max_failure_ratio = "0.1"
+    order             = "stop-first"
+  }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
+}
