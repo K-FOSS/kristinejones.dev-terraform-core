@@ -19,4 +19,4 @@ case ${CONSUL_HOST} in
            ;;
 esac
 
-consul agent -server ${RETRY_JOIN} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json -bootstrap-expect=3
+/docker-entrypoint.sh agent -server ${RETRY_JOIN} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json -bootstrap-expect=3
