@@ -229,9 +229,6 @@ resource "docker_service" "GrafanaSidecar" {
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
         CONSUL_HTTP_TOKEN = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 
-        SERVICE_CONFIG = "/config/Grafana.hcl"
-        CENTRAL_CONFIG = "/CentralConfig/GrafanaDefaults.hcl"
-
         SERVICE_HOST = "GrafanaSidecar{{.Task.Slot}}"
 
         SERVICE_NAME = "GrafanaGateway"
@@ -258,24 +255,6 @@ resource "docker_service" "GrafanaSidecar" {
         config_name = docker_config.GrafanaSidecarEntryScriptConfig.name
 
         file_name   = "/start.sh"
-        file_uid = "1000"
-        file_mode = 7777
-      }
-
-      configs {
-        config_id   = docker_config.GrafanaSidecarServiceConfig.id
-        config_name = docker_config.GrafanaSidecarServiceConfig.name
-
-        file_name   = "/config/Grafana.hcl"
-        file_uid = "1000"
-        file_mode = 7777
-      }
-
-      configs {
-        config_id   = docker_config.GrafanaSidecarCentralConfig.id
-        config_name = docker_config.GrafanaSidecarCentralConfig.name
-
-        file_name   = "/CentralConfig/GrafanaDefaults.hcl"
         file_uid = "1000"
         file_mode = 7777
       }
