@@ -1,7 +1,7 @@
 service {
   name = "grafana"
   id = "grafana-v1"
-  address = "GrafanaSidecar"
+  address = "tasks.GrafanaSidecar"
   port = 8080
   
   connect { 
@@ -34,7 +34,7 @@ service {
       
       check {
         name = "Connect Envoy Sidecar"
-        tcp = "GrafanaSidecar:20000"
+        tcp = "tasks.GrafanaSidecar:20000"
         interval ="10s"
       }
     }  
