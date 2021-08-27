@@ -184,7 +184,6 @@ resource "docker_service" "Consul" {
       # }
     }
 
-    force_update = 1
     runtime      = "container"
     networks     = [data.docker_network.meshSpineNet.id]
 
@@ -373,7 +372,6 @@ resource "docker_service" "ConsulMeshGateway" {
       # }
     }
 
-    force_update = 1
     runtime      = "container"
     networks     = [data.docker_network.meshSpineNet.id]
 
@@ -395,14 +393,14 @@ resource "docker_service" "ConsulMeshGateway" {
   #
   # TODO: Finetune this
   # 
-  update_config {
-    parallelism       = 1
-    delay             = "120s"
-    failure_action    = "pause"
-    monitor           = "30s"
-    max_failure_ratio = "0.1"
-    order             = "stop-first"
-  }
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "120s"
+  #   failure_action    = "pause"
+  #   monitor           = "30s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "stop-first"
+  # }
 
   # rollback_config {
   #   parallelism       = 1
@@ -525,7 +523,6 @@ resource "docker_service" "ConsulIngressGateway" {
       # }
     }
 
-    force_update = 1
     runtime      = "container"
     networks     = [data.docker_network.meshSpineNet.id]
 
