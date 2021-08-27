@@ -11,7 +11,7 @@ service {
       address = "0.0.0.0"
 
       proxy {
-        mode = transparent
+        mode = "transparent"
 
         destination_service_name = "grafana-web"
 
