@@ -253,6 +253,16 @@ resource "consul_service" "Grafana" {
   tags    = ["tag0"]
 }
 
+resource "consul_config_entry" "Grafana" {
+  name = "${consul_service.Grafana.name}"
+  kind = "service-defaults"
+
+  config_json = jsonencode({
+    Protocol    = "http"
+  })
+}
+
+
 resource "consul_node" "Grafana" {
   name    = "GrafanaService"
   address = "tasks.Grafana"
