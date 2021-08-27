@@ -282,7 +282,7 @@ resource "consul_config_entry" "GrafanaIngress" {
     }
     Listeners = [{
       Port     = 7880
-      Protocol = "http"
+      Protocol = "tcp"
       Services = [{ Name  = "${consul_service.Grafana.name}" }]
     }]
   })
