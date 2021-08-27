@@ -225,12 +225,10 @@ resource "docker_service" "Consul" {
 }
 
 provider "consul" {
-  address    = "tasks.Consul:8500"
+  address    = "tasks.${docker_service.Consul.name}:8500"
   datacenter = "dc1"
 
   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
-
-  depends_on = [docker_service.Consul]
 }
 
 resource "consul_config_entry" "GrafanaIngress" {
