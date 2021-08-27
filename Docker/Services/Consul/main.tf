@@ -224,12 +224,12 @@ resource "docker_service" "Consul" {
   }
 }
 
-provider "consul" {
-  address    = "tasks.${docker_service.Consul.name}:8500"
-  datacenter = "dc1"
+# provider "consul" {
+#   address    = "tasks.${docker_service.Consul.name}:8500"
+#   datacenter = "dc1"
 
-  token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
-}
+#   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+# }
 
 # resource "consul_config_entry" "GrafanaIngress" {
 #   name = "vps1-ingress"
