@@ -9,6 +9,11 @@ terraform {
       source = "kreuzwerker/docker"
       version = "2.15.0"
     }
+
+    time = {
+      source = "hashicorp/time"
+      version = "0.7.2"
+    }
   }
 }
 
@@ -224,11 +229,13 @@ resource "docker_service" "Consul" {
   }
 }
 
+
+
 provider "consul" {
-  address    = "tasks.${docker_service.Consul.name}:8500"
+  address    = "tasks.ConsulCore:8500"
   datacenter = "dc1"
 
-  token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+  #token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 }
 
 # resource "consul_config_entry" "GrafanaIngress" {
