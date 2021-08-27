@@ -13,6 +13,10 @@ service {
       proxy {
         mode = "transparent"
 
+        transparent_proxy = {
+          dialed_directly = true
+        }
+
         destination_service_name = "grafana-web"
 
         local_service_address = "tasks.Grafana"
