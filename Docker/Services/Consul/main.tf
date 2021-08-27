@@ -93,8 +93,8 @@ resource "docker_service" "Consul" {
       hostname = "Consul{{.Task.Slot}}"
 
       env = {
-        CONSUL_BIND_INTERFACE = "eth1"
-        CONSUL_CLIENT_INTERFACE = "eth1"
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
         CONSUL_HOST = "Consul{{.Task.Slot}}"
       }
 
