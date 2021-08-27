@@ -16,6 +16,8 @@ service {
         destination_service_name = "grafana-web"
 
         local_service_address = "tasks.Grafana"
+
+        envoy_dns_discovery_type      = "LOGICAL_DNS"
         
         // upstreams {
         //   destination_name = "tasks.Grafana"
