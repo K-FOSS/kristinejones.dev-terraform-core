@@ -17,7 +17,9 @@ service {
 
         local_service_address = "tasks.Grafana"
 
-        envoy_dns_discovery_type      = "LOGICAL_DNS"
+        config = {
+          envoy_dns_discovery_type      = "LOGICAL_DNS"
+        }
         
         // upstreams {
         //   destination_name = "tasks.Grafana"
