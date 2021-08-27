@@ -11,14 +11,17 @@ service {
       address = "0.0.0.0"
 
       proxy {
-        config {
-          protocol = "http"
-        }
+        mode = transparent
+
+        destination_service_name = "grafana-web"
+
+        local_service_address = "tasks.Grafana"
         
-        upstreams {
-          destination_name = "tasks.Grafana"
-          local_bind_port = 8080
-        }
+        // upstreams {
+        //   destination_name = "tasks.Grafana"
+        //   destination_type = "prepared_query"
+        //   local_bind_port = 8080
+        // }
       }
       
       check {
