@@ -229,6 +229,8 @@ provider "consul" {
   datacenter = "dc1"
 
   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+
+  depends_on = [docker_service.Consul]
 }
 
 resource "consul_config_entry" "GrafanaIngress" {
