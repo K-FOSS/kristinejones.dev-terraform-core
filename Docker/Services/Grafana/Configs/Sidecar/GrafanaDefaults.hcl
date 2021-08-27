@@ -1,4 +1,4 @@
 Kind = "service-defaults"
-Name = "web"
+Name = "grafana"
 
 Protocol = "http"

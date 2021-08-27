@@ -191,6 +191,16 @@ resource "docker_config" "GrafanaSidecarServiceConfig" {
   }
 }
 
+resource "docker_config" "GrafanaSidecarCentralConfig" {
+  name = "grafanasidecar-centralconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/Sidecar/GrafanaDefaults.hcl"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
 
 
 resource "docker_service" "GrafanaSidecar" {
@@ -210,7 +220,7 @@ resource "docker_service" "GrafanaSidecar" {
       #   value = "baz"
       # }
 
-      hostname = "ConsulMeshGateway{{.Task.Slot}}"
+      hostname = "GrafanaSidecar{{.Task.Slot}}"
 
       env = {
         CONSUL_BIND_INTERFACE = "eth0"
@@ -220,6 +230,7 @@ resource "docker_service" "GrafanaSidecar" {
         CONSUL_HTTP_TOKEN = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 
         SERVICE_CONFIG = "/config/Grafana.hcl"
+        CENTRAL_CONFIG = "/CentralConfig/GrafanaDefaults.hcl"
       }
 
       # dir    = "/root"
@@ -252,6 +263,15 @@ resource "docker_service" "GrafanaSidecar" {
         config_name = docker_config.GrafanaSidecarServiceConfig.name
 
         file_name   = "/config/Grafana.hcl"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
+      configs {
+        config_id   = docker_config.GrafanaSidecarCentralConfig.id
+        config_name = docker_config.GrafanaSidecarCentralConfig.name
+
+        file_name   = "/CentralConfig/GrafanaDefaults.hcl"
         file_uid = "1000"
         file_mode = 7777
       }
