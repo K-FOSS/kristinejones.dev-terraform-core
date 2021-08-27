@@ -237,6 +237,15 @@ provider "consul" {
   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 }
 
+resource "consul_config_entry" "web" {
+  name = "web"
+  kind = "service-defaults"
+
+  config_json = jsonencode({
+    Protocol    = "http"
+  })
+}
+
 resource "consul_service" "Grafana" {
   name    = "GrafanaInterface"
   node    = "${consul_node.Grafana.name}"
@@ -273,8 +282,8 @@ resource "consul_config_entry" "GrafanaIngress" {
     }
     Listeners = [{
       Port     = 7880
-      Protocol = "http"
-      Services = [{ Name  = "${consul_config_entry.GrafanaTerminatingGateway.name}", Hosts = ["159.203.39.63"] }]
+      Protocol = "tcp"
+      Services = [{ Name  = "${consul_config_entry.GrafanaTerminatingGateway.name}" }]
     }]
   })
 }
