@@ -231,7 +231,7 @@ resource "docker_service" "Consul" {
 
 
 provider "consul" {
-  address    = "tasks.ConsulCore:8500"
+  address    = "tasks.Consul:8500"
   datacenter = "dc1"
 
   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
@@ -335,8 +335,8 @@ resource "docker_service" "ConsulMeshGateway" {
       hostname = "ConsulMeshGateway{{.Task.Slot}}"
 
       env = {
-        CONSUL_BIND_INTERFACE = "eth1"
-        CONSUL_CLIENT_INTERFACE = "eth1"
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
         CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
