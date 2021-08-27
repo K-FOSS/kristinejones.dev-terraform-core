@@ -127,8 +127,6 @@ resource "docker_service" "Grafana" {
     #     memory_bytes = 16777216
     #   }
     # }
-
-    force_update = 0
     runtime      = "container"
 
     networks     = [data.docker_network.meshSpineNet.id]
@@ -296,7 +294,6 @@ resource "docker_service" "GrafanaSidecar" {
       # }
     }
 
-    force_update = 1
     runtime      = "container"
     networks     = [data.docker_network.meshSpineNet.id]
 
@@ -318,14 +315,14 @@ resource "docker_service" "GrafanaSidecar" {
   #
   # TODO: Finetune this
   # 
-  update_config {
-    parallelism       = 1
-    delay             = "120s"
-    failure_action    = "pause"
-    monitor           = "30s"
-    max_failure_ratio = "0.1"
-    order             = "stop-first"
-  }
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "120s"
+  #   failure_action    = "pause"
+  #   monitor           = "30s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "stop-first"
+  # }
 
   # rollback_config {
   #   parallelism       = 1
