@@ -231,21 +231,21 @@ provider "consul" {
   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 }
 
-resource "consul_config_entry" "GrafanaIngress" {
-  name = "vps1-ingress"
-  kind = "ingress-gateway"
+# resource "consul_config_entry" "GrafanaIngress" {
+#   name = "vps1-ingress"
+#   kind = "ingress-gateway"
 
-  config_json = jsonencode({
-    TLS = {
-      Enabled = false
-    }
-    Listeners = [{
-      Port     = 7880
-      Protocol = "tcp"
-      Services = [{ Name  = "grafana" }]
-    }]
-  })
-}
+#   config_json = jsonencode({
+#     TLS = {
+#       Enabled = false
+#     }
+#     Listeners = [{
+#       Port     = 7880
+#       Protocol = "tcp"
+#       Services = [{ Name  = "grafana" }]
+#     }]
+#   })
+# }
 
 
 
