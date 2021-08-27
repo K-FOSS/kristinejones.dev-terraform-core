@@ -274,7 +274,7 @@ resource "consul_config_entry" "GrafanaIngress" {
     Listeners = [{
       Port     = 7880
       Protocol = "tcp"
-      Services = [{ Name  = "${consul_config_entry.GrafanaTerminatingGateway.name}" }]
+      Services = [{ Name  = "${consul_config_entry.GrafanaTerminatingGateway.name}", Hosts = ["159.203.39.63"] }]
     }]
   })
 }
