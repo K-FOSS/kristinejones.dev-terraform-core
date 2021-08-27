@@ -237,6 +237,32 @@ provider "consul" {
   token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 }
 
+resource "consul_service" "Grafana" {
+  name    = "GrafanaInterface"
+  node    = "${consul_node.Grafana.name}"
+  port    = 8080
+  tags    = ["tag0"]
+}
+
+resource "consul_node" "Grafana" {
+  name    = "GrafanaService"
+  address = "tasks.Grafana"
+
+  meta = {
+    external-node = "true"
+    external-probe = "true"
+  }
+}
+
+resource "consul_config_entry" "GrafanaTerminatingGateway" {
+  name = "GrafanaGateway"
+  kind = "terminating-gateway"
+
+  config_json = jsonencode({
+    Services = [{ Name = "${consul_service.Grafana.name}" }]
+  })
+}
+
 resource "consul_config_entry" "GrafanaIngress" {
   name = "vps1-ingress"
   kind = "ingress-gateway"
@@ -248,7 +274,7 @@ resource "consul_config_entry" "GrafanaIngress" {
     Listeners = [{
       Port     = 7880
       Protocol = "tcp"
-      Services = [{ Name  = "grafana" }]
+      Services = [{ Name  = "${consul_service.Grafana.name}" }]
     }]
   })
 }

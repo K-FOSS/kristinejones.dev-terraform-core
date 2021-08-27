@@ -231,6 +231,8 @@ resource "docker_service" "GrafanaSidecar" {
 
         SERVICE_CONFIG = "/config/Grafana.hcl"
         CENTRAL_CONFIG = "/CentralConfig/GrafanaDefaults.hcl"
+
+        SERVICE_NAME = "GrafanaGateway"
       }
 
       # dir    = "/root"
