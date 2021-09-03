@@ -11,7 +11,7 @@ case ${CONSUL_HOST} in
            echo "Consul2 means Consul1 Consul3"
            ;;
      "Consul3" )
-           RETRY_JOIN="retry-join Consul1 -retry-join Consul2"
+           RETRY_JOIN="-retry-join Consul1 -retry-join Consul2"
            echo "Consul3 means Consul1 Consul2"
            ;;
      * )
