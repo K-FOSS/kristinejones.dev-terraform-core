@@ -3,14 +3,15 @@
   "ui_config": {
     "enabled": true
   },
-  "data_dir": "/Data",
+  "addresses": {
+    "http": "0.0.0.0"
+  },
   "ports": {
     "dns": 8600,
     "http": 8500,
     "https": 8501,
     "grpc": 8502,
-    "server": 8300,
-    "serf_lan": 8301
+    "server": 8300
   },
   "acl": {
     "enabled": true,
