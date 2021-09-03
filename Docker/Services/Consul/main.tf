@@ -231,391 +231,391 @@ resource "docker_service" "Consul" {
 
 
 provider "consul" {
-  address    = "tasks.Consul:8500"
+  address    = "tasks.ConsulCore:8500"
   datacenter = "dc1"
 
-  token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+  #token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
 }
 
-resource "consul_config_entry" "web" {
-  name = "web"
-  kind = "service-defaults"
+# resource "consul_config_entry" "web" {
+#   name = "web"
+#   kind = "service-defaults"
 
-  config_json = jsonencode({
-    Protocol    = "http"
-  })
-}
-
-resource "consul_service" "Grafana" {
-  name    = "GrafanaInterface"
-  node    = "${consul_node.Grafana.name}"
-  port    = 8080
-  tags    = ["tag0"]
-}
-
-resource "consul_config_entry" "Grafana" {
-  name = "${consul_service.Grafana.name}"
-  kind = "service-defaults"
-
-  config_json = jsonencode({
-    Protocol    = "http"
-  })
-}
-
-
-resource "consul_node" "Grafana" {
-  name    = "GrafanaService"
-  address = "tasks.Grafana"
-
-  meta = {
-    external-node = "true"
-    external-probe = "true"
-  }
-}
-
-resource "consul_config_entry" "GrafanaTerminatingGateway" {
-  name = "GrafanaGateway"
-  kind = "terminating-gateway"
-
-  config_json = jsonencode({
-    Services = [{ Name = "${consul_service.Grafana.name}" }]
-  })
-}
-
-resource "consul_config_entry" "GrafanaIngress" {
-  name = "vps1-ingress"
-  kind = "ingress-gateway"
-
-  config_json = jsonencode({
-    TLS = {
-      Enabled = false
-    }
-    Listeners = [{
-      Port     = 7880
-      Protocol = "tcp"
-      Services = [{ Name  = "${consul_service.Grafana.name}" }]
-    }]
-  })
-}
-
-#
-# Consul Mesh DC-DC Gateway
-#
-
-resource "docker_config" "ConsulMeshGatewayEntryScriptConfig" {
-  name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
-  data = base64encode(file("${path.module}/Configs/MeshGateway/start.sh"))
-
-  lifecycle {
-    ignore_changes        = [name]
-    create_before_destroy = true
-  }
-}
-
-
-# resource "consul_acl_policy" "MeshGateway" {
-#   name        = "mesh-gateway"
-#   datacenters = ["dc1"]
-#   rules       = file("${path.module}/Consul/mesh-gateway-policy.hcl")
+#   config_json = jsonencode({
+#     Protocol    = "http"
+#   })
 # }
 
-# resource "consul_acl_token" "MeshGatewayPrimary" {
-#   description = "mesh-gateway primary datacenter token"
-#   policies = ["${consul_acl_policy.MeshGateway.name}"]
-#   local = true
+# resource "consul_service" "Grafana" {
+#   name    = "GrafanaInterface"
+#   node    = "${consul_node.Grafana.name}"
+#   port    = 8080
+#   tags    = ["tag0"]
 # }
 
-resource "docker_service" "ConsulMeshGateway" {
-  name = "ConsulMeshGateway"
+# resource "consul_config_entry" "Grafana" {
+#   name = "${consul_service.Grafana.name}"
+#   kind = "service-defaults"
 
-  task_spec {
-    container_spec {
-      image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
-
-      command = ["/start.sh"]
-
-      #
-      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-      #
-      # labels {
-      #   label = "foo.bar"
-      #   value = "baz"
-      # }
-
-      hostname = "ConsulMeshGateway{{.Task.Slot}}"
-
-      env = {
-        CONSUL_BIND_INTERFACE = "eth0"
-        CONSUL_CLIENT_INTERFACE = "eth0"
-        CONSUL_HTTP_ADDR = "tasks.Consul:8500"
-        CONSUL_GRPC_ADDR = "tasks.Consul:8502"
-        CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
-
-        MESH_HOST = "ConsulMeshGateway{{.Task.Slot}}"
-      }
-
-      # dir    = "/root"
-      #user   = "1000"
-      # groups = ["docker", "foogroup"]
-
-      # privileges {
-      #   se_linux_context {
-      #     disable = true
-      #     user    = "user-label"
-      #     role    = "role-label"
-      #     type    = "type-label"
-      #     level   = "level-label"
-      #   }
-      # }
-
-      # read_only = true
-
-      configs {
-        config_id   = docker_config.ConsulMeshGatewayEntryScriptConfig.id
-        config_name = docker_config.ConsulMeshGatewayEntryScriptConfig.name
-
-        file_name   = "/start.sh"
-        file_uid = "1000"
-        file_mode = 7777
-      }
+#   config_json = jsonencode({
+#     Protocol    = "http"
+#   })
+# }
 
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+# resource "consul_node" "Grafana" {
+#   name    = "GrafanaService"
+#   address = "tasks.Grafana"
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
+#   meta = {
+#     external-node = "true"
+#     external-probe = "true"
+#   }
+# }
 
-      # hosts {
-      #   host = "testhost"
-      #   ip   = "10.0.1.0"
-      # }
+# resource "consul_config_entry" "GrafanaTerminatingGateway" {
+#   name = "GrafanaGateway"
+#   kind = "terminating-gateway"
 
+#   config_json = jsonencode({
+#     Services = [{ Name = "${consul_service.Grafana.name}" }]
+#   })
+# }
 
-      # dns_config {
-      #   nameservers = ["1.1.1.1", "1.0.0.1"]
-      #   search      = ["kristianjones.dev"]
-      #   options     = ["timeout:3"]
-      # }
+# resource "consul_config_entry" "GrafanaIngress" {
+#   name = "vps1-ingress"
+#   kind = "ingress-gateway"
 
-      #
-      # Stolon Database Secrets
-      #
-      # healthcheck {
-      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      #   interval = "5s"
-      #   timeout  = "2s"
-      #   retries  = 4
-      # }
-    }
+#   config_json = jsonencode({
+#     TLS = {
+#       Enabled = false
+#     }
+#     Listeners = [{
+#       Port     = 7880
+#       Protocol = "tcp"
+#       Services = [{ Name  = "${consul_service.Grafana.name}" }]
+#     }]
+#   })
+# }
 
-    runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id]
+# #
+# # Consul Mesh DC-DC Gateway
+# #
 
-    log_driver {
-      name = "loki"
+# resource "docker_config" "ConsulMeshGatewayEntryScriptConfig" {
+#   name = "newconsul-entryconfig-${replace(timestamp(), ":", ".")}"
+#   data = base64encode(file("${path.module}/Configs/MeshGateway/start.sh"))
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
-
-  mode {
-    replicated {
-      replicas = 3
-    }
-  }
-
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "120s"
-  #   failure_action    = "pause"
-  #   monitor           = "30s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "stop-first"
-  # }
-
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
-
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
-
-#
-# Consul Ingress Gateway External-Service Mesh Gateway
-# 
-
-resource "docker_config" "ConsulIngressGatewayEntryScriptConfig" {
-  name = "consulingress-entryconfig-${replace(timestamp(), ":", ".")}"
-  data = base64encode(file("${path.module}/Configs/IngressGateway/start.sh"))
-
-  lifecycle {
-    ignore_changes        = [name]
-    create_before_destroy = true
-  }
-}
-
-resource "docker_service" "ConsulIngressGateway" {
-  name = "ConsulIngressGateway"
-
-  task_spec {
-    container_spec {
-      image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
-
-      command = ["/start.sh"]
-
-      #
-      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-      #
-      # labels {
-      #   label = "foo.bar"
-      #   value = "baz"
-      # }
-
-      hostname = "ConsulIngressGateway{{.Task.Slot}}"
-
-      env = {
-        CONSUL_BIND_INTERFACE = "eth1"
-        CONSUL_CLIENT_INTERFACE = "eth1"
-        CONSUL_HTTP_ADDR = "tasks.Consul:8500"
-        CONSUL_GRPC_ADDR = "tasks.Consul:8502"
-        CONSUL_HTTP_TOKEN = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
-
-        INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
-        SERVICE_NAME = "${consul_config_entry.GrafanaIngress.name}"
-      }
-
-      # dir    = "/root"
-      #user   = "1000"
-      # groups = ["docker", "foogroup"]
-
-      # privileges {
-      #   se_linux_context {
-      #     disable = true
-      #     user    = "user-label"
-      #     role    = "role-label"
-      #     type    = "type-label"
-      #     level   = "level-label"
-      #   }
-      # }
-
-      # read_only = true
-
-      configs {
-        config_id   = docker_config.ConsulIngressGatewayEntryScriptConfig.id
-        config_name = docker_config.ConsulIngressGatewayEntryScriptConfig.name
-
-        file_name   = "/start.sh"
-        file_uid = "1000"
-        file_mode = 7777
-      }
+#   lifecycle {
+#     ignore_changes        = [name]
+#     create_before_destroy = true
+#   }
+# }
 
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+# # resource "consul_acl_policy" "MeshGateway" {
+# #   name        = "mesh-gateway"
+# #   datacenters = ["dc1"]
+# #   rules       = file("${path.module}/Consul/mesh-gateway-policy.hcl")
+# # }
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
+# # resource "consul_acl_token" "MeshGatewayPrimary" {
+# #   description = "mesh-gateway primary datacenter token"
+# #   policies = ["${consul_acl_policy.MeshGateway.name}"]
+# #   local = true
+# # }
 
-      # hosts {
-      #   host = "testhost"
-      #   ip   = "10.0.1.0"
-      # }
+# resource "docker_service" "ConsulMeshGateway" {
+#   name = "ConsulMeshGateway"
+
+#   task_spec {
+#     container_spec {
+#       image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
+
+#       command = ["/start.sh"]
+
+#       #
+#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+#       #
+#       # labels {
+#       #   label = "foo.bar"
+#       #   value = "baz"
+#       # }
+
+#       hostname = "ConsulMeshGateway{{.Task.Slot}}"
+
+#       env = {
+#         CONSUL_BIND_INTERFACE = "eth0"
+#         CONSUL_CLIENT_INTERFACE = "eth0"
+#         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
+#         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
+#         CONSUL_HTTP_TOKEN = "fb3772dd-a44b-2428-971c-c67f321fdcac"
+
+#         MESH_HOST = "ConsulMeshGateway{{.Task.Slot}}"
+#       }
+
+#       # dir    = "/root"
+#       #user   = "1000"
+#       # groups = ["docker", "foogroup"]
+
+#       # privileges {
+#       #   se_linux_context {
+#       #     disable = true
+#       #     user    = "user-label"
+#       #     role    = "role-label"
+#       #     type    = "type-label"
+#       #     level   = "level-label"
+#       #   }
+#       # }
+
+#       # read_only = true
+
+#       configs {
+#         config_id   = docker_config.ConsulMeshGatewayEntryScriptConfig.id
+#         config_name = docker_config.ConsulMeshGatewayEntryScriptConfig.name
+
+#         file_name   = "/start.sh"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
 
 
-      # dns_config {
-      #   nameservers = ["1.1.1.1", "1.0.0.1"]
-      #   search      = ["kristianjones.dev"]
-      #   options     = ["timeout:3"]
-      # }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      #
-      # Stolon Database Secrets
-      #
-      # healthcheck {
-      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      #   interval = "5s"
-      #   timeout  = "2s"
-      #   retries  = 4
-      # }
-    }
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-    runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id]
+#       # hosts {
+#       #   host = "testhost"
+#       #   ip   = "10.0.1.0"
+#       # }
 
-    log_driver {
-      name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       # dns_config {
+#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
+#       #   search      = ["kristianjones.dev"]
+#       #   options     = ["timeout:3"]
+#       # }
 
-  mode {
-    replicated {
-      replicas = 3
-    }
-  }
+#       #
+#       # Stolon Database Secrets
+#       #
+#       # healthcheck {
+#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#       #   interval = "5s"
+#       #   timeout  = "2s"
+#       #   retries  = 4
+#       # }
+#     }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "120s"
-  #   failure_action    = "pause"
-  #   monitor           = "30s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "stop-first"
-  # }
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id]
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#     log_driver {
+#       name = "loki"
 
-  endpoint_spec {
-    mode = "vip"
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-    ports {
-      name           = "grafana-ingress"
-      protocol       = "tcp"
-      target_port    = "7880"
-      published_port = "7880"
-      publish_mode   = "ingress"
-    }
-  }
-}
+#   mode {
+#     replicated {
+#       replicas = 3
+#     }
+#   }
+
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "120s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "30s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "stop-first"
+#   # }
+
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
+
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
+
+# #
+# # Consul Ingress Gateway External-Service Mesh Gateway
+# # 
+
+# resource "docker_config" "ConsulIngressGatewayEntryScriptConfig" {
+#   name = "consulingress-entryconfig-${replace(timestamp(), ":", ".")}"
+#   data = base64encode(file("${path.module}/Configs/IngressGateway/start.sh"))
+
+#   lifecycle {
+#     ignore_changes        = [name]
+#     create_before_destroy = true
+#   }
+# }
+
+# resource "docker_service" "ConsulIngressGateway" {
+#   name = "ConsulIngressGateway"
+
+#   task_spec {
+#     container_spec {
+#       image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
+
+#       command = ["/start.sh"]
+
+#       #
+#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+#       #
+#       # labels {
+#       #   label = "foo.bar"
+#       #   value = "baz"
+#       # }
+
+#       hostname = "ConsulIngressGateway{{.Task.Slot}}"
+
+#       env = {
+#         CONSUL_BIND_INTERFACE = "eth1"
+#         CONSUL_CLIENT_INTERFACE = "eth1"
+#         CONSUL_HTTP_ADDR = "tasks.Consul:8500"
+#         CONSUL_GRPC_ADDR = "tasks.Consul:8502"
+#         CONSUL_HTTP_TOKEN = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+
+#         INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
+#         SERVICE_NAME = "${consul_config_entry.GrafanaIngress.name}"
+#       }
+
+#       # dir    = "/root"
+#       #user   = "1000"
+#       # groups = ["docker", "foogroup"]
+
+#       # privileges {
+#       #   se_linux_context {
+#       #     disable = true
+#       #     user    = "user-label"
+#       #     role    = "role-label"
+#       #     type    = "type-label"
+#       #     level   = "level-label"
+#       #   }
+#       # }
+
+#       # read_only = true
+
+#       configs {
+#         config_id   = docker_config.ConsulIngressGatewayEntryScriptConfig.id
+#         config_name = docker_config.ConsulIngressGatewayEntryScriptConfig.name
+
+#         file_name   = "/start.sh"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
+
+
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
+
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
+
+#       # hosts {
+#       #   host = "testhost"
+#       #   ip   = "10.0.1.0"
+#       # }
+
+
+#       # dns_config {
+#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
+#       #   search      = ["kristianjones.dev"]
+#       #   options     = ["timeout:3"]
+#       # }
+
+#       #
+#       # Stolon Database Secrets
+#       #
+#       # healthcheck {
+#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#       #   interval = "5s"
+#       #   timeout  = "2s"
+#       #   retries  = 4
+#       # }
+#     }
+
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id]
+
+#     log_driver {
+#       name = "loki"
+
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
+
+#   mode {
+#     replicated {
+#       replicas = 3
+#     }
+#   }
+
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "120s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "30s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "stop-first"
+#   # }
+
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
+
+#   endpoint_spec {
+#     mode = "vip"
+
+#     ports {
+#       name           = "grafana-ingress"
+#       protocol       = "tcp"
+#       target_port    = "7880"
+#       published_port = "7880"
+#       publish_mode   = "ingress"
+#     }
+#   }
+# }
