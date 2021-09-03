@@ -33,7 +33,7 @@ data "vault_generic_secret" "keycloakClient" {
 
 provider "keycloak" {
   client_id          = "${var.keycloakClientID}"
-  client_secret      = data.vault_generic_secret.keycloakClient.data["CLIENT_SECRET"]
+  client_secret      = "89fd9ded-08c2-4613-8824-4495bbbdafb3"
   url                = "${var.keycloakProtocol}://${var.keycloakHostname}:${var.keycloakPort}"
 }
 
