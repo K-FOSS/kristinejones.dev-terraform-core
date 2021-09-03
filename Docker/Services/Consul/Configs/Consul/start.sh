@@ -19,4 +19,4 @@ case ${CONSUL_HOST} in
            ;;
 esac
 
-/usr/local/bin/docker-entrypoint.sh agent -server -bind 0.0.0.0  ${RETRY_JOIN} -advertise ${CONSUL_HOST}  -node ${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json
+/usr/local/bin/docker-entrypoint.sh agent -server -bind 0.0.0.0  ${RETRY_JOIN} -advertise '{{ GetInterfaceIP "eth0" }}' -node ${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json
