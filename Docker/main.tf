@@ -736,9 +736,9 @@ resource "docker_service" "Keycloak" {
         test     = ["CMD", "curl", "-f", "http://localhost:8080/auth/realms/master"]
         interval = "5s"
         timeout  = "2s"
-        retries  = 4
+        retries  = 5
 
-        start_period = "2m"
+        start_period = "5m"
       }
 
       # read_only = true
