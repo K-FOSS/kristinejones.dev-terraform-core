@@ -149,19 +149,20 @@ module "CaddySSO" {
 # CoreVault Manager transit for Vault
 #
 
-// module "CoreVaultClient" {
-//   source = "./Clients/CoreVault"
+module "CoreVaultClient" {
+  source = "./Clients/CoreVault"
 
-//   #
-//   # Keycloak Realm
-//   #
-//   realmName = keycloak_realm.kjdev.realm
-//   FIDO2FlowID = "${module.FIDO2-Flow.FIDO2Flow.id}"
+  #
+  # Keycloak Realm
+  #
+  realmName = keycloak_realm.kjdev.realm
+  FIDO2FlowID = module.FIDO2-Flow.FIDO2Flow.id
 
-//   depends_on = [
-//     keycloak_realm.kjdev
-//   ]
-// }
+  depends_on = [
+    keycloak_realm.kjdev,
+    module.FIDO2-Flow.FIDO2Flow
+  ]
+}
 
 #
 # Primary 3 Vault cluster

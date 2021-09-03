@@ -140,15 +140,15 @@ resource "keycloak_role" "VaultSSHAdmin" {
 }
 
 
-resource "keycloak_openid_user_client_role_protocol_mapper" "VaultUserClientRoleMapper" {
-  name           = "vault-role-mapper"
+// resource "keycloak_openid_user_client_role_protocol_mapper" "VaultUserClientRoleMapper" {
+//   name           = "vault-role-mapper"
 
-  realm_id    = data.keycloak_realm.KJDev.id
-  client_id   = keycloak_openid_client.VaultClient.id
+//   realm_id    = data.keycloak_realm.KJDev.id
+//   client_id   = keycloak_openid_client.VaultClient.id
 
-  #
-  # TODO: Figure out WTF this does/how/why
-  #
-  claim_name = format("resource_access.%s.roles", keycloak_openid_client.VaultClient.client_id)                                    
-  multivalued = true
-}
+//   #
+//   # TODO: Figure out WTF this does/how/why
+//   #
+//   claim_name = format("resource_access.%s.roles", keycloak_openid_client.VaultClient.client_id)                                    
+//   multivalued = true
+// }
