@@ -12,7 +12,8 @@
     "http": 8500,
     "https": 8501,
     "grpc": 8502,
-    "server": 8300
+    "server": 8300,
+    "serf_lan": 8301
   },
   "acl": {
     "enabled": true,
@@ -30,5 +31,13 @@
   "encrypt": "${SECRET_KEY}",
   "verify_incoming": false,
   "verify_outgoing": false,
-  "verify_server_hostname": false
+  "verify_server_hostname": false,
+  "rpc": {
+    "enable_streaming": true
+  },
+  "use_streaming_backend": true,
+
+  "telemetry": {
+    "disable_compat_1.9": true
+  }
 }
