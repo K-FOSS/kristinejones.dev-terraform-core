@@ -1,3 +1,3 @@
-output "Grafana" {
-  value = consul_service.Grafana
-}
+// output "Grafana" {
+//   value = consul_service.Grafana
+// }
