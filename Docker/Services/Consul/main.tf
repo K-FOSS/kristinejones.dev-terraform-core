@@ -289,10 +289,10 @@ resource "docker_service" "Consul" {
 
 
 provider "consul" {
-  address    = "tasks.ConsulCore:8500"
+  address    = "tasks.Consul:8500"
   datacenter = "dc1"
 
-  #token = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+  token = local.TOKENS.MASTER_TOKEN
 }
 
 # resource "consul_config_entry" "web" {
