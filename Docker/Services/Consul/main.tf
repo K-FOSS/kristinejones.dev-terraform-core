@@ -295,6 +295,32 @@ provider "consul" {
   token = local.TOKENS.MASTER_TOKEN
 }
 
+#
+# Applications
+#
+
+#
+# Grafana Loki
+#
+
+resource "random_uuid" "LokiToken" { }
+
+
+resource "consul_acl_policy" "LokiACL" {
+  name  = "GrafanaLoki"
+
+  rules = file("${path.module}/Consul/Loki.hcl")
+}
+
+resource "consul_acl_token" "LokiToken" {
+  accessor_id = random_uuid.LokiToken.result
+
+  description = "Grafana Loki Token"
+
+  policies = ["${consul_acl_policy.LokiACL.name}"]
+  local = true
+}
+
 # resource "consul_config_entry" "web" {
 #   name = "web"
 #   kind = "service-defaults"
