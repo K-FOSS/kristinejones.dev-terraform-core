@@ -113,3 +113,10 @@ resource "minio_s3_bucket" "Consul3Data" {
   bucket = "consul3-data"
   acl    = "private"
 }
+
+#
+# Users & Access
+# 
+resource "minio_iam_user" "Cortex" {
+  name = "cortex"
+}
