@@ -18,8 +18,11 @@
     "default_policy": "deny",
     "enable_token_persistence": true,
     "tokens": {
-      "master": "e95b599e-166e-7d80-08ad-aee76e7ddf19",
-      "agent": "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+      "master": "${TOKENS.MASTER_TOKEN}",
+      "default": "${TOKENS.DEFAULT_TOKEN}",
+      "agent": "${TOKENS.AGENT_TOKEN}",
+      "agent_master": "${TOKENS.AGENT_MASTER_TOKEN}",
+      "replication": "${TOKENS.REPLICATION_TOKEN}"
     }
   },
   "connect": { "enabled": true },

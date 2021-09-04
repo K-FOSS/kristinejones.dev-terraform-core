@@ -10,6 +10,11 @@ terraform {
       version = "2.15.0"
     }
 
+    random = {
+      source = "hashicorp/random"
+      version = "3.1.0"
+    }
+
     time = {
       source = "hashicorp/time"
       version = "0.7.2"
@@ -21,17 +26,70 @@ data "docker_network" "meshSpineNet" {
   name = "meshSpineNet"
 }
 
+resource "random_uuid" "MasterToken" {
+}
+
+resource "random_uuid" "DefaultToken" {
+}
+
+resource "random_uuid" "AgentToken" {
+}
+
+resource "random_uuid" "AgentMasterToken" {
+}
+
+resource "random_uuid" "ReplicationToken" {
+}
+
+#
+# Docs: https://www.consul.io/docs/agent/options#acl_tokens
+#
+locals {
+  TOKENS = {
+    #
+    # Docs: https://www.consul.io/docs/agent/options#acl_tokens_master
+    #
+    MASTER_TOKEN = random_uuid.MasterToken.result
+
+    #
+    # Docs: https://www.consul.io/docs/agent/options#acl_tokens_default
+    # 
+    DEFAULT_TOKEN = random_uuid.DefaultToken.result
+
+    #
+    # Docs: https://www.consul.io/docs/agent/options#acl_tokens_agent
+    #  
+    AGENT_TOKEN = random_uuid.AgentToken.result
+
+    #
+    # Docs: https://www.consul.io/docs/agent/options#acl_tokens_agent_master
+    #
+    AGENT_MASTER_TOKEN = random_uuid.AgentMasterToken.result
+
+    #
+    # Docs: https://www.consul.io/docs/agent/options#acl_tokens_replication
+    #
+    REPLICATION_TOKEN = random_uuid.ReplicationToken.result
+  }
+}
 
 # data "docker_network" "hashicorpSpineNet" {
 #   name = "hashicorpSpineNet"
 # }
 
+#
+# Docker Configs
+# 
+
 resource "docker_config" "ConsulConfig" {
   name = "newconsul-config-${replace(timestamp(), ":", ".")}"
+
   data = base64encode(
     templatefile("${path.module}/Configs/Consul/config.json",
       {
         SECRET_KEY = var.Secret
+
+        TOKENS = local.TOKENS
       }
     )
   )
