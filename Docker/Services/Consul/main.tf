@@ -325,6 +325,25 @@ resource "consul_acl_token" "LokiToken" {
 # Grafana Cortex
 #
 
+resource "random_uuid" "CortexToken" { }
+
+
+resource "consul_acl_policy" "CortexACL" {
+  name  = "GrafanaCortex"
+
+  rules = file("${path.module}/Consul/Cortex.hcl")
+}
+
+resource "consul_acl_token" "CortexToken" {
+  accessor_id = random_uuid.CortexToken.result
+
+  description = "Grafana Cortex Token"
+
+  policies = ["${consul_acl_policy.CortexACL.name}"]
+  local = true
+}
+
+
 # resource "consul_config_entry" "web" {
 #   name = "web"
 #   kind = "service-defaults"
