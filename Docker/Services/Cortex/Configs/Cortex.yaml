@@ -229,7 +229,7 @@ blocks_storage:
         addresses: dns+CortexMemcached:11211
 
   s3:
-    endpoint: s3core.kristianjones.dev:9000
+    endpoint: tasks.MinioWeb:9000
     bucket_name: cortex-tsdb
     access_key_id: ${MINIO_ACCESSKEY}
     secret_access_key: ${MINIO_SECRETKEY}
@@ -311,7 +311,7 @@ ruler_storage:
   backend: s3
   s3:
     bucket_name: cortex-ruler
-    endpoint: s3core.kristianjones.dev:9000
+    endpoint: tasks.MinioWeb:9000
     access_key_id: ${MINIO_ACCESSKEY}
     secret_access_key: ${MINIO_SECRETKEY}
     insecure: true
@@ -354,7 +354,7 @@ alertmanager_storage:
   backend: s3
   s3:
     bucket_name: cortex-alertmanager
-    endpoint: s3core.kristianjones.dev:9000
+    endpoint: tasks.MinioWeb:9000
     access_key_id: ${MINIO_ACCESSKEY}
     secret_access_key: ${MINIO_SECRETKEY}
     insecure: true
