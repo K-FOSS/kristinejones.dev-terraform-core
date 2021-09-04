@@ -17,7 +17,7 @@ provider "grafana" {
 resource "grafana_data_source" "prometheus" {
   type = "prometheus"
   name = "prometheus"
-  url  = "http://Prometheus:9090"
+  url  = "http://tasks.CortexQueryFrontend:8080/prometheus"
 
   access_mode = "proxy"
 
