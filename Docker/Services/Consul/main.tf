@@ -321,6 +321,10 @@ resource "consul_acl_token" "LokiToken" {
   local = true
 }
 
+#
+# Grafana Cortex
+#
+
 # resource "consul_config_entry" "web" {
 #   name = "web"
 #   kind = "service-defaults"

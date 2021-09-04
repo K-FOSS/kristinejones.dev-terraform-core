@@ -872,7 +872,7 @@ resource "docker_service" "Keycloak" {
       }
     }
 
-    force_update = 1
+    force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id, data.docker_network.meshSpineNet.id]
   
@@ -896,9 +896,9 @@ resource "docker_service" "Keycloak" {
   # 
   update_config {
     parallelism       = 1
-    delay             = "1m"
+    delay             = "3m"
     failure_action    = "pause"
-    monitor           = "45s"
+    monitor           = "120s"
     max_failure_ratio = "0.2"
     order             = "stop-first"
   }
@@ -913,27 +913,7 @@ resource "docker_service" "Keycloak" {
   # }
 
   endpoint_spec {
-    mode = "vip"
-
-
-    #
-    # RADIUS
-    #
-    ports {
-      name           = "radius-auth"
-      protocol       = "udp"
-      target_port    = "1812"
-      published_port = "1812"
-      publish_mode   = "ingress"
-    }
-
-    ports {
-      name           = "radius-acct"
-      protocol       = "udp"
-      target_port    = "1813"
-      published_port = "1813"
-      publish_mode   = "ingress"
-    }
+    mode = "dnsrr"
   }
 }
 
@@ -1025,7 +1005,7 @@ resource "docker_service" "Bitwarden" {
       # }
     }
 
-    force_update = 1
+    force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.publicSpineNet.id, data.docker_network.meshSpineNet.id]
   }
@@ -2983,7 +2963,7 @@ resource "docker_service" "RocketChat" {
       # }
     }
 
-    force_update = 1
+    force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.publicSpineNet.id, data.docker_network.meshSpineNet.id, data.docker_network.rocketChatIntNet.id]
   }
