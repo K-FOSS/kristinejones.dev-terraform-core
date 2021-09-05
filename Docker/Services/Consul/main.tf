@@ -256,7 +256,7 @@ resource "docker_service" "Consul" {
 
   mode {
     replicated {
-      replicas = 3
+      replicas = 5
     }
   }
 
