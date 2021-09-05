@@ -3,7 +3,7 @@ RETRY_JOIN=""
 
 case ${CONSUL_HOST} in
      "Consul1" )
-           RETRY_JOIN="-bootstrap"
+           RETRY_JOIN="-retry-join Consul2 -retry-join Consul3 -retry-join Consul4 -retry-join Consul5"
            echo "Consul1 means Consul2 Consul3"
            ;;
      "Consul2" )
@@ -27,4 +27,4 @@ case ${CONSUL_HOST} in
            ;;
 esac
 
-/usr/local/bin/docker-entrypoint.sh agent -server ${RETRY_JOIN} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json
+/usr/local/bin/docker-entrypoint.sh agent -server ${RETRY_JOIN} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json -bootstrap-expect 4
