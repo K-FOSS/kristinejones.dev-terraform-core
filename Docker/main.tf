@@ -308,6 +308,15 @@ module "Cortex" {
 
   LogLevel = "warn"
 
+  Consul = {
+    HOSTNAME = "tasks.Consul"
+    PORT = 8500
+
+    ACL_TOKEN = module.NewConsul.CortexToken.accessor_id
+
+    PREFIX = "Cortex"
+  }
+
   MinioCreds = {
     ACCESS_KEY = data.vault_generic_secret.MinioCreds.data["ACCESS_KEY"]
     SECRET_KEY = data.vault_generic_secret.MinioCreds.data["SECRET_KEY"]

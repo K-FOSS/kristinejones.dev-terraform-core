@@ -8,6 +8,19 @@ variable "MinioCreds" {
   description = "Minio/S3 Access Credentials"
 }
 
+variable "Consul" {
+  type = object({
+    HOSTNAME = string
+    PORT = number
+
+    ACL_TOKEN = string
+    PREFIX = string
+  })
+  sensitive = true
+
+  description = "Consul Configuration"
+}
+
 variable "Target" {
   type = string
 

@@ -27,8 +27,7 @@ resource "docker_config" "CortexConfig" {
         # Clustering
         #
 
-        CONSUL_ADDR = "tasks.ConsulCore"
-        CONSUL_PORT = "8500"
+        CONSUL = var.Consul
 
         #
         # S3/Minio

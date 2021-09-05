@@ -99,12 +99,18 @@ distributor:
   # metric name.
   shard_by_all_labels: true
 
+
   ring:
     kvstore:
       store: consul
-      prefix: cortex/collectors/
+      prefix: ${CONSUL.PREFIX}/collectors/
+
+      #
+      # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#consul_config
+      #
       consul:
-        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+        host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+        acl_token: ${CONSUL.ACL_TOKEN}
 
 
 #
@@ -139,9 +145,14 @@ ingester:
     ring:
       kvstore:
         store: consul
-        prefix: cortex/collectors/
+        prefix: ${CONSUL.PREFIX}/collectors/
+
+        #
+        # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#consul_config
+        #
         consul:
-          host: ${CONSUL_ADDR}:${CONSUL_PORT}
+          host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+          acl_token: ${CONSUL.ACL_TOKEN}
       replication_factor: 1
 
 
@@ -248,10 +259,14 @@ compactor:
   sharding_ring:
     kvstore:
       store: consul
-      prefix: cortex/collectors/
-      consul:
-        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+      prefix: ${CONSUL.PREFIX}/collectors/
 
+      #
+      # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#consul_config
+      #
+      consul:
+        host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+        acl_token: ${CONSUL.ACL_TOKEN}
 
 
 #
@@ -265,9 +280,14 @@ store_gateway:
     heartbeat_timeout: 15s
     kvstore:
       store: consul
-      prefix: cortex/collectors/
+      prefix: ${CONSUL.PREFIX}/collectors/
+
+      #
+      # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#consul_config
+      #
       consul:
-        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+        host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+        acl_token: ${CONSUL.ACL_TOKEN}
 
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#purger_config
@@ -297,9 +317,14 @@ ruler:
     heartbeat_timeout: 15s
     kvstore:
       store: consul
-      prefix: cortex/rulers/
+      prefix: ${CONSUL.PREFIX}/rulers/
+
+      #
+      # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#consul_config
+      #
       consul:
-        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+        host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+        acl_token: ${CONSUL.ACL_TOKEN}
 
   alertmanager_url: http://CortexAlertManager1:8080/alertmanager,http://CortexAlertManager2:8080/alertmanager,http://CortexAlertManager3:8080/alertmanager
   enable_alertmanager_v2: false
@@ -343,9 +368,14 @@ alertmanager:
     heartbeat_timeout: 15s
     kvstore:
       store: consul
-      prefix: cortex/alertmanagers/
+      prefix: ${CONSUL.PREFIX}/alertmanagers/
+
+      #
+      # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#consul_config
+      #
       consul:
-        host: ${CONSUL_ADDR}:${CONSUL_PORT}
+        host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+        acl_token: ${CONSUL.ACL_TOKEN}
 
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#alertmanager_storage_config
