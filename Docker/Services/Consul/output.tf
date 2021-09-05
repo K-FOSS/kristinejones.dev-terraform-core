@@ -6,18 +6,18 @@
 # Grafana Loki
 #
 
-output "LokiToken" {
-  value = consul_acl_token.LokiToken
-}
+# output "LokiToken" {
+#   value = consul_acl_token.LokiToken
+# }
 
-#
-# Grafana Cortex
-#
+# #
+# # Grafana Cortex
+# #
 
-output "CortexACL" {
-  value = consul_acl_policy.CortexACL
-}
+# output "CortexACL" {
+#   value = "test"
+# }
 
-output "CortexToken" {
-  value = consul_acl_token.CortexToken
-}
+# output "CortexToken" {
+#   value = consul_acl_token.CortexToken
+# }
