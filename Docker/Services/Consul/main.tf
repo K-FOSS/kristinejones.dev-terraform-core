@@ -288,12 +288,12 @@ resource "docker_service" "Consul" {
 
 
 
-provider "consul" {
-  address    = "tasks.Consul:8500"
-  datacenter = "dc1"
+# provider "consul" {
+#   address    = "tasks.Consul:8500"
+#   datacenter = "dc1"
 
-  token = local.TOKENS.MASTER_TOKEN
-}
+#   token = local.TOKENS.MASTER_TOKEN
+# }
 
 #
 # Applications
