@@ -264,11 +264,11 @@ resource "docker_service" "Consul" {
   # TODO: Finetune this
   # 
   update_config {
-    parallelism       = 1
-    delay             = "120s"
+    parallelism       = 2
+    delay             = "0s"
     failure_action    = "pause"
-    monitor           = "120s"
-    max_failure_ratio = "0.1"
+    monitor           = "0s"
+    max_failure_ratio = "0.8"
     order             = "stop-first"
   }
 
