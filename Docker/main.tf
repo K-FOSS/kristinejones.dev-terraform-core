@@ -312,7 +312,7 @@ module "Cortex" {
     HOSTNAME = "tasks.Consul"
     PORT = 8500
 
-    ACL_TOKEN = module.NewConsul.CortexToken.accessor_id
+    ACL_TOKEN = "2f43b65f-65a8-00df-724b-4982a1c2fe4f"
 
     PREFIX = "Cortex"
   }
