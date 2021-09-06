@@ -99,6 +99,8 @@ frontend:
   # TODO: Figure this out
   # tail_proxy_url
 
+  scheduler_address: tasks.LokiQueryScheduler:8085
+
 
 #
 # Docs: https://grafana.com/docs/loki/latest/configuration/#queryrange_config
