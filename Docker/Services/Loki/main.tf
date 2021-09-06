@@ -12,9 +12,9 @@ data "docker_network" "meshSpineNet" {
 }
 
 resource "docker_config" "LokiConfig" {
-  name = "cortex-${var.Target}config-${replace(timestamp(), ":", ".")}"
+  name = "loki-${var.Target}config-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.module}/Configs/Cortex.yaml",
+    templatefile("${path.module}/Configs/Loki.yaml",
       {
         #
         # General
