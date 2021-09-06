@@ -622,7 +622,7 @@ locals {
     },
     QueryScheduler = {
       target = "query-scheduler"
-      replicas = 3
+      replicas = 1
       name = "QueryScheduler"
     }
 
