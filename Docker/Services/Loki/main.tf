@@ -34,8 +34,8 @@ resource "docker_config" "LokiConfig" {
         #
         # S3/Minio
         #
-        MINIO_ACCESSKEY = "${var.MinioCreds.ACCESS_KEY}",
-        MINIO_SECRETKEY = "${var.MinioCreds.SECRET_KEY}",
+        MINIO_ACCESSKEY = "${var.S3.ACCESS_KEY}",
+        MINIO_SECRETKEY = "${var.S3.SECRET_KEY}",
       }
     )
   )
