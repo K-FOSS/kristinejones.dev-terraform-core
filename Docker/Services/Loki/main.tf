@@ -65,7 +65,7 @@ resource "docker_service" "Loki" {
       #
       configs {
         config_id   = docker_config.LokiConfig.id
-        config_name = docker_config.LoikConfig.name
+        config_name = docker_config.LokiConfig.name
 
         file_name   = "/Configs/Config.yaml"
       }
