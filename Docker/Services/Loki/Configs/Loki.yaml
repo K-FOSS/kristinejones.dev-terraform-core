@@ -67,6 +67,8 @@ distributor:
 # Docs: https://grafana.com/docs/loki/latest/configuration/#querier_config
 #
 querier:
+  query_ingesters_within: 2h
+  query_timeout: 5m
   # Configuration options for the LogQL engine.
   engine:
     # Timeout for query execution
