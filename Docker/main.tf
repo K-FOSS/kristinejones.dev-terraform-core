@@ -1462,6 +1462,144 @@ resource "random_password" "NetBoxSecret" {
   override_special = "_%@"
 }
 
+resource "random_password" "NetboxRedisPassword" {
+  length           = 16
+  special          = true
+}
+
+resource "docker_service" "NetboxRedis" {
+  name = "NetboxRedis"
+
+  task_spec {
+    container_spec {
+      image = "redis:6-alpine"
+
+      hostname = "NetboxRedis"
+
+      args = ["redis-server", "--requirepass ${random_password.NetboxRedisPassword.result}"]
+    }
+
+    #
+    # TODO: Finetune this
+    #
+    # resources {
+    #   limits {
+    #     memory_bytes = 16777216
+    #   }
+    # }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.protectedSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+}
+
+
+resource "random_password" "NetboxRedisCachePassword" {
+  length           = 16
+  special          = true
+}
+
+
+resource "docker_service" "NetboxRedisCache" {
+  name = "NetboxRedisCache"
+
+  task_spec {
+    container_spec {
+      image = "redis:6-alpine"
+
+      args = ["redis-server", "--requirepass ${random_password.NetboxRedisCachePassword.result}"]
+
+      hostname = "NetboxRedisCache"
+    }
+
+    #
+    # TODO: Finetune this
+    #
+    # resources {
+    #   limits {
+    #     memory_bytes = 16777216
+    #   }
+    # }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.protectedSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+}
+
 resource "docker_service" "Netbox" {
   name = "Netbox"
 
@@ -1484,6 +1622,27 @@ resource "docker_service" "Netbox" {
 
         REMOTE_AUTH_HEADER = "HTTP_X_TOKEN_USER_NAME"
         REMOTE_AUTH_DEFAULT_PERMISSIONS = "None"
+
+        #
+        # Redis
+        #
+
+        #
+        # Redis Core
+        #
+        REDIS_DATABASE = "0"
+        REDIS_HOST = "${docker_service.NetboxRedis.task_spec.container_spec.hostname}"
+        REDIS_PASSWORD = "${random_password.NetboxRedisPassword.result}"
+        REDIS_SSL = "false"
+
+        #
+        # Redis Cache
+        #
+        REDIS_CACHE_DATABASE = "1"
+        REDIS_CACHE_HOST = "${docker_service.NetboxRedisCache.task_spec.container_spec.hostname}"
+        REDIS_CACHE_PASSWORD = "${random_password.NetboxRedisCachePassword.result}"
+        REDIS_CACHE_SSL = "false"
+
       }
     }
 
