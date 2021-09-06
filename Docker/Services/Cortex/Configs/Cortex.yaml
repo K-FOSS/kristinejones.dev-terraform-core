@@ -176,6 +176,9 @@ limits:
   # Limit max query time range to 31d
   max_query_length: 744h
 
+  # Maximum number of label names per series.
+  max_label_names_per_series: 64
+
 #
 # Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#frontend_worker_config
 #
