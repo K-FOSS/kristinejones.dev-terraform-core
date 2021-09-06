@@ -70,6 +70,11 @@ resource "docker_service" "Loki" {
         file_name   = "/Configs/Config.yaml"
       }
 
+      mounts {
+        target    = "/loki/tmp"
+        type      = "tmpfs"
+      }
+
     }
 
     #

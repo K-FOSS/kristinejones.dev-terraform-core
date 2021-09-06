@@ -204,14 +204,14 @@ storage_config:
   boltdb_shipper:
     # Directory where ingesters would write boltdb files which would then be
     # uploaded by shipper to configured storage
-    active_index_directory: /data/index
+    active_index_directory: /tmp/loki/index
 
     # Shared store for keeping boltdb files. Supported types: gcs, s3, azure,
     # filesystem
     shared_store: s3
 
     # Cache location for restoring boltDB files for queries
-    cache_location: /data/boltdb-cache
+    cache_location: /tmp/loki/boltdb-cache
 
     index_gateway_client:
       # "Hostname or IP of the Index Gateway gRPC server.
@@ -271,7 +271,7 @@ schema_config:
 # 
 compactor:
   compaction_interval: 1m
-  working_directory: /tmp/cortex-compactor
+  working_directory: /tmp/loki-compactor
   retention_enabled: true
   shared_store: s3
 
