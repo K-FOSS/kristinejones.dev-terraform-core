@@ -76,7 +76,7 @@ querier:
 
     # The maximum amount of time to look back for log lines. Only
     # applicable for instant log queries.
-    max_look_back_period: 30s
+    #max_look_back_period: 30s
 
 #
 # Docs: https://grafana.com/docs/loki/latest/configuration/#query_frontend_config
@@ -293,14 +293,18 @@ frontend_worker:
   grpc_client_config:
     max_send_msg_size: 1.048576e+08
   parallelism: 6
-  scheduler_address: tasks.QueryScheduler:8085
+  scheduler_address: tasks.LokiQueryScheduler:8085
 
 #
 # Docs: https://grafana.com/docs/loki/latest/configuration/#table_manager_config
 #
 # TODO: Learn about this
 #
-#table_manager:
+table_manager:
+  creation_grace_period: 3h
+  poll_interval: 10m
+  retention_deletes_enabled: false
+  retention_period: 0
 
 #
 # Docs: https://grafana.com/docs/loki/latest/configuration/#runtime-configuration-file
