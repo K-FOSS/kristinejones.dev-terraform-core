@@ -1631,7 +1631,7 @@ resource "docker_service" "Netbox" {
         # Redis Core
         #
         REDIS_DATABASE = "0"
-        REDIS_HOST = "${docker_service.NetboxRedis.task_spec[0].container_spec.hostname}"
+        REDIS_HOST = "${docker_service.NetboxRedis.task_spec[0].container_spec[0].hostname}"
         REDIS_PASSWORD = "${random_password.NetboxRedisPassword.result}"
         REDIS_SSL = "false"
 
@@ -1639,7 +1639,7 @@ resource "docker_service" "Netbox" {
         # Redis Cache
         #
         REDIS_CACHE_DATABASE = "1"
-        REDIS_CACHE_HOST = "${docker_service.NetboxRedisCache.task_spec[0].container_spec.hostname}"
+        REDIS_CACHE_HOST = "${docker_service.NetboxRedisCache.task_spec[0].container_spec[0].hostname}"
         REDIS_CACHE_PASSWORD = "${random_password.NetboxRedisCachePassword.result}"
         REDIS_CACHE_SSL = "false"
 
