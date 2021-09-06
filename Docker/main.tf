@@ -642,7 +642,7 @@ module "Loki" {
 
   source = "./Services/Loki"
 
-  Version = "2.3.0"
+  Version = "latest"
 
   Target = each.value.target
 
