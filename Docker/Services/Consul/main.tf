@@ -303,45 +303,45 @@ provider "consul" {
 # Grafana Loki
 #
 
-# resource "random_uuid" "LokiToken" { }
+resource "random_uuid" "LokiToken" { }
 
 
-# resource "consul_acl_policy" "LokiACL" {
-#   name  = "GrafanaLoki"
+resource "consul_acl_policy" "LokiACL" {
+  name  = "GrafanaLoki"
 
-#   rules = file("${path.module}/Consul/Loki.hcl")
-# }
+  rules = file("${path.module}/Consul/Loki.hcl")
+}
 
-# resource "consul_acl_token" "LokiToken" {
-#   accessor_id = random_uuid.LokiToken.result
+resource "consul_acl_token" "LokiToken" {
+  accessor_id = random_uuid.LokiToken.result
 
-#   description = "Grafana Loki Token"
+  description = "Grafana Loki Token"
 
-#   policies = ["${consul_acl_policy.LokiACL.name}"]
-#   local = true
-# }
+  policies = ["${consul_acl_policy.LokiACL.name}"]
+  local = true
+}
 
-# #
-# # Grafana Cortex
-# #
+#
+# Grafana Cortex
+#
 
-# resource "random_uuid" "CortexToken" { }
+resource "random_uuid" "CortexToken" { }
 
 
-# resource "consul_acl_policy" "CortexACL" {
-#   name  = "GrafanaCortex"
+resource "consul_acl_policy" "CortexACL" {
+  name  = "GrafanaCortex"
 
-#   rules = file("${path.module}/Consul/Cortex.hcl")
-# }
+  rules = file("${path.module}/Consul/Cortex.hcl")
+}
 
-# resource "consul_acl_token" "CortexToken" {
-#   accessor_id = random_uuid.CortexToken.result
+resource "consul_acl_token" "CortexToken" {
+  accessor_id = random_uuid.CortexToken.result
 
-#   description = "Grafana Cortex Token"
+  description = "Grafana Cortex Token"
 
-#   policies = ["${consul_acl_policy.CortexACL.name}"]
-#   local = true
-# }
+  policies = ["${consul_acl_policy.CortexACL.name}"]
+  local = true
+}
 
 
 # resource "consul_config_entry" "web" {
