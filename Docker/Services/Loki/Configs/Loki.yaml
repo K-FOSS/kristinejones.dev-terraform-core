@@ -1,0 +1,325 @@
+# all, compactor, distributor, ingester, querier, query-frontend, table-manager.
+target: ${TARGET}
+
+
+#
+# TODO: Figure out SSO & M2M
+#
+auth_enabled: false
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#server_config
+#
+server:
+  #
+  # HTTP Server
+  #
+  http_listen_address: 0.0.0.0
+  http_listen_port: 8080
+
+  #
+  # GRPC Server
+  #
+  grpc_listen_address: 0.0.0.0
+  grpc_listen_port: 8085
+
+  #
+  # Cleanly Shutdown
+  # 
+  graceful_shutdown_timeout: 5s
+
+
+  grpc_server_max_concurrent_streams: 1000
+  grpc_server_max_recv_msg_size: 1.048576e+08
+  grpc_server_max_send_msg_size: 1.048576e+08
+
+  http_server_idle_timeout: 120s
+  http_server_write_timeout: 6m
+
+  #
+  # Misc
+  # 
+
+  # Log only messages with the given severity or above. Supported values [debug,
+  # info, warn, error]
+  # CLI flag: -log.level
+  log_level: ${LOG_LEVEL}
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#distributor_config
+#
+distributor:
+  ring:
+    kvstore:
+      store: consul
+      prefix: ${CONSUL.PREFIX}/collectors/
+
+      #
+      # Docs: https://grafana.com/docs/loki/latest/configuration/#consul_config
+      #
+      # Configuration for a Consul client. Only applies if store is "consul"
+      consul:
+        host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+        acl_token: ${CONSUL.ACL_TOKEN}
+
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#querier_config
+#
+querier:
+  # Configuration options for the LogQL engine.
+  engine:
+    # Timeout for query execution
+    timeout: 5m
+
+    # The maximum amount of time to look back for log lines. Only
+    # applicable for instant log queries.
+    max_look_back_period: 30s
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#query_frontend_config
+#
+frontend:
+  # Maximum number of outstanding requests per tenant per frontend; requests
+  # beyond this error with HTTP 429.
+  #
+  # TODO: Some intelligence with AlertManager/Cortex/Prometheus for tracing speific 429 errors with this config
+  max_outstanding_per_tenant: 512
+
+  # Compress HTTP responses.
+  compress_responses: true
+
+  # Log queries that are slower than the specified duration. Set to 0 to disable.
+  # Set to < 0 to enable on all queries.
+  log_queries_longer_than: 5s
+
+  # URL of querier for tail proxy.
+  # TODO: Figure this out
+  # tail_proxy_url
+
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#queryrange_config
+#
+query_range:
+  # Split queries by an interval and execute in parallel, 0 disables it. You
+  # should use in multiple of 24 hours (same as the storage bucketing scheme),
+  # to avoid queriers downloading and processing the same chunks. This also
+  # determines how cache keys are chosen when result caching is enabled
+  split_queries_by_interval: 30m
+
+  # Mutate incoming queries to align their start and end with their step.
+  align_queries_with_step: true
+
+  results_cache:
+    #
+    # 
+    #
+    cache:
+      memcached_client:
+        addresses: ${MEMCACHED.HOSTNAME}:${MEMCACHED.PORT}
+  
+  # Cache query results.
+  cache_results: true
+
+  # Maximum number of retries for a single request; beyond this, the downstream
+  # error is returned.
+  max_retries: 5
+
+  # Perform query parallelisations based on storage sharding configuration and
+  # query ASTs. This feature is supported only by the chunks storage engine.
+  parallelise_shardable_queries: true
+
+
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#ruler_config
+#
+# TODO: Learn
+#
+# ruler:
+
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#ingester_client_config
+#
+ingester_client:
+  # Configures how connections are pooled
+  pool_config:
+    # Whether or not to do health checks.
+    # CLI flag: -distributor.health-check-ingesters
+    health_check_ingesters: true
+
+    # How frequently to clean up clients for servers that have gone away after
+    # a health check.
+    # CLI flag: -distributor.client-cleanup-period
+    client_cleanup_period: 15s
+
+    # How quickly a dead client will be removed after it has been detected
+    # to disappear. Set this to a value to allow time for a secondary
+    # health check to recover the missing client.
+    remotetimeout: 60s
+
+
+  # The remote request timeout on the client side.
+  remote_timeout: 1s
+
+  #
+  # Docs: https://grafana.com/docs/loki/latest/configuration/#grpc_client_config
+  #
+  # Configures how the gRPC connection to ingesters work as a client
+  grpc_client_config:
+    max_recv_msg_size: 6.7108864e+07
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#ingester_config
+#
+ingester:
+  # Configures how the lifecycle of the ingester will operate
+  # and where it will register for discovery.
+  lifecycler:
+    # We want to start immediately.
+    join_after: 0
+    final_sleep: 0s
+    num_tokens: 512
+
+    ring:
+      replication_factor: 1
+      kvstore:
+        store: consul
+        prefix: ${CONSUL.PREFIX}/collectors/
+        # 
+        # Docs: https://grafana.com/docs/loki/latest/configuration/#consul_config
+        #
+        # The consul_config configures the consul client.
+        consul:
+          host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+          acl_token: ${CONSUL.ACL_TOKEN}
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#storage_config
+#
+storage_config:
+  # Configures storing index in an Object Store(GCS/S3/Azure/Swift/Filesystem) in the form of boltdb files.
+  boltdb_shipper:
+    # Directory where ingesters would write boltdb files which would then be
+    # uploaded by shipper to configured storage
+    active_index_directory: /data/index
+
+    # Shared store for keeping boltdb files. Supported types: gcs, s3, azure,
+    # filesystem
+    shared_store: s3
+
+    # Cache location for restoring boltDB files for queries
+    cache_location: /data/boltdb-cache
+
+    index_gateway_client:
+      # "Hostname or IP of the Index Gateway gRPC server.
+      server_address: tasks.LokiIndexGateway:9008
+
+
+  aws:
+    endpoint: tasks.MinioWeb:9000
+    bucketnames: loki
+    access_key_id: ${MINIO_ACCESSKEY}
+    secret_access_key: ${MINIO_SECRETKEY}
+    s3forcepathstyle: true
+    insecure: true
+
+
+  #
+  # Docs: https://grafana.com/docs/loki/latest/configuration/#cache_config
+  #
+  # Config for how the cache for index queries should be built.
+  #
+  index_queries_cache_config:
+    memcached:
+      batch_size: 256
+      parallelism: 10
+    memcached_client:
+      addresses: ${MEMCACHED.HOSTNAME}:${MEMCACHED.PORT}
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#chunk_store_config
+#
+chunk_store_config:
+  chunk_cache_config:
+    memcached:
+      batch_size: 256
+      parallelism: 10
+    memcached_client:
+      addresses: ${MEMCACHED.HOSTNAME}:${MEMCACHED.PORT}
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#schema_config
+#
+schema_config:
+  #
+  # Docs: https://grafana.com/docs/loki/latest/configuration/#period_config
+  #
+  configs:
+    - from: "2020-07-30"
+      index:
+        period: 24h
+        prefix: loki_boltdb_shipper_index_
+      object_store: s3
+      schema: v11
+      store: boltdb-shipper
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#compactor_config
+# 
+compactor:
+  compaction_interval: 30s
+  data_dir: /tmp/cortex-compactor
+  consistency_delay: 1m
+  sharding_enabled: true
+  cleanup_interval: 1m
+  tenant_cleanup_delay: 1m
+  sharding_ring:
+    kvstore:
+      store: consul
+      prefix: ${CONSUL.PREFIX}/collectors/
+      #
+      # Docs: https://grafana.com/docs/loki/latest/configuration/#consul_config
+      #
+      consul:
+          host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
+          acl_token: ${CONSUL.ACL_TOKEN}
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#limits_config
+#
+limits_config:
+  # Limit max query time range to 31d
+  max_query_length: 744h
+
+#
+# Docs: https://cortexmetrics.io/docs/configuration/configuration-file/#frontend_worker_config
+#
+frontend_worker:
+  grpc_client_config:
+    max_send_msg_size: 1.048576e+08
+  parallelism: 6
+  scheduler_address: tasks.QueryScheduler:8080
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#table_manager_config
+#
+# TODO: Learn about this
+#
+#table_manager:
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#runtime-configuration-file
+#
+# TODO: Learn about this
+#
+
+#
+# Docs: https://grafana.com/docs/loki/latest/configuration/#tracing_config
+# ENV VARS: https://www.jaegertracing.io/docs/1.16/client-features/
+# 
+# TODO: Setup Tempo
+#
+# tracing:

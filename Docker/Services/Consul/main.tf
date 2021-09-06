@@ -321,6 +321,10 @@ resource "consul_acl_token" "LokiToken" {
   local = true
 }
 
+data "consul_acl_token_secret_id" "LokiToken" {
+  accessor_id = consul_acl_token.LokiToken.id
+}
+
 #
 # Grafana Cortex
 #

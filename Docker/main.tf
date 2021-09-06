@@ -519,6 +519,160 @@ resource "docker_service" "cAdvisor" {
 # Website:
 # Docs:
 # Config Reference: https://grafana.com/docs/loki/latest/configuration/
+#
+
+#
+# Loki Sidecars
+# 
+resource "docker_service" "LokiMemcached" {
+  name = "LokiMemcached"
+
+  task_spec {
+    container_spec {
+      image = "memcached:1.6"
+
+      hostname = "LokiMemcached"
+    }
+
+    #
+    # TODO: Fine Tune
+    #
+
+    # resources {
+    #   limits {
+    #     memory_bytes = 16777216
+    #   }
+    # }
+
+    force_update = 0
+    runtime      = "container"
+
+    networks     = [data.docker_network.meshSpineNet.id]
+
+    log_driver {
+      name = "loki"
+
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
+
+  mode {
+    replicated {
+      replicas = 1
+    }
+  }
+
+  #
+  # TODO: Finetune this
+  # 
+  # update_config {
+  #   parallelism       = 1
+  #   delay             = "10s"
+  #   failure_action    = "pause"
+  #   monitor           = "5s"
+  #   max_failure_ratio = "0.1"
+  #   order             = "start-first"
+  # }
+
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
+}
+
+locals {
+  LOKI_LOG_LEVEL = "WARN"
+
+  LOKI_TARGETS = tomap({
+    Distributor = {
+      target = "distributor"
+      replicas = 3
+      name = "Distributor"
+    },
+    Ingester = {
+      target = "ingester"
+      replicas = 3
+      name = "Ingester"
+    }, 
+    Querier = {
+      target = "querier"
+      replicas = 3
+      name = "Querier"
+    },
+    IndexGateway = {
+      target = "index-gateway"
+      replicas = 3
+      name = "IndexGateway"
+    },
+    Compactor = {
+      target = "compactor"
+      replicas = 3
+      name = "Compactor"
+    },
+    QueryFrontend = {
+      target = "query-frontend"
+      replicas = 3
+      name = "QueryFrontend"
+    },
+    QueryScheduler = {
+      target = "query-scheduler"
+      replicas = 3
+      name = "QueryScheduler"
+    }
+
+    #
+    # Todo: Learn about Loki Ruler
+    #
+    # Ruler = {
+    #   target = "ruler"
+    #   replicas = 3
+    #   name = "Ruler"
+    # },
+  })
+}
+
+module "Loki" {
+  for_each = local.CORTEX_TARGETS
+
+  source = "./Services/Loki"
+
+  Version = "2.3.0"
+
+  Target = each.value.target
+
+  Name = each.value.name
+
+  Replicas = each.value.replicas
+
+  LogLevel = "warn"
+
+  Consul = {
+    HOSTNAME = "vps1-raw.kristianjones.dev"
+    PORT = 8500
+
+    ACL_TOKEN = module.NewConsul.LokiSecretToken.secret_id
+
+    PREFIX = "Cortex"
+  }
+
+  Memcached = {
+    HOSTNAME = docker_service.LokiMemcached.task_spec[0].container_spec[0].hostname
+
+    PORT = 11211
+  }
+
+  MinioCreds = {
+    ACCESS_KEY = data.vault_generic_secret.MinioCreds.data["ACCESS_KEY"]
+    SECRET_KEY = data.vault_generic_secret.MinioCreds.data["SECRET_KEY"]
+  }
+}
+
 
 #
 # AAA Stack

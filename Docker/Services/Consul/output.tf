@@ -10,6 +10,10 @@
 #   value = consul_acl_token.LokiToken
 # }
 
+output "LokiSecretToken" {
+  value = data.consul_acl_token_secret_id.LokiToken
+}
+
 # #
 # # Grafana Cortex
 # #
