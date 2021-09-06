@@ -638,7 +638,7 @@ locals {
 }
 
 module "Loki" {
-  for_each = local.CORTEX_TARGETS
+  for_each = local.LOKI_TARGETS
 
   source = "./Services/Loki"
 
