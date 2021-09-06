@@ -667,7 +667,7 @@ module "Loki" {
     PORT = 11211
   }
 
-  MinioCreds = {
+  S3 = {
     ACCESS_KEY = data.vault_generic_secret.MinioCreds.data["ACCESS_KEY"]
     SECRET_KEY = data.vault_generic_secret.MinioCreds.data["SECRET_KEY"]
   }
