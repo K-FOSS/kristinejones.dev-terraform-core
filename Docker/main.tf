@@ -309,7 +309,7 @@ module "Cortex" {
   LogLevel = "warn"
 
   Consul = {
-    HOSTNAME = "tasks.Consul"
+    HOSTNAME = "vps1-raw.kristianjones.dev"
     PORT = 8500
 
     ACL_TOKEN = "2f43b65f-65a8-00df-724b-4982a1c2fe4f"
