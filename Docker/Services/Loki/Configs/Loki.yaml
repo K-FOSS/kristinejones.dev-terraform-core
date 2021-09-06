@@ -293,7 +293,7 @@ frontend_worker:
   grpc_client_config:
     max_send_msg_size: 1.048576e+08
   parallelism: 6
-  scheduler_address: tasks.QueryScheduler:8080
+  scheduler_address: tasks.QueryScheduler:8085
 
 #
 # Docs: https://grafana.com/docs/loki/latest/configuration/#table_manager_config
