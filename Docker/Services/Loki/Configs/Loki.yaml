@@ -144,21 +144,21 @@ query_range:
 # Docs: https://grafana.com/docs/loki/latest/configuration/#ingester_client_config
 #
 ingester_client:
-  # Configures how connections are pooled
-  pool_config:
-    # Whether or not to do health checks.
-    # CLI flag: -distributor.health-check-ingesters
-    health_check_ingesters: true
+  # # Configures how connections are pooled
+  # pool_config:
+  #   # Whether or not to do health checks.
+  #   # CLI flag: -distributor.health-check-ingesters
+  #   health_check_ingesters: true
 
-    # How frequently to clean up clients for servers that have gone away after
-    # a health check.
-    # CLI flag: -distributor.client-cleanup-period
-    client_cleanup_period: 15s
+  #   # How frequently to clean up clients for servers that have gone away after
+  #   # a health check.
+  #   # CLI flag: -distributor.client-cleanup-period
+  #   client_cleanup_period: 15s
 
-    # How quickly a dead client will be removed after it has been detected
-    # to disappear. Set this to a value to allow time for a secondary
-    # health check to recover the missing client.
-    remotetimeout: 60s
+  #   # How quickly a dead client will be removed after it has been detected
+  #   # to disappear. Set this to a value to allow time for a secondary
+  #   # health check to recover the missing client.
+  #   remotetimeout: 60s
 
 
   # The remote request timeout on the client side.
@@ -270,22 +270,11 @@ schema_config:
 # Docs: https://grafana.com/docs/loki/latest/configuration/#compactor_config
 # 
 compactor:
-  compaction_interval: 30s
-  data_dir: /tmp/cortex-compactor
-  consistency_delay: 1m
-  sharding_enabled: true
-  cleanup_interval: 1m
-  tenant_cleanup_delay: 1m
-  sharding_ring:
-    kvstore:
-      store: consul
-      prefix: ${CONSUL.PREFIX}/collectors/
-      #
-      # Docs: https://grafana.com/docs/loki/latest/configuration/#consul_config
-      #
-      consul:
-          host: ${CONSUL.HOSTNAME}:${CONSUL.PORT}
-          acl_token: ${CONSUL.ACL_TOKEN}
+  compaction_interval: 1m
+  working_directory: /tmp/cortex-compactor
+  retention_enabled: true
+  shared_store: s3
+  working_directory: /data/compactor
 
 #
 # Docs: https://grafana.com/docs/loki/latest/configuration/#limits_config
