@@ -658,7 +658,7 @@ module "Loki" {
 
     ACL_TOKEN = module.NewConsul.LokiSecretToken.secret_id
 
-    PREFIX = "Cortex"
+    PREFIX = "Loki"
   }
 
   Memcached = {
