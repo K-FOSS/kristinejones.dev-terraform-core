@@ -343,6 +343,10 @@ resource "consul_acl_token" "CortexToken" {
   local = true
 }
 
+data "consul_acl_token_secret_id" "CortexToken" {
+  accessor_id = consul_acl_token.CortexToken.id
+}
+
 
 # resource "consul_config_entry" "web" {
 #   name = "web"

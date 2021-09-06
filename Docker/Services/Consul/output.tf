@@ -18,6 +18,6 @@
 #   value = "test"
 # }
 
-# output "CortexToken" {
-#   value = consul_acl_token.CortexToken
-# }
+output "CortexSecretToken" {
+  value = data.consul_acl_token_secret_id.CortexToken
+}
