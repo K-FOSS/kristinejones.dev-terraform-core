@@ -86,14 +86,6 @@ resource "docker_service" "Loki" {
     runtime      = "container"
 
     networks     = [data.docker_network.meshSpineNet.id]
-
-    log_driver {
-      name = "loki"
-
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
   }
 
   mode {
@@ -125,4 +117,8 @@ resource "docker_service" "Loki" {
   #   max_failure_ratio = "0.9"
   #   order             = "stop-first"
   # }
+
+  endpoint_spec {
+    mode = "dnsrr"
+  }
 }
