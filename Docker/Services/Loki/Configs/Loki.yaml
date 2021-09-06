@@ -217,7 +217,7 @@ storage_config:
 
     index_gateway_client:
       # "Hostname or IP of the Index Gateway gRPC server.
-      server_address: tasks.LokiIndexGateway:9008
+      server_address: tasks.LokiIndexGateway:8085
 
 
   aws:
