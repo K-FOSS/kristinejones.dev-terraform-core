@@ -39,7 +39,7 @@ resource "docker_service" "CoreVault" {
 
   task_spec {
     container_spec {
-      image = "Vault:${var.Version}"
+      image = "vault:${var.Version}"
 
       hostname = "CoreVault{{.Task.Slot}}"
 
