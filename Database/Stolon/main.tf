@@ -321,3 +321,40 @@ resource "postgresql_database" "WallabagDB" {
 
   owner = postgresql_role.WallabagUser.name
 }
+
+#
+# Hashicorp
+#
+
+#
+# Hashicorp Vault
+#
+
+resource "random_password" "StolonHashicorpVaultPassword" {
+  length           = 16
+  special          = true
+}
+
+resource "postgresql_role" "HashicorpVaultUser" {
+  name     = "hashicorpvault"
+
+  login    = true
+  password = random_password.StolonHashicorpVaultPassword.result
+}
+
+resource "postgresql_database" "HashicorpVaultDB" {
+  name     = "hashicorpvault"
+
+  owner = postgresql_role.HashicorpVaultUser.name
+}
+
+resource "vault_generic_secret" "HashicorpVaultDB" {
+  path = "keycloak/HashicorpVaultDB"
+
+  data_json = <<EOT
+{
+  "username":   "${postgresql_role.HashicorpVaultUser.name}",
+  "password": "${postgresql_role.HashicorpVaultUser.password}"
+}
+EOT
+}

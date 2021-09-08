@@ -132,3 +132,15 @@ output "WallabagRole" {
 output "WallabagDB" {
   value = postgresql_database.WallabagDB
 }
+
+#
+# Hashicorp Vault
+#
+
+output "HashicorpVaultRole" {
+  value = postgresql_role.HashicorpVaultUser
+}
+
+output "HashicorpVaultDB" {
+  value = postgresql_database.HashicorpVaultDB
+}
