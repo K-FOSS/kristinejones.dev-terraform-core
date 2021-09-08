@@ -219,6 +219,13 @@ module "Docker" {
   # 
   StolonWallabagRole = module.Database.WallabagRole
   StolonWallabagDB = module.Database.WallabagDB
+
+  #
+  # Hashicorp Vault
+  #
+  HashicorpVaultRole = module.Database.HashicorpVaultRole
+  HashicorpVaultDB = module.Database.HashicorpVaultDB
+  HashicorpVaultTransitToken = module.CoreVault.VaultTransitToken
 }
 
 #
