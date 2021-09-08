@@ -56,7 +56,7 @@ resource "docker_service" "Vault" {
         VAULT_API_ADDR = "http://Vault{{.Task.Slot}}:8200"
 
         VAULT_SEAL_TYPE = "transit"
-        VAULT_TOKEN = "${var.VaultTransit.TOKEN.client_token}"
+        VAULT_TOKEN = "${var.VaultTransit.TOKEN}"
       }
 
       #

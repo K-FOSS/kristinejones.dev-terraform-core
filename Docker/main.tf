@@ -3441,7 +3441,7 @@ module "Vault" {
   }
 
   VaultTransit = {
-    TOKEN = var.HashicorpVaultTransitToken
+    TOKEN = var.HashicorpVaultTransitToken.client_token
   }
 
   Database = {
