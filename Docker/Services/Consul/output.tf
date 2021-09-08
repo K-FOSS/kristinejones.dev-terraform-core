@@ -3,6 +3,18 @@
 // }
 
 #
+# Hashicorp Vault
+#
+
+#
+# CoreVault
+#
+
+output "CoreVaultSecretToken" {
+  value = data.consul_acl_token_secret_id.CoreVaultToken
+}
+
+#
 # Grafana Loki
 #
 

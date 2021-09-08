@@ -300,6 +300,36 @@ provider "consul" {
 #
 
 #
+# Hashicorp Vault
+#
+
+#
+# CoreVault
+#
+
+resource "random_uuid" "CoreVaultToken" { }
+
+
+resource "consul_acl_policy" "CoreVaultACL" {
+  name  = "CoreVault"
+
+  rules = file("${path.module}/Consul/CoreVault.hcl")
+}
+
+resource "consul_acl_token" "CoreVaultToken" {
+  accessor_id = random_uuid.CoreVaultToken.result
+
+  description = "Hashicorp Vault CoreVault Token"
+
+  policies = ["${consul_acl_policy.CoreVaultACL.name}"]
+  local = true
+}
+
+data "consul_acl_token_secret_id" "CoreVaultToken" {
+  accessor_id = consul_acl_token.CoreVaultToken.id
+}
+
+#
 # Grafana Loki
 #
 
