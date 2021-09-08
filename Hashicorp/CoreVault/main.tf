@@ -189,7 +189,7 @@ data "vault_policy_document" "VaultTransit" {
   }
 
   rule {
-    path         = "transit/encrypt/autounseal"
+    path         = "transit/decrypt/autounseal"
     capabilities = ["update"]
   }
 }
