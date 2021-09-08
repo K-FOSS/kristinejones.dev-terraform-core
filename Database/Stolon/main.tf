@@ -331,7 +331,13 @@ resource "postgresql_database" "WallabagDB" {
 #
 
 resource "random_password" "StolonHashicorpVaultPassword" {
-  length           = 20
+  length  = 20
+  special = false
+
+  keepers = {
+    # Generate a new id each time we switch to a new AMI id
+    meow = "yes"
+  }
 }
 
 resource "postgresql_role" "HashicorpVaultUser" {
