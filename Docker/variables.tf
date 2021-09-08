@@ -161,3 +161,19 @@ variable "StolonWallabagRole" {
 variable "StolonWallabagDB" {
   
 }
+
+#
+# Hashicorp Vault
+#
+
+variable "HashicorpVaultRole" {
+
+}
+
+variable "HashicorpVaultDB" {
+  
+}
+
+variable "HashicorpVaultTransitToken" {
+  
+}

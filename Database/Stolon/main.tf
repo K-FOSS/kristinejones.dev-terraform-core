@@ -331,8 +331,7 @@ resource "postgresql_database" "WallabagDB" {
 #
 
 resource "random_password" "StolonHashicorpVaultPassword" {
-  length           = 16
-  special          = true
+  length           = 20
 }
 
 resource "postgresql_role" "HashicorpVaultUser" {

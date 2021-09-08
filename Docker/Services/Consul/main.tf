@@ -330,6 +330,32 @@ data "consul_acl_token_secret_id" "CoreVaultToken" {
 }
 
 #
+# Hashicorp Vault
+#
+
+resource "random_uuid" "VaultToken" { }
+
+
+resource "consul_acl_policy" "VaultACL" {
+  name  = "Vault"
+
+  rules = file("${path.module}/Consul/Vault.hcl")
+}
+
+resource "consul_acl_token" "VaultToken" {
+  accessor_id = random_uuid.VaultToken.result
+
+  description = "Hashicorp Vault Token"
+
+  policies = ["${consul_acl_policy.VaultACL.name}"]
+  local = true
+}
+
+data "consul_acl_token_secret_id" "VaultToken" {
+  accessor_id = consul_acl_token.VaultToken.id
+}
+
+#
 # Grafana Loki
 #
 

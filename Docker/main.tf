@@ -3413,6 +3413,48 @@ module "CoreVault" {
   }
 }
 
+#
+# Vault
+#
+
+module "Vault" {
+  source = "./Services/Vault"
+ 
+  #
+  # Misc
+  #
+  Version = "1.8.2"
+
+  Replicas = 3
+
+  LogLevel = "warn"
+
+  Consul = {
+    HOSTNAME = "vps1-raw.kristianjones.dev"
+    PORT = 8500
+
+    ACL_TOKEN = module.NewConsul.VaultSecretToken.secret_id
+
+    PREFIX = "Vault/"
+
+    SERVICE_NAME = "Vault"
+  }
+
+  VaultTransit = {
+    TOKEN = var.HashicorpVaultTransitToken
+  }
+
+  Database = {
+    HOSTNAME = "tasks.StolonProxy"
+    PORT = 5432
+
+    DATABASE = var.HashicorpVaultDB.name
+
+    USERNAME = var.HashicorpVaultRole.name
+    PASSWORD = var.HashicorpVaultRole.password
+  }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"

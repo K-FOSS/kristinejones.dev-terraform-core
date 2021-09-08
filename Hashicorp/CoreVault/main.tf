@@ -175,3 +175,37 @@ resource "vault_identity_group_alias" "management_group_alias" {
   mount_accessor = vault_jwt_auth_backend.keycloak.accessor
   canonical_id   = vault_identity_group.CoreVaultManagementGroup.id
 }
+
+#
+# Hashicorp Vault Unseal
+#
+
+data "vault_policy_document" "VaultTransit" {
+  provider = vault.corevault
+
+  rule {
+    path         = "transit/encrypt/autounseal"
+    capabilities = ["update"]
+  }
+
+  rule {
+    path         = "transit/encrypt/autounseal"
+    capabilities = ["update"]
+  }
+}
+
+resource "vault_policy" "VaultTransitPolicy" {
+  provider = vault.corevault
+
+  name   = "VaultTransit"
+
+  policy = data.vault_policy_document.VaultTransit.hcl
+}
+
+resource "vault_token" "VaultTransit" {
+  provider = vault.corevault
+
+  policies = ["${vault_policy.VaultTransitPolicy.name}"]
+
+  renewable = true
+}

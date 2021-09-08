@@ -15,6 +15,15 @@ output "CoreVaultSecretToken" {
 }
 
 #
+# Vault
+#  
+
+output "VaultSecretToken" {
+  value = data.consul_acl_token_secret_id.VaultToken
+}
+
+
+#
 # Grafana Loki
 #
 
