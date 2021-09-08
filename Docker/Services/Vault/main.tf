@@ -14,7 +14,7 @@ data "docker_network" "meshSpineNet" {
 resource "docker_config" "VaultConfig" {
   name = "vault-config-${replace(timestamp(), ":", ".")}"
   data = base64encode(
-    templatefile("${path.module}/Configs/CoreVault/Config.hcl",
+    templatefile("${path.module}/Configs/Vault/Config.hcl",
       {
         LOG_LEVEL = "${var.LogLevel}"
 
