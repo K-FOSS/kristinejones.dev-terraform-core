@@ -25,11 +25,6 @@ service_registration "consul" {
   token = "${CONSUL.ACL_TOKEN}"
 }
 
-telemetry {
-  prometheus_retention_time = "30s"
-  disable_hostname = true
-}
-
 #
 # TODO: Terraform handling Vault unseal ACL & Tokens
 #
