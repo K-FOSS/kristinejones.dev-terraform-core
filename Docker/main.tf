@@ -3381,6 +3381,38 @@ module "NewConsul" {
   LogLevel = ""
 }
 
+#
+# Hashicorp Vault
+#
+
+#
+# CoreVault
+#
+
+module "CoreVault" {
+  source = "./Services/CoreVault"
+ 
+  #
+  # Misc
+  #
+  Version = "1.8.2"
+
+  Replicas = 3
+
+  LogLevel = "warn"
+
+  Consul = {
+    HOSTNAME = "vps1-raw.kristianjones.dev"
+    PORT = 8500
+
+    ACL_TOKEN = module.NewConsul.CoreVaultSecretToken.secret_id
+
+    PREFIX = "CoreVault/"
+
+    SERVICE_NAME = "CoreVault"
+  }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"
