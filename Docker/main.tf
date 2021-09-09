@@ -396,7 +396,7 @@ module "Grafana" {
     #
     Hostname = "vps1-raw.kristianjones.dev"
     Port = 8500
-    GRPCPort = 8501
+    GRPCPort = 8502
 
     #
     # Credentials
