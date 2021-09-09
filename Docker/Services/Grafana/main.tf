@@ -9,6 +9,11 @@ terraform {
       source = "kreuzwerker/docker"
       version = "2.15.0"
     }
+
+    vault = {
+      source = "hashicorp/vault"
+      version = "2.22.1"
+    }
   }
 }
 
@@ -201,7 +206,9 @@ resource "docker_config" "GrafanaSidecarCentralConfig" {
   }
 }
 
-
+data "vault_generic_secret" "CONSUL_TOKEN" {
+  path = "TF_INFRA/CONSUL"
+}
 
 resource "docker_service" "GrafanaSidecar" {
   name = "GrafanaSidecar"
@@ -227,9 +234,12 @@ resource "docker_service" "GrafanaSidecar" {
         CONSUL_CLIENT_INTERFACE = "eth1"
         CONSUL_HTTP_ADDR = "${var.Consul.Hostname}:${var.Consul.Port}"
         CONSUL_GRPC_ADDR = "${var.Consul.Hostname}:${var.Consul.GRPCPort}"
-        CONSUL_HTTP_TOKEN = "${var.Consul.Token}"
+        CONSUL_HTTP_TOKEN = "${data.vault_generic_secret.CONSUL_TOKEN.data["TOKEN"]}"
 
         SERVICE_HOST = "GrafanaSidecar{{.Task.Slot}}"
+
+        SERVICE_CONFIG = "/config/Grafana.hcl"
+        CENTRAL_CONFIG = "/CentralConfig/GrafanaDefaults.hcl"
 
         SERVICE_NAME = "${var.Consul.ServiceName}"
       }
@@ -258,6 +268,25 @@ resource "docker_service" "GrafanaSidecar" {
         file_uid = "1000"
         file_mode = 7777
       }
+
+      configs {
+        config_id   = docker_config.GrafanaSidecarServiceConfig.id
+        config_name = docker_config.GrafanaSidecarServiceConfig.name
+
+        file_name   = "/config/Grafana.hcl"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
+      configs {
+        config_id   = docker_config.GrafanaSidecarCentralConfig.id
+        config_name = docker_config.GrafanaSidecarCentralConfig.name
+
+        file_name   = "/CentralConfig/GrafanaDefaults.hcl"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
 
 
       mounts {
