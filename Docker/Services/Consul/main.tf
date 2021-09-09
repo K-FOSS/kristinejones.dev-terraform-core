@@ -722,7 +722,7 @@ resource "docker_service" "ConsulIngressGateway" {
         CONSUL_BIND_INTERFACE = "eth1"
         CONSUL_CLIENT_INTERFACE = "eth1"
         CONSUL_HTTP_ADDR = "vps1-raw.kristianjones.dev:8500"
-        CONSUL_GRPC_ADDR = "vps1-raw.kristianjones.dev:8501"
+        CONSUL_GRPC_ADDR = "vps1-raw.kristianjones.dev:8502"
         CONSUL_HTTP_TOKEN = "${data.vault_generic_secret.CONSUL_TOKEN.data["TOKEN"]}"
 
         INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
