@@ -391,8 +391,19 @@ module "Grafana" {
   }
 
   Consul = {
-    Address = "tasks.Consul"
-    Token = ""
+    #
+    # Connection Details
+    #
+    Hostname = "vps1-raw.kristianjones.dev"
+    Port = 8500
+    GRPCPort = 8501
+
+    #
+    # Credentials
+    #
+    Token = module.NewConsul.GrafanaSecretToken.secret_id
+
+    ServiceName = "Grafana"
   }
 }
 

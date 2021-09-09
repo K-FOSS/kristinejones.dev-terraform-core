@@ -46,3 +46,10 @@ output "LokiSecretToken" {
 output "CortexSecretToken" {
   value = data.consul_acl_token_secret_id.CortexToken
 }
+
+#
+# Grafana Token
+#
+output "GrafanaSecretToken" {
+  value = data.consul_acl_token_secret_id.GrafanaToken
+}

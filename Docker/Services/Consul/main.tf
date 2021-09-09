@@ -407,6 +407,54 @@ data "consul_acl_token_secret_id" "CortexToken" {
   accessor_id = consul_acl_token.CortexToken.id
 }
 
+#
+# Grafana Token
+#
+
+resource "random_uuid" "GrafanaToken" { }
+
+
+resource "consul_acl_policy" "GrafanaACL" {
+  name  = "Grafana"
+
+  rules = file("${path.module}/Consul/Grafana.hcl")
+}
+
+resource "consul_acl_token" "GrafanaToken" {
+  accessor_id = random_uuid.GrafanaToken.result
+
+  description = "Grafana Token"
+
+  policies = ["${consul_acl_policy.GrafanaACL.name}"]
+  local = true
+}
+
+data "consul_acl_token_secret_id" "GrafanaToken" {
+  accessor_id = consul_acl_token.GrafanaToken.id
+}
+
+
+#
+# Config Entries
+#
+
+resource "consul_config_entry" "ProxyDefaults" {
+  kind = "proxy-defaults"
+  # Note that only "global" is currently supported for proxy-defaults and that
+  # Consul will override this attribute if you set it to anything else.
+  name = "global"
+
+  config_json = jsonencode({
+    Config = {
+      local_connect_timeout_ms = 1000
+      handshake_timeout_ms     = 10000
+
+      envoy_prometheus_bind_addr = "0.0.0.0:9100"
+
+      envoy_dns_discovery_type = "LOGICAL_DNS"
+    }
+  })
+}
 
 # resource "consul_config_entry" "web" {
 #   name = "web"

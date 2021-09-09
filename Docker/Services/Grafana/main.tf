@@ -225,13 +225,13 @@ resource "docker_service" "GrafanaSidecar" {
       env = {
         CONSUL_BIND_INTERFACE = "eth1"
         CONSUL_CLIENT_INTERFACE = "eth1"
-        CONSUL_HTTP_ADDR = "tasks.Consul:8500"
-        CONSUL_GRPC_ADDR = "tasks.Consul:8502"
-        CONSUL_HTTP_TOKEN = "e95b599e-166e-7d80-08ad-aee76e7ddf19"
+        CONSUL_HTTP_ADDR = "${var.Consul.Hostname}:${var.Consul.Port}"
+        CONSUL_GRPC_ADDR = "${var.Consul.Hostname}:${var.Consul.GRPCPort}"
+        CONSUL_HTTP_TOKEN = "${var.Consul.Token}"
 
         SERVICE_HOST = "GrafanaSidecar{{.Task.Slot}}"
 
-        SERVICE_NAME = "GrafanaGateway"
+        SERVICE_NAME = "${var.Consul.ServiceName}"
       }
 
       # dir    = "/root"

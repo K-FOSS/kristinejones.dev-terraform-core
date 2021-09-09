@@ -19,11 +19,15 @@ variable "Database" {
 
 variable "Consul" {
   type = object({
-    Address = string
+    Hostname = string
+    Port = number
+    GRPCPort = number
 
     Token = string
+
+    ServiceName = string
   })
   sensitive = true
 
-  description = "Database Configuration"
+  description = "Consul Configuration"
 }
