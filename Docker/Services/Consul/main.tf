@@ -256,9 +256,7 @@ resource "docker_service" "ConsulAgent" {
   }
 
   mode {
-    replicated {
-      replicas = 3
-    }
+    global = true
   }
 
   #

@@ -1,7 +1,7 @@
 #!/bin/sh
 RETRY_JOIN=""
 
-HOST_IP="$(nslookup ${NODE_HOST} 1.1.1.1 | grep "Address" | awk '{print $2}' | sed -n 2p)"
+HOST_IP="$(nslookup ${NODE_HOST} 1.1.1.1 | awk -F': ' 'NR==6 { print $2 } ')"
 
 case ${CONSUL_HOST} in
      "Consul1" )
