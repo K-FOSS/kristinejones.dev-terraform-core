@@ -198,12 +198,7 @@ resource "docker_service" "ConsulAgent" {
 
       mounts {
         target    = "/Data"
-        source    = "consul{{.Task.Slot}}-data"
-        type      = "volume"
-
-        volume_options {
-          driver_name = "s3core-storage"
-        }
+        type      = "tmpfs"
       }
 
       #
