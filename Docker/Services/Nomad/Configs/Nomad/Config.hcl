@@ -26,10 +26,20 @@ consul {
   client_service_name = "${Consul.ServiceName.Client}"
 }
 
+advertise {
+  # Defaults to the first private IP address.
+  http = "{{ GetInterfaceIP 'eth1' }}"
+  rpc  = "{{ GetInterfaceIP 'eth1' }}"
+  serf = "{{ GetInterfaceIP 'eth1' }}" # non-default ports may be specified
+}
+
+
 server {
   enabled          = true
   bootstrap_expect = 3
 }
+
+
 
 autopilot {
   cleanup_dead_servers      = true
