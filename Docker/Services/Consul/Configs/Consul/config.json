@@ -1,5 +1,4 @@
 {
-  "server": true,
   "ui_config": {
     "enabled": true
   },
@@ -7,11 +6,11 @@
     "http": "0.0.0.0"
   },
   "ports": {
-    "dns": 8600,
-    "http": 8500,
-    "https": 8501,
-    "grpc": 8502,
-    "server": 8300
+    "dns": 9600,
+    "http": 9500,
+    "https": 9501,
+    "grpc": 9502,
+    "server": 9300
   },
   "acl": {
     "enabled": true,

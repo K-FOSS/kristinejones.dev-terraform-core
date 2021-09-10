@@ -131,160 +131,183 @@ locals {
   })
 }
 
-# resource "docker_service" "Consul" {
-#   name = "Consul"
+resource "docker_service" "ConsulAgent" {
+  name = "ConsulAgent"
 
-#   task_spec {
-#     container_spec {
-#       image = "consul:${var.Version}"
+  task_spec {
+    container_spec {
+      image = "consul:${var.Version}"
 
-#       command = ["/entry.sh"]
+      command = ["/entry.sh"]
 
-#       #
-#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-#       #
-#       # labels {
-#       #   label = "foo.bar"
-#       #   value = "baz"
-#       # }
+      #
+      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+      #
+      # labels {
+      #   label = "foo.bar"
+      #   value = "baz"
+      # }
 
-#       hostname = "Consul{{.Task.Slot}}"
+      hostname = "ConsulAgent{{.Task.Slot}}"
 
-#       env = {
-#         CONSUL_BIND_INTERFACE = "eth0"
-#         CONSUL_CLIENT_INTERFACE = "eth0"
-#         CONSUL_HOST = "Consul{{.Task.Slot}}"
-#       }
+      env = {
+        CONSUL_BIND_INTERFACE = "eth0"
+        CONSUL_CLIENT_INTERFACE = "eth0"
+        CONSUL_HOST = "Consul{{.Task.Slot}}"
+        NODE_HOST = "{{.Node.Hostname}}"
+      }
 
-#       # dir    = "/root"
-#       #user   = "1000"
-#       # groups = ["docker", "foogroup"]
+      # dir    = "/root"
+      #user   = "1000"
+      # groups = ["docker", "foogroup"]
 
-#       # privileges {
-#       #   se_linux_context {
-#       #     disable = true
-#       #     user    = "user-label"
-#       #     role    = "role-label"
-#       #     type    = "type-label"
-#       #     level   = "level-label"
-#       #   }
-#       # }
+      # privileges {
+      #   se_linux_context {
+      #     disable = true
+      #     user    = "user-label"
+      #     role    = "role-label"
+      #     type    = "type-label"
+      #     level   = "level-label"
+      #   }
+      # }
 
-#       # read_only = true
+      # read_only = true
 
-#       configs {
-#         config_id   = docker_config.ConsulEntryScriptConfig.id
-#         config_name = docker_config.ConsulEntryScriptConfig.name
+      configs {
+        config_id   = docker_config.ConsulEntryScriptConfig.id
+        config_name = docker_config.ConsulEntryScriptConfig.name
 
-#         file_name   = "/entry.sh"
-#         file_uid = "1000"
-#         file_mode = 7777
-#       }
+        file_name   = "/entry.sh"
+        file_uid = "1000"
+        file_mode = 7777
+      }
 
-#       mounts {
-#         target    = "/etc/timezone"
-#         source    = "/etc/timezone"
-#         type      = "bind"
-#         read_only = true
-#       }
+      mounts {
+        target    = "/etc/timezone"
+        source    = "/etc/timezone"
+        type      = "bind"
+        read_only = true
+      }
 
-#       mounts {
-#         target    = "/etc/localtime"
-#         source    = "/etc/localtime"
-#         type      = "bind"
-#         read_only = true
-#       }
+      mounts {
+        target    = "/etc/localtime"
+        source    = "/etc/localtime"
+        type      = "bind"
+        read_only = true
+      }
 
-#       mounts {
-#         target    = "/Data"
-#         source    = "consul{{.Task.Slot}}-data"
-#         type      = "volume"
+      mounts {
+        target    = "/Data"
+        source    = "consul{{.Task.Slot}}-data"
+        type      = "volume"
 
-#         volume_options {
-#           driver_name = "s3core-storage"
-#         }
-#       }
+        volume_options {
+          driver_name = "s3core-storage"
+        }
+      }
 
-#       #
-#       # Docker Configs
-#       # 
+      #
+      # Docker Configs
+      # 
 
-#       #
-#       # Consul Configuration
-#       #
-#       configs {
-#         config_id   = docker_config.ConsulConfig.id
-#         config_name = docker_config.ConsulConfig.name
+      #
+      # Consul Configuration
+      #
+      configs {
+        config_id   = docker_config.ConsulConfig.id
+        config_name = docker_config.ConsulConfig.name
 
-#         file_name   = "/Config/Config.json"
-#       }
+        file_name   = "/Config/Config.json"
+      }
 
-#       # hosts {
-#       #   host = "testhost"
-#       #   ip   = "10.0.1.0"
-#       # }
+      # hosts {
+      #   host = "testhost"
+      #   ip   = "10.0.1.0"
+      # }
 
 
-#       # dns_config {
-#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
-#       #   search      = ["kristianjones.dev"]
-#       #   options     = ["timeout:3"]
-#       # }
+      # dns_config {
+      #   nameservers = ["1.1.1.1", "1.0.0.1"]
+      #   search      = ["kristianjones.dev"]
+      #   options     = ["timeout:3"]
+      # }
 
-#       #
-#       # Stolon Database Secrets
-#       #
-#       # healthcheck {
-#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-#       #   interval = "5s"
-#       #   timeout  = "2s"
-#       #   retries  = 4
-#       # }
-#     }
+      #
+      # Stolon Database Secrets
+      #
+      # healthcheck {
+      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      #   interval = "5s"
+      #   timeout  = "2s"
+      #   retries  = 4
+      # }
+    }
 
-#     runtime      = "container"
-#     networks     = [data.docker_network.meshSpineNet.id]
+    runtime      = "container"
+    networks     = [data.docker_network.meshSpineNet.id]
 
-#     log_driver {
-#       name = "loki"
+    log_driver {
+      name = "loki"
 
-#       options = {
-#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-#       }
-#     }
-#   }
+      options = {
+        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+      }
+    }
+  }
 
-#   mode {
-#     replicated {
-#       replicas = 5
-#     }
-#   }
+  mode {
+    replicated {
+      replicas = 3
+    }
+  }
 
-#   #
-#   # TODO: Finetune this
-#   # 
-#   update_config {
-#     parallelism       = 2
-#     delay             = "0s"
-#     failure_action    = "pause"
-#     monitor           = "0s"
-#     max_failure_ratio = "0.8"
-#     order             = "stop-first"
-#   }
+  #
+  # TODO: Finetune this
+  # 
+  update_config {
+    parallelism       = 2
+    delay             = "0s"
+    failure_action    = "pause"
+    monitor           = "0s"
+    max_failure_ratio = "0.8"
+    order             = "stop-first"
+  }
 
-#   # rollback_config {
-#   #   parallelism       = 1
-#   #   delay             = "5ms"
-#   #   failure_action    = "pause"
-#   #   monitor           = "10h"
-#   #   max_failure_ratio = "0.9"
-#   #   order             = "stop-first"
-#   # }
+  # rollback_config {
+  #   parallelism       = 1
+  #   delay             = "5ms"
+  #   failure_action    = "pause"
+  #   monitor           = "10h"
+  #   max_failure_ratio = "0.9"
+  #   order             = "stop-first"
+  # }
 
-#   endpoint_spec {
-#     mode = "dnsrr"
-#   }
-# }
+  endpoint_spec {
+    ports {
+      name           = "http"
+      protocol       = "tcp"
+      target_port    = "9500"
+      published_port = "9500"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "grpc"
+      protocol       = "tcp"
+      target_port    = "9502"
+      published_port = "9502"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "consul-server"
+      protocol       = "tcp"
+      target_port    = "9300"
+      published_port = "9300"
+      publish_mode   = "host"
+    }
+  }
+}
 
 
 
