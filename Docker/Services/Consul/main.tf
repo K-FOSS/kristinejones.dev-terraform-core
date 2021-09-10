@@ -297,6 +297,38 @@ resource "docker_service" "ConsulAgent" {
       published_port = "9300"
       publish_mode   = "host"
     }
+
+    ports {
+      name           = "servlan-tcp"
+      protocol       = "tcp"
+      target_port    = "9301"
+      published_port = "9301"
+      publish_mode   = "host"
+    }
+    
+    ports {
+      name           = "servlan-udp"
+      protocol       = "udp"
+      target_port    = "9301"
+      published_port = "9301"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "servwan-tcp"
+      protocol       = "tcp"
+      target_port    = "9302"
+      published_port = "9302"
+      publish_mode   = "host"
+    }
+    
+    ports {
+      name           = "servwan-udp"
+      protocol       = "udp"
+      target_port    = "9302"
+      published_port = "9302"
+      publish_mode   = "host"
+    }
   }
 }
 

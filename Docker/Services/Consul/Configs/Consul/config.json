@@ -3,7 +3,8 @@
     "enabled": true
   },
   "addresses": {
-    "http": "0.0.0.0"
+    "http": "0.0.0.0",
+    "grpc": "0.0.0.0"
   },
   "retry_join": ["172.31.245.1", "172.31.245.2", "172.31.245.3"],
   "ports": {
@@ -11,7 +12,9 @@
     "http": 9500,
     "https": 9501,
     "grpc": 9502,
-    "server": 9300
+    "server": 9300,
+    "serf_lan": 9301,
+    "serf_wan": 9302
   },
   "acl": {
     "enabled": true,
