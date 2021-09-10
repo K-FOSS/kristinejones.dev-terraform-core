@@ -394,9 +394,9 @@ module "Grafana" {
     #
     # Connection Details
     #
-    Hostname = "vps1-raw.kristianjones.dev"
-    Port = 8500
-    GRPCPort = 8502
+    Hostname = "tasks.ConsulAgent"
+    Port = 9500
+    GRPCPort = 9502
 
     #
     # Credentials
@@ -3441,8 +3441,8 @@ module "Vault" {
   LogLevel = "warn"
 
   Consul = {
-    HOSTNAME = "vps1-raw.kristianjones.dev"
-    PORT = 8500
+    HOSTNAME = "tasks.ConsulAgent"
+    PORT = 9500
 
     ACL_TOKEN = module.NewConsul.VaultSecretToken.secret_id
 
