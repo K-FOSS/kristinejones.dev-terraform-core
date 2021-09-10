@@ -1,27 +1,19 @@
 #!/bin/sh
 RETRY_JOIN=""
 
-HOST_IP="$(nslookup ${NODE_HOST} 1.1.1.1 | awk -F': ' 'NR==6 { print $2 } ')"
+#HOST_IP="$(nslookup ${NODE_HOST} 1.1.1.1 | awk -F': ' 'NR==6 { print $2 } ')"
 
-case ${CONSUL_HOST} in
-     "Consul1" )
-           RETRY_JOIN="-advertise="
+case ${NODE_HOST} in
+     "node1.vps1.kristianjones.dev" )
+           RETRY_JOIN="-advertise=172.31.245.1 -node=Node1Agent"
            echo "HellOWorld"
            ;;
-     "Consul2" )
-           RETRY_JOIN="-retry-join Consul1 -retry-join Consul3 -retry-join Consul4 -retry-join Consul5"
+     "node2.vps1.kristianjones.dev" )
+           RETRY_JOIN="-advertise=172.31.245.2 -node=Node2Agent"
            echo "Consul2 means Consul1 Consul3"
            ;;
-     "Consul3" )
-           RETRY_JOIN="-retry-join Consul1 -retry-join Consul2 -retry-join Consul4 -retry-join Consul5"
-           echo "Consul3 means Consul1 Consul2"
-           ;;
-     "Consul4" )
-           RETRY_JOIN="-retry-join Consul1 -retry-join Consul2 -retry-join Consul3 -retry-join Consul5"
-           echo "Consul3 means Consul1 Consul2"
-           ;;
-     "Consul5" )
-           RETRY_JOIN="-retry-join Consul1 -retry-join Consul2 -retry-join Consul3 -retry-join Consul4"
+     "node3.vps1.kristianjones.dev" )
+           RETRY_JOIN="-advertise=172.31.245.3 -node=Node3Agent"
            echo "Consul3 means Consul1 Consul2"
            ;;
      * )
@@ -29,4 +21,4 @@ case ${CONSUL_HOST} in
            ;;
 esac
 
-/usr/local/bin/docker-entrypoint.sh agent -advertise=${HOST_IP} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json
+/usr/local/bin/docker-entrypoint.sh agent ${RETRY_JOIN} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json

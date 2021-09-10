@@ -151,8 +151,6 @@ resource "docker_service" "ConsulAgent" {
       hostname = "ConsulAgent{{.Task.Slot}}"
 
       env = {
-        CONSUL_BIND_INTERFACE = "eth1"
-        CONSUL_CLIENT_INTERFACE = "eth1"
         CONSUL_HOST = "ConsulAgent{{.Task.Slot}}"
         NODE_HOST = "{{.Node.Hostname}}.vps1.kristianjones.dev"
       }
