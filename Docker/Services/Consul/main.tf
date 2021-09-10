@@ -499,7 +499,18 @@ resource "consul_config_entry" "ProxyDefaults" {
 
       envoy_prometheus_bind_addr = "0.0.0.0:9100"
 
-      envoy_dns_discovery_type = "LOGICAL_DNS"
+      envoy_extra_static_clusters_json = {
+        connect_timeout = "3.000s"
+        dns_lookup_family = "V4_ONLY"
+        lb_policy = "ROUND_ROBIN"
+        load_assignment = {
+          cluster_name = "zipkin"
+        },
+        name = "zipkin"
+        type = "STRICT_DNS"
+      }
+
+      envoy_dns_discovery_type = "STRICT_DNS"
     }
   })
 }
