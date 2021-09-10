@@ -501,12 +501,11 @@ resource "consul_config_entry" "ProxyDefaults" {
 
       envoy_local_cluster_json = <<EOL
         {
-          "@type": "type.googleapis.com/envoy.api.v2.Cluster",
-          "name": "local_agent",
+          "name": "local_app",
           "type": "STRICT_DNS",
           "connect_timeout": "30s",
           "load_assignment": {
-            "cluster_name": "local_agent",
+            "cluster_name": "local_app",
             "endpoints": [
               {
                 "lb_endpoints": [
@@ -514,7 +513,7 @@ resource "consul_config_entry" "ProxyDefaults" {
                     "endpoint": {
                       "address": {
                         "socket_address": {
-                          "address": "0.0.0.0",
+                          "address": "127.0.0.1",
                           "port_value": 9502
                         }
                       }
