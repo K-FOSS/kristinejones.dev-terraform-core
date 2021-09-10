@@ -504,9 +504,9 @@ resource "consul_config_entry" "ProxyDefaults" {
         dns_lookup_family = "V4_ONLY"
         lb_policy = "ROUND_ROBIN"
         load_assignment = {
-          cluster_name = "zipkin"
+          cluster_name = "local_agent"
         }
-        name = "zipkin"
+        name = "local_agent"
         type = "STRICT_DNS"
       })
 
