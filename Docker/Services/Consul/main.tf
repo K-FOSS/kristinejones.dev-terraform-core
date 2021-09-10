@@ -196,7 +196,9 @@ resource "docker_service" "ConsulAgent" {
 
       mounts {
         target    = "/Data"
-        type      = "tmpfs"
+        source    = "mainconsul-data"
+        type      = "volume"
+
       }
 
       #
