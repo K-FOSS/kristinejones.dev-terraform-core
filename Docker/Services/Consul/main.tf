@@ -513,8 +513,8 @@ resource "consul_config_entry" "ProxyDefaults" {
                     "endpoint": {
                       "address": {
                         "socket_address": {
-                          "address": "{{ .AgentAddress }}",
-                          "port_value": {{ .AgentPort }}
+                          "address": "0.0.0.0",
+                          "port_value": 9502
                         }
                       }
                     }
