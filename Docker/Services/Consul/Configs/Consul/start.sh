@@ -1,10 +1,12 @@
 #!/bin/sh
 RETRY_JOIN=""
 
+HOST_IP="$(nslookup ${NODE_HOST} 1.1.1.1 | grep "Address" | awk '{print $2}' | sed -n 2p)"
+
 case ${CONSUL_HOST} in
      "Consul1" )
-           RETRY_JOIN="-retry-join Consul2 -retry-join Consul3 -retry-join Consul4 -retry-join Consul5"
-           echo "Consul1 means Consul2 Consul3"
+           RETRY_JOIN="-advertise="
+           echo "HellOWorld"
            ;;
      "Consul2" )
            RETRY_JOIN="-retry-join Consul1 -retry-join Consul3 -retry-join Consul4 -retry-join Consul5"
@@ -27,4 +29,4 @@ case ${CONSUL_HOST} in
            ;;
 esac
 
-/usr/local/bin/docker-entrypoint.sh agent -advertise=${NODE_HOST} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json
+/usr/local/bin/docker-entrypoint.sh agent -advertise=${HOST_IP} -node=${CONSUL_HOST} -disable-host-node-id -config-format=json -data-dir=/Data -config-file=/Config/Config.json
