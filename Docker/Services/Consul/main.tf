@@ -501,6 +501,7 @@ resource "consul_config_entry" "ProxyDefaults" {
 
       envoy_local_cluster_json = <<EOL
         {
+          "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
           "name": "local_app",
           "type": "STRICT_DNS",
           "connect_timeout": "30s",
