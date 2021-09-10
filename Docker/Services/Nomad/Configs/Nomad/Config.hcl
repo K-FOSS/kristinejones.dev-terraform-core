@@ -28,9 +28,9 @@ consul {
 
 advertise {
   # Defaults to the first private IP address.
-  http = "{{ GetInterfaceIP \"eth1\" }}"
-  rpc  = "{{ GetInterfaceIP \"eth1\" }}"
-  serf = "{{ GetInterfaceIP \"eth1\" }}" # non-default ports may be specified
+  http = "{{ GetInterfaceIP \"eth0\" }}"
+  rpc  = "{{ GetInterfaceIP \"eth0\" }}"
+  serf = "{{ GetInterfaceIP \"eth0\" }}" # non-default ports may be specified
 }
 
 
