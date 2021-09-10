@@ -102,6 +102,12 @@ resource "docker_service" "Nomad" {
         read_only = true
       }
 
+      mounts {
+        target    = "/Data"
+        source    = "nomad{{.Task.Slot}}-data"
+        type      = "volume"
+      }
+
       #
       # Docker Configs
       # 
