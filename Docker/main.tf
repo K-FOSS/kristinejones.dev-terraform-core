@@ -1046,7 +1046,6 @@ resource "docker_service" "Keycloak" {
       }
     }
 
-    force_update = 0
     runtime      = "container"
     networks     = [data.docker_network.AAASpineNet.id, data.docker_network.protectedSpineNet.id, data.docker_network.meshSpineNet.id]
   
