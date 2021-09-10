@@ -499,16 +499,33 @@ resource "consul_config_entry" "ProxyDefaults" {
 
       envoy_prometheus_bind_addr = "0.0.0.0:9100"
 
-      envoy_extra_static_clusters_json = jsonencode({
-        connect_timeout = "3.000s"
-        dns_lookup_family = "V4_ONLY"
-        lb_policy = "ROUND_ROBIN"
-        load_assignment = {
-          cluster_name = "local_agent"
+      envoy_local_cluster_json = <<EOL
+        {
+          "@type": "type.googleapis.com/envoy.api.v2.Cluster",
+          "name": "local_agent",
+          "type": "STRICT_DNS",
+          "connect_timeout": "30s",
+          "load_assignment": {
+            "cluster_name": "local_agent",
+            "endpoints": [
+              {
+                "lb_endpoints": [
+                  {
+                    "endpoint": {
+                      "address": {
+                        "socket_address": {
+                          "address": "{{ .AgentAddress }}",
+                          "port_value": {{ .AgentPort }}
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
         }
-        name = "local_agent"
-        type = "STRICT_DNS"
-      })
+      EOL
 
       envoy_dns_discovery_type = "STRICT_DNS"
     }
