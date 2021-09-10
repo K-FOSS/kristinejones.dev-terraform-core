@@ -404,6 +404,36 @@ data "consul_acl_token_secret_id" "VaultToken" {
 }
 
 #
+# Hashicorp Nomad
+#
+
+#
+# CoreNomad
+#
+
+resource "random_uuid" "CoreNomadToken" { }
+
+
+resource "consul_acl_policy" "CoreNomadACL" {
+  name  = "CoreNomad"
+
+  rules = file("${path.module}/Consul/Nomad.hcl")
+}
+
+resource "consul_acl_token" "CoreNomadToken" {
+  accessor_id = random_uuid.CoreNomadToken.result
+
+  description = "Hashicorp Nomad Core Nomad Token"
+
+  policies = ["${consul_acl_policy.CoreNomadACL.name}"]
+  local = true
+}
+
+data "consul_acl_token_secret_id" "CoreNomadToken" {
+  accessor_id = consul_acl_token.CoreNomadToken.id
+}
+
+#
 # Grafana Loki
 #
 
@@ -501,7 +531,6 @@ resource "consul_config_entry" "ProxyDefaults" {
 
       envoy_local_cluster_json = <<EOL
         {
-          "@type": "type.googleapis.com/envoy.config.cluster.v3.Cluster",
           "name": "local_app",
           "type": "STRICT_DNS",
           "connect_timeout": "30s",
@@ -515,7 +544,7 @@ resource "consul_config_entry" "ProxyDefaults" {
                       "address": {
                         "socket_address": {
                           "address": "127.0.0.1",
-                          "port_value": 9502
+                          "port_value": 9503
                         }
                       }
                     }

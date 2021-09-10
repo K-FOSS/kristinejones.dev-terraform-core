@@ -3465,6 +3465,54 @@ module "Vault" {
   }
 }
 
+#
+# Hashicorp Nomad
+#
+module "CoreNomad" {
+  source = "./Services/Nomad"
+ 
+  #
+  # Misc
+  #
+  Version = "1.1.4"
+
+  Replicas = 3
+
+  LogLevel = "INFO"
+
+  Consul = {
+    Hostname = "tasks.ConsulAgent"
+    Port = 9500
+
+    Token = module.NewConsul.CoreNomadSecretToken.secret_id
+
+    Prefix = "Nomad/"
+
+    ServiceName = {
+      Server = "NomadServer"
+      Client = "NomadClient"
+    }
+  }
+
+  # Vault = {
+
+  # }
+
+  #
+  # TODO: State in PostgreSQL (Swear I saw that somewhere) or fallback to Minio/S3?
+  #
+ 
+  # Database = {
+  #   HOSTNAME = "tasks.StolonProxy"
+  #   PORT = 5432
+
+  #   DATABASE = var.HashicorpVaultDB.name
+
+  #   USERNAME = var.HashicorpVaultRole.name
+  #   PASSWORD = var.HashicorpVaultRole.password
+  # }
+}
+
 # resource "docker_plugin" "s3core-storage" {
 #   name                  = "rexray/s3fs"
 #   alias                 = "s3core-storagenew"

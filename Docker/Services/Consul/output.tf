@@ -3,6 +3,10 @@
 // }
 
 #
+# Hashicorp
+# 
+
+#
 # Hashicorp Vault
 #
 
@@ -20,6 +24,18 @@ output "CoreVaultSecretToken" {
 
 output "VaultSecretToken" {
   value = data.consul_acl_token_secret_id.VaultToken
+}
+
+#
+# Hashicorp Nomad
+#
+
+#
+# CoreNomad
+# 
+
+output "CoreNomadSecretToken" {
+  value = data.consul_acl_token_secret_id.CoreNomadToken
 }
 
 
