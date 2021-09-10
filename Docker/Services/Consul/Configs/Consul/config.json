@@ -19,10 +19,10 @@
     "enable_token_persistence": true,
     "tokens": {
       "master": "${TOKENS.MASTER_TOKEN}",
-      "default": "${TOKENS.DEFAULT_TOKEN}",
-      "agent": "${TOKENS.AGENT_TOKEN}",
-      "agent_master": "${TOKENS.AGENT_MASTER_TOKEN}",
-      "replication": "${TOKENS.REPLICATION_TOKEN}"
+      "default": "${TOKENS.MASTER_TOKEN}",
+      "agent": "${TOKENS.MASTER_TOKEN}",
+      "agent_master": "${TOKENS.MASTER_TOKEN}",
+      "replication": "${TOKENS.MASTER_TOKEN}"
     }
   },
   "connect": { "enabled": true },
