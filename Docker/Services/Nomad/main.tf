@@ -53,7 +53,7 @@ resource "docker_service" "Nomad" {
     container_spec {
       image = "multani/nomad:${var.Version}"
 
-      cmd = ["/bin/nomad"]
+      command = ["/bin/nomad"]
       args = ["agent", "-config=/Config/Config.hcl"]
 
       #
