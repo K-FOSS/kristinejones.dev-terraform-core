@@ -3413,8 +3413,8 @@ module "CoreVault" {
   LogLevel = "warn"
 
   Consul = {
-    HOSTNAME = "vps1-raw.kristianjones.dev"
-    PORT = 8500
+    HOSTNAME = "tasks.ConsulAgent"
+    PORT = 9500
 
     ACL_TOKEN = module.NewConsul.CoreVaultSecretToken.secret_id
 
