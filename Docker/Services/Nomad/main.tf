@@ -10,10 +10,16 @@ terraform {
       version = "2.15.0"
     }
 
+    nomad = {
+      source = "hashicorp/nomad"
+      version = "1.4.15"
+    }
+
     random = {
       source = "hashicorp/random"
       version = "3.1.0"
     }
+
 
     time = {
       source = "hashicorp/time"
@@ -24,6 +30,17 @@ terraform {
 
 data "docker_network" "meshSpineNet" {
   name = "meshSpineNet"
+}
+
+provider "nomad" {
+  address = "https://nomad.kristianjones.dev:443"
+  region  = "global"
+
+  consul_token = "${var.Consul.Token}"
+}
+
+resource "nomad_job" "Grafana" {
+  jobspec = file("${path.module}/Jobs/Grafana.hcl")
 }
 
 resource "docker_config" "NomadConfig" {
