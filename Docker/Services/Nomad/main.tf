@@ -158,9 +158,7 @@ resource "docker_service" "Nomad" {
   }
 
   mode {
-    replicated {
-      replicas = 3
-    }
+    global = true
   }
 
   #
@@ -185,6 +183,36 @@ resource "docker_service" "Nomad" {
   # }
 
   endpoint_spec {
-    mode = "dnsrr"
+    ports {
+      name           = "srv"
+      protocol       = "tcp"
+      target_port    = "4646"
+      published_port = "4646"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "rpc"
+      protocol       = "tcp"
+      target_port    = "4647"
+      published_port = "4647"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "srv-tcp"
+      protocol       = "tcp"
+      target_port    = "4648"
+      published_port = "4648"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "srv-udp"
+      protocol       = "udp"
+      target_port    = "4648"
+      published_port = "4648"
+      publish_mode   = "host"
+    }
   }
 }
