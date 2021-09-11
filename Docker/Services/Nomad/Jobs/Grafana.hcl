@@ -68,7 +68,11 @@ job "ingress-demo" {
   #
   # $ curl $(dig +short @127.0.0.1 -p 8600 uuid-api.ingress.dc1.consul. ANY):8080
   group "generator" {
-    count = 5
+    count = 6
+
+    spread {
+      attribute = "${attr.unique.hostname}"
+    }
 
     network {
       mode = "host"
