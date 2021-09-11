@@ -6,7 +6,13 @@ job "foo" {
     task "foo" {
       driver = "docker"
       config {
-        image = "redis:3.2"
+        image = "alpine:3.13.6"
+
+        command = "/bin/ping"
+        args = ["172.16.100.1"]
+        interactive = true
+
+
         labels {
           group = "foo"
         }
