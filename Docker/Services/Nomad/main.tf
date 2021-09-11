@@ -69,7 +69,7 @@ resource "docker_service" "Nomad" {
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
       #
-      labels {
+      env = {
         NODE_HOST = "{{.Node.Hostname}}Nomad"
       }
 
