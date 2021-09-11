@@ -6,6 +6,8 @@ job "foo" {
     task "foo" {
       driver = "docker"
       config {
+        image = "alpine:latest"
+
         command = "ping"
         args    = ["172.16.100.1"]
       }
