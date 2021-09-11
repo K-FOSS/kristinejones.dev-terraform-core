@@ -45,6 +45,17 @@ resource "docker_config" "NomadConfig" {
   }
 }
 
+resource "docker_config" "NomadEntryScriptConfig" {
+  name = "nomad-entryconfig-${replace(timestamp(), ":", ".")}"
+  data = base64encode(file("${path.module}/Configs/Nomad/start.sh"))
+
+  lifecycle {
+    ignore_changes        = [name]
+    create_before_destroy = true
+  }
+}
+
+
 
 resource "docker_service" "Nomad" {
   name = "Nomad"
@@ -53,18 +64,16 @@ resource "docker_service" "Nomad" {
     container_spec {
       image = "multani/nomad:${var.Version}"
 
-      command = ["/bin/nomad"]
-      args = ["agent", "-config=/Config/Config.hcl"]
+      command = ["/start.sh"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
       #
-      # labels {
-      #   label = "foo.bar"
-      #   value = "baz"
-      # }
+      labels {
+        NODE_HOST = "{{.Node.Hostname}}Nomad"
+      }
 
-      hostname = "Nomad{{.Task.Slot}}"
+      hostname = "{{.Node.Hostname}}Nomad"
 
       # env = {
       #   CONSUL_BIND_INTERFACE = "eth0"
@@ -104,7 +113,7 @@ resource "docker_service" "Nomad" {
 
       mounts {
         target    = "/Data"
-        source    = "nomad{{.Task.Slot}}-data"
+        source    = "{{.Node.Hostname}}nomad-data"
         type      = "volume"
       }
 
@@ -121,6 +130,16 @@ resource "docker_service" "Nomad" {
 
         file_name   = "/Config/Config.hcl"
       }
+
+      configs {
+        config_id   = docker_config.NomadEntryScriptConfig.id
+        config_name = docker_config.NomadEntryScriptConfig.name
+
+        file_name   = "/entry.sh"
+        file_uid = "1000"
+        file_mode = 7777
+      }
+
 
       # hosts {
       #   host = "testhost"

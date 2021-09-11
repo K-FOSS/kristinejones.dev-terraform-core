@@ -2,6 +2,8 @@ log_level = "${LogLevel}"
 
 data_dir = "/Data"
 
+name = ""
+
 consul {
   #
   # Consul Connection
