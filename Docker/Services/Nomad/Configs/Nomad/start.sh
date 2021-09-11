@@ -1,3 +1,5 @@
+#!/bin/sh
+
 case ${NODE_HOST} in
      "node1.vps1.kristianjones.dev" )
            RETRY_JOIN="-advertise=172.31.245.1 -node=Node1Nomad"
