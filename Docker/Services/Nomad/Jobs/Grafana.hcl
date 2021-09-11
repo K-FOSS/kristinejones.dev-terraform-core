@@ -1,6 +1,6 @@
 job "ingress-demo" {
 
-  datacenters = ["core0site1"]
+  datacenters = ["core0site1", "home1"]
 
   # This group will have a task providing the ingress gateway automatically
   # created by Nomad. The ingress gateway is based on the Envoy proxy being
