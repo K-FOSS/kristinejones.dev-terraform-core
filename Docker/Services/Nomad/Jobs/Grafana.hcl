@@ -6,15 +6,10 @@ job "foo" {
     task "foo" {
       driver = "docker"
       config {
-        image = "alpine:latest"
-
-        command = "ping"
-        args    = ["172.16.100.1"]
-      }
-
-      logs {
-        max_files     = 3
-        max_file_size = 10
+        image = "redis:3.2"
+        labels {
+          group = "foo"
+        }
       }
     }
   }
