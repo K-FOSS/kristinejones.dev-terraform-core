@@ -57,181 +57,181 @@ resource "docker_config" "NomadEntryScriptConfig" {
 
 
 
-resource "docker_service" "Nomad" {
-  name = "Nomad"
+# resource "docker_service" "Nomad" {
+#   name = "Nomad"
 
-  task_spec {
-    container_spec {
-      image = "multani/nomad:${var.Version}"
+#   task_spec {
+#     container_spec {
+#       image = "multani/nomad:${var.Version}"
 
-      command = ["/entry.sh"]
+#       command = ["/entry.sh"]
 
-      #
-      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-      #
-      env = {
-        NODE_HOST = "{{.Node.Hostname}}Nomad"
-      }
+#       #
+#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+#       #
+#       env = {
+#         NODE_HOST = "{{.Node.Hostname}}Nomad"
+#       }
 
-      hostname = "{{.Node.Hostname}}Nomad"
+#       hostname = "{{.Node.Hostname}}Nomad"
 
-      # env = {
-      #   CONSUL_BIND_INTERFACE = "eth0"
-      #   CONSUL_CLIENT_INTERFACE = "eth0"
-      #   CONSUL_HOST = "Consul{{.Task.Slot}}"
-      # }
+#       # env = {
+#       #   CONSUL_BIND_INTERFACE = "eth0"
+#       #   CONSUL_CLIENT_INTERFACE = "eth0"
+#       #   CONSUL_HOST = "Consul{{.Task.Slot}}"
+#       # }
 
-      # dir    = "/root"
-      #user   = "1000"
-      # groups = ["docker", "foogroup"]
+#       # dir    = "/root"
+#       #user   = "1000"
+#       # groups = ["docker", "foogroup"]
 
-      # privileges {
-      #   se_linux_context {
-      #     disable = true
-      #     user    = "user-label"
-      #     role    = "role-label"
-      #     type    = "type-label"
-      #     level   = "level-label"
-      #   }
-      # }
+#       # privileges {
+#       #   se_linux_context {
+#       #     disable = true
+#       #     user    = "user-label"
+#       #     role    = "role-label"
+#       #     type    = "type-label"
+#       #     level   = "level-label"
+#       #   }
+#       # }
 
-      # read_only = true
+#       # read_only = true
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      mounts {
-        target    = "/Data"
-        source    = "{{.Node.Hostname}}nomad-data"
-        type      = "volume"
-      }
+#       mounts {
+#         target    = "/Data"
+#         source    = "{{.Node.Hostname}}nomad-data"
+#         type      = "volume"
+#       }
 
-      #
-      # Docker Configs
-      # 
+#       #
+#       # Docker Configs
+#       # 
 
-      #
-      # Consul Configuration
-      #
-      configs {
-        config_id   = docker_config.NomadConfig.id
-        config_name = docker_config.NomadConfig.name
+#       #
+#       # Consul Configuration
+#       #
+#       configs {
+#         config_id   = docker_config.NomadConfig.id
+#         config_name = docker_config.NomadConfig.name
 
-        file_name   = "/Config/Config.hcl"
-      }
+#         file_name   = "/Config/Config.hcl"
+#       }
 
-      configs {
-        config_id   = docker_config.NomadEntryScriptConfig.id
-        config_name = docker_config.NomadEntryScriptConfig.name
+#       configs {
+#         config_id   = docker_config.NomadEntryScriptConfig.id
+#         config_name = docker_config.NomadEntryScriptConfig.name
 
-        file_name   = "/entry.sh"
-        file_uid = "1000"
-        file_mode = 7777
-      }
-
-
-      # hosts {
-      #   host = "testhost"
-      #   ip   = "10.0.1.0"
-      # }
+#         file_name   = "/entry.sh"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
 
 
-      # dns_config {
-      #   nameservers = ["1.1.1.1", "1.0.0.1"]
-      #   search      = ["kristianjones.dev"]
-      #   options     = ["timeout:3"]
-      # }
+#       # hosts {
+#       #   host = "testhost"
+#       #   ip   = "10.0.1.0"
+#       # }
 
-      #
-      # Stolon Database Secrets
-      #
-      # healthcheck {
-      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      #   interval = "5s"
-      #   timeout  = "2s"
-      #   retries  = 4
-      # }
-    }
 
-    runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id]
+#       # dns_config {
+#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
+#       #   search      = ["kristianjones.dev"]
+#       #   options     = ["timeout:3"]
+#       # }
 
-    log_driver {
-      name = "loki"
+#       #
+#       # Stolon Database Secrets
+#       #
+#       # healthcheck {
+#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#       #   interval = "5s"
+#       #   timeout  = "2s"
+#       #   retries  = 4
+#       # }
+#     }
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id]
 
-  mode {
-    global = true
-  }
+#     log_driver {
+#       name = "loki"
 
-  #
-  # TODO: Finetune this
-  # 
-  update_config {
-    parallelism       = 1
-    delay             = "0s"
-    failure_action    = "pause"
-    monitor           = "0s"
-    max_failure_ratio = "0.8"
-    order             = "stop-first"
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   mode {
+#     global = true
+#   }
 
-  endpoint_spec {
-    ports {
-      name           = "srv"
-      protocol       = "tcp"
-      target_port    = "4646"
-      published_port = "4646"
-      publish_mode   = "host"
-    }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   update_config {
+#     parallelism       = 1
+#     delay             = "0s"
+#     failure_action    = "pause"
+#     monitor           = "0s"
+#     max_failure_ratio = "0.8"
+#     order             = "stop-first"
+#   }
 
-    ports {
-      name           = "rpc"
-      protocol       = "tcp"
-      target_port    = "4647"
-      published_port = "4647"
-      publish_mode   = "host"
-    }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-    ports {
-      name           = "srv-tcp"
-      protocol       = "tcp"
-      target_port    = "4648"
-      published_port = "4648"
-      publish_mode   = "host"
-    }
+#   endpoint_spec {
+#     ports {
+#       name           = "srv"
+#       protocol       = "tcp"
+#       target_port    = "4646"
+#       published_port = "4646"
+#       publish_mode   = "host"
+#     }
 
-    ports {
-      name           = "srv-udp"
-      protocol       = "udp"
-      target_port    = "4648"
-      published_port = "4648"
-      publish_mode   = "host"
-    }
-  }
-}
+#     ports {
+#       name           = "rpc"
+#       protocol       = "tcp"
+#       target_port    = "4647"
+#       published_port = "4647"
+#       publish_mode   = "host"
+#     }
+
+#     ports {
+#       name           = "srv-tcp"
+#       protocol       = "tcp"
+#       target_port    = "4648"
+#       published_port = "4648"
+#       publish_mode   = "host"
+#     }
+
+#     ports {
+#       name           = "srv-udp"
+#       protocol       = "udp"
+#       target_port    = "4648"
+#       published_port = "4648"
+#       publish_mode   = "host"
+#     }
+#   }
+# }
