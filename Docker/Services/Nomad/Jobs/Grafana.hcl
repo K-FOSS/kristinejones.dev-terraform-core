@@ -6,6 +6,8 @@ job "ingress-demo" {
   # created by Nomad. The ingress gateway is based on the Envoy proxy being
   # managed by the docker driver.
   group "ingress-group" {
+    count = 3
+
     spread {
       attribute = "${attr.unique.hostname}"
     }
