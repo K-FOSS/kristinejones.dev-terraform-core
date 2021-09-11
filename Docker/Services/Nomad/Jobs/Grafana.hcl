@@ -5,6 +5,7 @@ job "foo" {
   group "foo" {
     task "foo" {
       driver = "docker"
+      user = "0"
       config {
         image = "alpine:3.13.6"
 
