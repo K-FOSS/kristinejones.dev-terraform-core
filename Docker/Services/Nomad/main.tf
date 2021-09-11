@@ -64,7 +64,7 @@ resource "docker_service" "Nomad" {
     container_spec {
       image = "multani/nomad:${var.Version}"
 
-      command = ["/start.sh"]
+      command = ["/entry.sh"]
 
       #
       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
