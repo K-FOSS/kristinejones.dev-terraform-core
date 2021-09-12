@@ -1,4 +1,4 @@
-job "ingress-demo" {
+job "test-demo" {
 
   datacenters = ["core0site1"]
 
