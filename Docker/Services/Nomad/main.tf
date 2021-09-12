@@ -10,6 +10,11 @@ terraform {
       version = "2.15.0"
     }
 
+    local = {
+      source = "hashicorp/local"
+      version = "2.1.0"
+    }
+
     nomad = {
       source = "hashicorp/nomad"
       version = "1.4.15"
@@ -39,8 +44,16 @@ provider "nomad" {
   consul_token = "${var.Consul.Token}"
 }
 
+data "local_file" "Caddyfile" {
+  filename = "${path.module}/Jobs/Configs/Web/Caddyfile.json"
+}
+
 resource "nomad_job" "Grafana" {
-  jobspec = file("${path.module}/Jobs/Grafana.hcl")
+
+  
+  jobspec = templatefile("${path.module}/Jobs/Web.hcl", {
+    CADDYFILE = data.local_file.Caddyfile.content
+  })
 }
 
 resource "docker_config" "NomadConfig" {

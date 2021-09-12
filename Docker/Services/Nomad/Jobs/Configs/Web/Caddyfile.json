@@ -1,0 +1,31 @@
+{
+  "apps": {
+    "http": {
+      "http_port": 8080,
+      "https_port": 8443,
+      "servers": {
+        "consul": {
+          "listen": [
+            ":{{ env "NOMAD_PORT_http" }}"
+          ],
+          "automatic_https": {
+            "disable": true
+          },
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "static_response",
+                  "status_code": "200",
+                  "body": "\nHelloWorld\n",
+                  "close": true
+                }
+              ],
+              "terminal": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}
