@@ -529,33 +529,6 @@ resource "consul_config_entry" "ProxyDefaults" {
 
       envoy_prometheus_bind_addr = "0.0.0.0:9100"
 
-      envoy_local_cluster_json = <<EOL
-        {
-          "name": "local_app",
-          "type": "STRICT_DNS",
-          "connect_timeout": "30s",
-          "load_assignment": {
-            "cluster_name": "local_app",
-            "endpoints": [
-              {
-                "lb_endpoints": [
-                  {
-                    "endpoint": {
-                      "address": {
-                        "socket_address": {
-                          "address": "127.0.0.1",
-                          "port_value": 9503
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      EOL
-
       envoy_dns_discovery_type = "STRICT_DNS"
     }
   })
