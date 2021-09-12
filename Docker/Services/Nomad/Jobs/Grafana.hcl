@@ -1,19 +1,20 @@
 job "ingress-demo" {
 
-  datacenters = ["core0site1", "home1"]
+  datacenters = ["core0site1"]
 
   # This group will have a task providing the ingress gateway automatically
   # created by Nomad. The ingress gateway is based on the Envoy proxy being
   # managed by the docker driver.
   group "ingress-group" {
-    count = 5
+    count = 1
 
-    spread {
-      attribute = "${attr.unique.hostname}"
+    constraint {
+      operator  = "${attr.unique.hostname}"
+      value     = "node0"
     }
 
     network {
-      mode = "bridge"
+      mode = "cni/mynet"
 
       # This example will enable plain HTTP traffic to access the uuid-api connect
       # native example service on port 8080.
@@ -73,8 +74,9 @@ job "ingress-demo" {
   group "generator" {
     count = 5
 
-    spread {
-      attribute = "${attr.unique.hostname}"
+    constraint {
+      operator  = "${attr.unique.hostname}"
+      value     = "node0"
     }
 
     network {
