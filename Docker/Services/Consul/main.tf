@@ -617,7 +617,7 @@ resource "consul_config_entry" "GrafanaIngress" {
     Listeners = [{
       Port     = 7880
       Protocol = "tcp"
-      Services = [{ Name  = "uuid-api" }]
+      Services = [{ Name  = "core0web-http" }]
     }]
   })
 }
