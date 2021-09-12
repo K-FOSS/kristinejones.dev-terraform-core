@@ -37,11 +37,6 @@ EOF
 
         destination = "/Config/Caddyfile.json"
       }
-
-      env {
-        BIND = "0.0.0.0"
-        PORT = "${NOMAD_PORT_http}"
-      }
     }
   }
 }
