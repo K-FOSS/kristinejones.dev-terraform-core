@@ -25,7 +25,7 @@ job "web-demo" {
       config {
         image        = "kristianfjones/caddy-core-docker:vps1"
       
-        args = ["ls", "config/"]
+        args = ["caddy", "run", "--config", "/local/caddyfile.json"]
 
         network_mode = "bridge"
       }
@@ -35,7 +35,7 @@ job "web-demo" {
 ${CADDYFILE}
 EOF
 
-        destination = "config/caddyfile.json"
+        destination = "local/caddyfile.json"
       }
     }
   }
