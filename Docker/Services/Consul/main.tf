@@ -617,7 +617,7 @@ resource "consul_config_entry" "GrafanaIngress" {
     Listeners = [{
       Port     = 7880
       Protocol = "http"
-      Services = [{ Name  = "grafana" }]
+      Services = [{ Name  = "uuid-api" }]
     }]
   })
 }
@@ -828,10 +828,10 @@ resource "docker_service" "ConsulIngressGateway" {
         CONSUL_CLIENT_INTERFACE = "eth1"
         CONSUL_HTTP_ADDR = "tasks.ConsulAgent:9500"
         CONSUL_GRPC_ADDR = "tasks.ConsulAgent:9502"
-        CONSUL_HTTP_TOKEN = "${local.TOKENS.MASTER_TOKEN}"
+        CONSUL_HTTP_TOKEN = "${data.vault_generic_secret.CONSUL_TOKEN.data["TOKEN"]}"
 
         INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
-        SERVICE_NAME = "uuid-api"
+        SERVICE_NAME = "${consul_config_entry.GrafanaIngress.name}"
       }
 
       # dir    = "/root"
