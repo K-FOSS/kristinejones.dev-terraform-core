@@ -17,7 +17,7 @@
                 {
                   "handler": "static_response",
                   "status_code": "200",
-                  "body": "\nStaticWeb\n{{ env "NOMAD_JOB_ID" }}",
+                  "body": "\nStaticWeb\n{{ env "NOMAD_ALLOC_ID" }}",
                   "close": true
                 }
               ],
