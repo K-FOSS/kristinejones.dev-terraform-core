@@ -59,6 +59,7 @@ EOF
             upstreams {
               destination_name = "staticweb-http"
               local_bind_port  = 8080
+              local_bind_address = "127.0.0.5"
             }
           }
         }
