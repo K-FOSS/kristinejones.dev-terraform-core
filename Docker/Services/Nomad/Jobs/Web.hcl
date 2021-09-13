@@ -7,7 +7,9 @@ job "web-demo" {
     network {
       mode = "bridge"
 
-      port "http" {}
+      port "http" {
+        to = 8000
+      }
     }
 
     service {
@@ -23,17 +25,7 @@ job "web-demo" {
       driver = "docker"
 
       config {
-        image        = "kristianfjones/caddy-core-docker:vps1"
-      
-        args = ["caddy", "run", "--config", "/local/caddyfile.json"]
-      }
-
-      template {
-        data = <<EOF
-${STATICWEB_CADDYFILE}
-EOF
-
-        destination = "local/caddyfile.json"
+        image        = "mpepping/cyberchef"
       }
     }
   }
