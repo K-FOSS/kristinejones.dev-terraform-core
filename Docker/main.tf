@@ -2627,7 +2627,7 @@ resource "docker_service" "GoBetween" {
 
   task_spec {
     container_spec {
-      image = "yyyar/gobetween"
+      image = "yyyar/gobetween:latest"
 
       command = ["/gobetween"]
       args = ["-c", "/Config/config.toml"]
@@ -2972,7 +2972,7 @@ resource "docker_service" "OpenProjectCache" {
 
   task_spec {
     container_spec {
-      image = "memcached"
+      image = "memcached:latest"
     }
 
     resources {
