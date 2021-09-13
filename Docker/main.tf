@@ -1071,7 +1071,7 @@ resource "docker_service" "Keycloak" {
     parallelism       = 1
     delay             = "3m"
     failure_action    = "pause"
-    monitor           = "120s"
+    monitor           = "2m"
     max_failure_ratio = "0.2"
     order             = "stop-first"
   }

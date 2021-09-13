@@ -17,7 +17,7 @@
                 {
                   "handler": "static_response",
                   "status_code": "200",
-                  "body": "\nFuckerHelloWorld\n",
+                  "body": "\nHelloTestingWorld\n",
                   "close": true
                 }
               ],
