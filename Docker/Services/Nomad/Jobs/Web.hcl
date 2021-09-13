@@ -54,6 +54,8 @@ EOF
       connect {
         sidecar_service {
           proxy {
+            local_service_address = "127.0.0.5"
+
             upstreams {
               destination_name = "staticweb-http"
               local_bind_port  = 8080
