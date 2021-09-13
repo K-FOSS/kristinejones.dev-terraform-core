@@ -54,8 +54,6 @@ EOF
       connect {
         sidecar_service {
           proxy {
-            local_service_address = "127.0.0.5"
-
             config {
               bind_address = "127.0.0.5"
             }
