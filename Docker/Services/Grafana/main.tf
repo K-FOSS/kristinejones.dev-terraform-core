@@ -210,162 +210,162 @@ data "vault_generic_secret" "CONSUL_TOKEN" {
   path = "TF_INFRA/CONSUL"
 }
 
-resource "docker_service" "GrafanaSidecar" {
-  name = "GrafanaSidecar"
+# resource "docker_service" "GrafanaSidecar" {
+#   name = "GrafanaSidecar"
 
-  task_spec {
-    container_spec {
-      image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
+#   task_spec {
+#     container_spec {
+#       image = "nicholasjackson/consul-envoy:v1.10.0-v1.18.3"
 
-      command = ["/start.sh"]
+#       command = ["/start.sh"]
 
-      #
-      # TODO: Tweak this, Caddy, Prometheus, Loki, etc
-      #
-      # labels {
-      #   label = "foo.bar"
-      #   value = "baz"
-      # }
+#       #
+#       # TODO: Tweak this, Caddy, Prometheus, Loki, etc
+#       #
+#       # labels {
+#       #   label = "foo.bar"
+#       #   value = "baz"
+#       # }
 
-      hostname = "GrafanaSidecar{{.Task.Slot}}"
+#       hostname = "GrafanaSidecar{{.Task.Slot}}"
 
-      env = {
-        CONSUL_BIND_INTERFACE = "eth1"
-        CONSUL_CLIENT_INTERFACE = "eth1"
-        CONSUL_HTTP_ADDR = "${var.Consul.Hostname}:${var.Consul.Port}"
-        CONSUL_GRPC_ADDR = "${var.Consul.Hostname}:${var.Consul.GRPCPort}"
-        CONSUL_HTTP_TOKEN = "${data.vault_generic_secret.CONSUL_TOKEN.data["TOKEN"]}"
+#       env = {
+#         CONSUL_BIND_INTERFACE = "eth1"
+#         CONSUL_CLIENT_INTERFACE = "eth1"
+#         CONSUL_HTTP_ADDR = "${var.Consul.Hostname}:${var.Consul.Port}"
+#         CONSUL_GRPC_ADDR = "${var.Consul.Hostname}:${var.Consul.GRPCPort}"
+#         CONSUL_HTTP_TOKEN = "${data.vault_generic_secret.CONSUL_TOKEN.data["TOKEN"]}"
 
-        SERVICE_HOST = "GrafanaSidecar{{.Task.Slot}}"
+#         SERVICE_HOST = "GrafanaSidecar{{.Task.Slot}}"
 
-        SERVICE_CONFIG = "/config/Grafana.hcl"
-        CENTRAL_CONFIG = "/CentralConfig/GrafanaDefaults.hcl"
+#         SERVICE_CONFIG = "/config/Grafana.hcl"
+#         CENTRAL_CONFIG = "/CentralConfig/GrafanaDefaults.hcl"
 
-        SERVICE_NAME = "${var.Consul.ServiceName}"
-      }
+#         SERVICE_NAME = "${var.Consul.ServiceName}"
+#       }
 
-      # dir    = "/root"
-      #user   = "1000"
-      # groups = ["docker", "foogroup"]
+#       # dir    = "/root"
+#       #user   = "1000"
+#       # groups = ["docker", "foogroup"]
 
-      # privileges {
-      #   se_linux_context {
-      #     disable = true
-      #     user    = "user-label"
-      #     role    = "role-label"
-      #     type    = "type-label"
-      #     level   = "level-label"
-      #   }
-      # }
+#       # privileges {
+#       #   se_linux_context {
+#       #     disable = true
+#       #     user    = "user-label"
+#       #     role    = "role-label"
+#       #     type    = "type-label"
+#       #     level   = "level-label"
+#       #   }
+#       # }
 
-      # read_only = true
+#       # read_only = true
 
-      configs {
-        config_id   = docker_config.GrafanaSidecarEntryScriptConfig.id
-        config_name = docker_config.GrafanaSidecarEntryScriptConfig.name
+#       configs {
+#         config_id   = docker_config.GrafanaSidecarEntryScriptConfig.id
+#         config_name = docker_config.GrafanaSidecarEntryScriptConfig.name
 
-        file_name   = "/start.sh"
-        file_uid = "1000"
-        file_mode = 7777
-      }
+#         file_name   = "/start.sh"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
 
-      configs {
-        config_id   = docker_config.GrafanaSidecarServiceConfig.id
-        config_name = docker_config.GrafanaSidecarServiceConfig.name
+#       configs {
+#         config_id   = docker_config.GrafanaSidecarServiceConfig.id
+#         config_name = docker_config.GrafanaSidecarServiceConfig.name
 
-        file_name   = "/config/Grafana.hcl"
-        file_uid = "1000"
-        file_mode = 7777
-      }
+#         file_name   = "/config/Grafana.hcl"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
 
-      configs {
-        config_id   = docker_config.GrafanaSidecarCentralConfig.id
-        config_name = docker_config.GrafanaSidecarCentralConfig.name
+#       configs {
+#         config_id   = docker_config.GrafanaSidecarCentralConfig.id
+#         config_name = docker_config.GrafanaSidecarCentralConfig.name
 
-        file_name   = "/CentralConfig/GrafanaDefaults.hcl"
-        file_uid = "1000"
-        file_mode = 7777
-      }
-
-
-
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
-
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
-
-      # hosts {
-      #   host = "testhost"
-      #   ip   = "10.0.1.0"
-      # }
+#         file_name   = "/CentralConfig/GrafanaDefaults.hcl"
+#         file_uid = "1000"
+#         file_mode = 7777
+#       }
 
 
-      # dns_config {
-      #   nameservers = ["1.1.1.1", "1.0.0.1"]
-      #   search      = ["kristianjones.dev"]
-      #   options     = ["timeout:3"]
-      # }
 
-      #
-      # Stolon Database Secrets
-      #
-      # healthcheck {
-      #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      #   interval = "5s"
-      #   timeout  = "2s"
-      #   retries  = 4
-      # }
-    }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-    runtime      = "container"
-    networks     = [data.docker_network.meshSpineNet.id]
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-    log_driver {
-      name = "loki"
+#       # hosts {
+#       #   host = "testhost"
+#       #   ip   = "10.0.1.0"
+#       # }
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
 
-  mode {
-    replicated {
-      replicas = 3
-    }
-  }
+#       # dns_config {
+#       #   nameservers = ["1.1.1.1", "1.0.0.1"]
+#       #   search      = ["kristianjones.dev"]
+#       #   options     = ["timeout:3"]
+#       # }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "120s"
-  #   failure_action    = "pause"
-  #   monitor           = "30s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "stop-first"
-  # }
+#       #
+#       # Stolon Database Secrets
+#       #
+#       # healthcheck {
+#       #   test     = ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#       #   interval = "5s"
+#       #   timeout  = "2s"
+#       #   retries  = 4
+#       # }
+#     }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#     runtime      = "container"
+#     networks     = [data.docker_network.meshSpineNet.id]
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#     log_driver {
+#       name = "loki"
+
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
+
+#   mode {
+#     replicated {
+#       replicas = 3
+#     }
+#   }
+
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "120s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "30s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "stop-first"
+#   # }
+
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
+
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }

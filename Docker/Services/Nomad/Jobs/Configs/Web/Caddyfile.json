@@ -6,7 +6,7 @@
       "servers": {
         "consul": {
           "listen": [
-            ":{{ env "NOMAD_PORT_http" }}"
+            "0.0.0.0:{{ env "NOMAD_PORT_http" }}"
           ],
           "automatic_https": {
             "disable": true
@@ -17,7 +17,7 @@
                 {
                   "handler": "static_response",
                   "status_code": "200",
-                  "body": "\nHelloWorld\n",
+                  "body": "\nFuckerHelloWorld\n",
                   "close": true
                 }
               ],
