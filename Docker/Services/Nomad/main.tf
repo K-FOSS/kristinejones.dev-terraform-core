@@ -48,11 +48,18 @@ data "local_file" "Caddyfile" {
   filename = "${path.module}/Jobs/Configs/Web/Caddyfile.json"
 }
 
+data "local_file" "StaticWebCaddyfile" {
+  filename = "${path.module}/Jobs/Configs/StaticWeb/Caddyfile.json"
+}
+
+
 resource "nomad_job" "Grafana" {
 
   
   jobspec = templatefile("${path.module}/Jobs/Web.hcl", {
     CADDYFILE = data.local_file.Caddyfile.content
+
+    STATICWEB_CADDYFILE = data.local_file.StaticWebCaddyfile.content
   })
 }
 

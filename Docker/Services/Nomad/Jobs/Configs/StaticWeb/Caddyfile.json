@@ -15,15 +15,10 @@
             {
               "handle": [
                 {
-                  "handler": "reverse_proxy",
-                  "transport": {
-                    "protocol": "http"
-                  },
-                  "upstreams": [
-                    {
-                      "dial": "127.0.0.5:8080"
-                    }
-                  ]
+                  "handler": "static_response",
+                  "status_code": "200",
+                  "body": "\nStaticWeb\n{{ env "NOMAD_JOB_ID" }}",
+                  "close": true
                 }
               ],
               "terminal": true
