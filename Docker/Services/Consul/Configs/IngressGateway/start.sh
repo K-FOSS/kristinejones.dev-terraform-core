@@ -2,15 +2,15 @@
 
 case ${NODE_HOST} in
      "node1.vps1.kristianjones.dev" )
-           ARGS="-address='172.31.245.1:8888'"
+           ARGS="-address '172.31.245.1:8888'"
            echo "Node1 ${ARGS}"
            ;;
      "node2.vps1.kristianjones.dev" )
-           ARGS="-address='172.31.245.2:8888'"
+           ARGS="-address '172.31.245.2:8888'"
            echo "Node2 ${ARGS}"
            ;;
      "node3.vps1.kristianjones.dev" )
-           ARGS="-address='172.31.245.3:8888'"
+           ARGS="-address '172.31.245.3:8888'"
            echo "Node3 ${ARGS}"
            ;;
      * )
