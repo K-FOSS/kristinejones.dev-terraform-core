@@ -974,8 +974,8 @@ resource "docker_service" "ConsulIngressGateway" {
     ports {
       name           = "ingress-gateway-tcp"
       protocol       = "tcp"
-      target_port    = "8888"
-      published_port = "8888"
+      target_port    = "8443"
+      published_port = "8443"
       publish_mode   = "host"
     }
 
@@ -985,8 +985,8 @@ resource "docker_service" "ConsulIngressGateway" {
     ports {
       name           = "ingress-gateway-udp"
       protocol       = "udp"
-      target_port    = "8888"
-      published_port = "8888"
+      target_port    = "8443"
+      published_port = "8443"
       publish_mode   = "host"
     }
   }
