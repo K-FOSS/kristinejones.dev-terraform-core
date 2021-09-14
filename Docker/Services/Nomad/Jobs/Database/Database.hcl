@@ -57,6 +57,10 @@ job "database-demo" {
       config {
         image = "postgres:13.4-alpine3.14"
       }
+
+      env {
+        POSTGRES_PASSWORD = "RANDOM_PASS"
+      }
     }
   }
 
