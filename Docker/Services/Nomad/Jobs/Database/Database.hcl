@@ -34,6 +34,11 @@ job "database-demo" {
     }
 
     task "database-web1" {
+      lifecycle {
+        hook = "poststart"
+        sidecar = true
+      }
+      
       driver = "docker"
 
       config {
