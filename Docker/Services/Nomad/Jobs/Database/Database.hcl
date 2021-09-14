@@ -16,50 +16,6 @@ job "database-demo" {
     }
 
     service {
-      name = "databasedemo-web"
-      port = "http"
-
-      task = "database-web1"
-
-      connect {
-        sidecar_service {
-          proxy {
-            upstreams {
-              destination_name = "databasedemo-store"
-              local_bind_port  = 5432
-            }
-          }
-        }
-      }
-    }
-
-    task "database-web1" {
-      lifecycle {
-        hook = "poststart"
-        sidecar = true
-      }
-      
-      driver = "docker"
-
-      restart {
-        attempts = 3
-        delay    = "60s"
-      }
-
-      config {
-        image        = "sosedoff/pgweb:0.11.8"
-
-        command = "/usr/bin/pgweb"
-
-        args = ["--bind=0.0.0.0", "--listen=$${NOMAD_PORT_http}"]
-      }
-
-      env {
-        DATABASE_URL = "postgres://postgres:RANDOM_PASS@localhost:5432/postgres?sslmode=disable"
-      }
-    }
-
-    service {
       name = "databasedemo-store"
       port = "psql"
 
