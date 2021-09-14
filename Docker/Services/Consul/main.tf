@@ -527,6 +527,9 @@ resource "consul_config_entry" "ProxyDefaults" {
       local_connect_timeout_ms = 1000
       handshake_timeout_ms     = 10000
 
+      bind_address = "0.0.0.0"
+      envoy_gateway_bind_tagged_addresses = true
+
       envoy_dns_discovery_type = "STRICT_DNS"
     }
   })
