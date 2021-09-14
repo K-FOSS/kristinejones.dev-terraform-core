@@ -15,6 +15,17 @@ job "database-demo" {
       }
     }
 
+    service {
+      name = "databasedemo-web"
+      port = "http"
+
+      task = "database-web1"
+
+      connect {
+        sidecar_service {}
+      }
+    }
+
     task "database-web1" {
       driver = "docker"
 
@@ -26,31 +37,25 @@ job "database-demo" {
         args = ["--bind=$${NOMAD_IP_http}", "--listen=$${NOMAD_PORT_http}"]
       }
 
-      service {
-        name = "databasedemo-web"
-        port = "http"
 
-        connect {
-          sidecar_service {}
-        }
-      }
     }
 
+    service {
+      name = "databasedemo-store"
+      port = "psql"
+
+      task = "database-store1"
+
+      connect {
+        sidecar_service {}
+      }
+    }
 
     task "database-store1" {
       driver = "docker"
 
       config {
         image = "postgres:13.4-alpine3.14"
-      }
-
-      service {
-        name = "databasedemo-store"
-        port = "psql"
-
-        connect {
-          sidecar_service {}
-        }
       }
     }
   }
