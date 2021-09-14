@@ -41,6 +41,11 @@ job "database-demo" {
       
       driver = "docker"
 
+      restart {
+        attempts = 3
+        delay    = "30s"
+      }
+
       config {
         image        = "sosedoff/pgweb:0.11.8"
 
@@ -59,6 +64,13 @@ job "database-demo" {
       port = "psql"
 
       task = "database-store1"
+
+      check {
+        type     = "tcp"
+        port     = "psql"
+        interval = "10s"
+        timeout  = "2s"
+      }
 
       connect {
         sidecar_service {}
