@@ -837,7 +837,7 @@ resource "docker_service" "ConsulIngressGateway" {
       #   value = "baz"
       # }
 
-      hostname = "ConsulIngressGateway{{.Task.Slot}}"
+      hostname = "ConsulIngressGateway"
 
       env = {
         CONSUL_BIND_INTERFACE = "eth1"
@@ -848,7 +848,7 @@ resource "docker_service" "ConsulIngressGateway" {
 
         NODE_HOST = "{{.Node.Hostname}}.vps1.kristianjones.dev"
 
-        INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
+        INGRESS_HOST = "ConsulIngressGateway"
         SERVICE_NAME = "${consul_config_entry.GrafanaIngress.name}"
       }
 
