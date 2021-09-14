@@ -587,11 +587,56 @@ resource "consul_config_entry" "GrafanaIngress" {
     TLS = {
       Enabled = false
     }
-    Listeners = [{
-      Port     = 7880
+    Listeners = [
+      {
+        Port     = 7880
+        Protocol = "tcp"
+        Services = [{ Name  = "core0web-http" }]
+      },
+      {
+      Port     = 7881
       Protocol = "tcp"
-      Services = [{ Name  = "core0web-http" }]
-    }]
+      Services = [{ Name  = "database-demo-webpsql" }]
+      }
+    ]
+  })
+}
+
+resource "consul_config_entry" "DatabaseStore" {
+  name = "databasedemo-store"
+  kind = "service-intentions"
+
+  config_json = jsonencode({
+    Sources = [
+      {
+        Action     = "allow"
+        Name       = "database-demo-webpsql"
+        Precedence = 9
+        Type       = "consul"
+      },
+      {
+        Action     = "allow"
+        Name       = "databasedemo-web"
+        Precedence = 9
+        Type       = "consul"
+      }
+    ]
+  })
+}
+
+resource "consul_config_entry" "DatabaseProxy" {
+  name = "database-demo-webpsql"
+  kind = "service-intentions"
+
+  config_json = jsonencode({
+    Sources = [
+      {
+        Action     = "allow"
+        Name       = "vps1-ingress"
+        Precedence = 9
+        Type       = "consul"
+      }
+    ]
   })
 }
 
@@ -917,6 +962,14 @@ resource "docker_service" "ConsulIngressGateway" {
       protocol       = "tcp"
       target_port    = "7880"
       published_port = "7880"
+      publish_mode   = "ingress"
+    }
+
+    ports {
+      name           = "psql-ingress"
+      protocol       = "tcp"
+      target_port    = "7881"
+      published_port = "7881"
       publish_mode   = "ingress"
     }
   }
