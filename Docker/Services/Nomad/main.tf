@@ -110,6 +110,17 @@ resource "nomad_job" "LinstorController" {
   })
 }
 
+#
+# Linstor Satellite
+#
+
+resource "nomad_job" "LinstorSatellite" {
+  jobspec = templatefile("${path.module}/Jobs/System/LinstorSatellite.hcl", {
+    CADDYFILE = data.local_file.DatabaseDemoJobFile.content
+  })
+}
+
+
 resource "docker_config" "NomadEntryScriptConfig" {
   name = "nomad-entryconfig-${replace(timestamp(), ":", ".")}"
   data = base64encode(file("${path.module}/Configs/Nomad/start.sh"))
