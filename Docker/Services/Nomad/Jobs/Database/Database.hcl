@@ -22,7 +22,14 @@ job "database-demo" {
       task = "database-web1"
 
       connect {
-        sidecar_service {}
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "databasedemo-store"
+              local_bind_port  = 5432
+            }
+          }
+        }
       }
     }
 
@@ -37,7 +44,9 @@ job "database-demo" {
         args = ["--bind=$${NOMAD_IP_http}", "--listen=$${NOMAD_PORT_http}"]
       }
 
-
+      env {
+        DATABASE_URL = "postgres://postgres:RANDOM_PASS@localhost:5432/postgres?sslmode=disable"
+      }
     }
 
     service {
