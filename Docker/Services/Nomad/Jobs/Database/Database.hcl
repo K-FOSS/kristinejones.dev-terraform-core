@@ -43,7 +43,7 @@ job "database-demo" {
 
       restart {
         attempts = 3
-        delay    = "30s"
+        delay    = "60s"
       }
 
       config {
