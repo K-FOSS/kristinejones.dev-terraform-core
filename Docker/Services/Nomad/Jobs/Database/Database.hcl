@@ -30,7 +30,7 @@ job "database-demo" {
       driver = "docker"
 
       config {
-        image        = "postgres:13.4-alpine3.14"
+        image        = "sosedoff/pgweb:0.11.8"
 
         command = "/usr/bin/pgweb"
 
