@@ -846,6 +846,8 @@ resource "docker_service" "ConsulIngressGateway" {
         CONSUL_GRPC_ADDR = "tasks.ConsulAgent:9502"
         CONSUL_HTTP_TOKEN = "${data.vault_generic_secret.CONSUL_TOKEN.data["TOKEN"]}"
 
+        NODE_HOST = "{{.Node.Hostname}}.vps1.kristianjones.dev"
+
         INGRESS_HOST = "ConsulIngressGateway{{.Task.Slot}}"
         SERVICE_NAME = "${consul_config_entry.GrafanaIngress.name}"
       }
@@ -926,9 +928,7 @@ resource "docker_service" "ConsulIngressGateway" {
   }
 
   mode {
-    replicated {
-      replicas = 3
-    }
+    global = true
   }
 
   #
@@ -960,7 +960,7 @@ resource "docker_service" "ConsulIngressGateway" {
       protocol       = "tcp"
       target_port    = "7880"
       published_port = "7880"
-      publish_mode   = "ingress"
+      publish_mode   = "host"
     }
 
     ports {
@@ -968,7 +968,26 @@ resource "docker_service" "ConsulIngressGateway" {
       protocol       = "tcp"
       target_port    = "7881"
       published_port = "7881"
-      publish_mode   = "ingress"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "ingress-gateway-tcp"
+      protocol       = "tcp"
+      target_port    = "8888"
+      published_port = "8888"
+      publish_mode   = "host"
+    }
+
+    #
+    # TODO: Confirm if needed
+    #
+    ports {
+      name           = "ingress-gateway-udp"
+      protocol       = "udp"
+      target_port    = "8888"
+      published_port = "8888"
+      publish_mode   = "host"
     }
   }
 }
