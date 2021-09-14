@@ -65,13 +65,6 @@ job "database-demo" {
 
       task = "database-store1"
 
-      check {
-        type     = "tcp"
-        port     = "psql"
-        interval = "10s"
-        timeout  = "2s"
-      }
-
       connect {
         sidecar_service {}
       }
