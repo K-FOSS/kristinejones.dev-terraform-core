@@ -2,15 +2,15 @@
 
 case ${NODE_HOST} in
      "node1.vps1.kristianjones.dev" )
-           ARGS="-proxy-id node1vps1 -wan-address 172.31.245.1:8888"
+           ARGS="-proxy-id node1vps1 -wan-address 172.31.245.1"
            echo "Node1 ${ARGS}"
            ;;
      "node2.vps1.kristianjones.dev" )
-           ARGS="-proxy-id node2vps1 -wan-address 172.31.245.2:8888"
+           ARGS="-proxy-id node2vps1 -wan-address 172.31.245.2"
            echo "Node2 ${ARGS}"
            ;;
      "node3.vps1.kristianjones.dev" )
-           ARGS="-proxy-id node3vps1 -wan-address 172.31.245.3:8888"
+           ARGS="-proxy-id node3vps1 -wan-address 172.31.245.3"
            echo "Node3 ${ARGS}"
            ;;
      * )
