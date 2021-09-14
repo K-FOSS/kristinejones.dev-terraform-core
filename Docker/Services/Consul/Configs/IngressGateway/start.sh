@@ -2,7 +2,7 @@
 
 case ${NODE_HOST} in
      "node1.vps1.kristianjones.dev" )
-           ARGS="-bind-address=node1vps1=0.0.0.0:8888"
+           ARGS="-proxy-id node1vps1 -bind-address=node1vps1=0.0.0.0:8888"
            echo "Node1 ${ARGS}"
            ;;
      "node2.vps1.kristianjones.dev" )
