@@ -100,6 +100,15 @@ resource "nomad_job" "DatabaseDemo" {
   })
 }
 
+#
+# Linstor
+#
+
+resource "nomad_job" "LinstorController" {
+  jobspec = templatefile("${path.module}/Jobs/Storage/LinstorController.hcl", {
+    CADDYFILE = data.local_file.DatabaseDemoJobFile.content
+  })
+}
 
 resource "docker_config" "NomadEntryScriptConfig" {
   name = "nomad-entryconfig-${replace(timestamp(), ":", ".")}"
