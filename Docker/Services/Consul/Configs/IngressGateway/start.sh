@@ -2,7 +2,7 @@
 
 case ${NODE_HOST} in
      "node1.vps1.kristianjones.dev" )
-           ARGS="-proxy-id node1vps1 -bind-address=node1vps1=0.0.0.0:8888"
+           ARGS="-bind-address=node1vps1=0.0.0.0:8888"
            echo "Node1 ${ARGS}"
            ;;
      "node2.vps1.kristianjones.dev" )
@@ -18,4 +18,4 @@ case ${NODE_HOST} in
            ;;
 esac
 
-/entrypoint.sh consul connect envoy -gateway=ingress -register ${ARGS} -service=${SERVICE_NAME} -token=${CONSUL_HTTP_TOKEN}
+/entrypoint.sh consul connect envoy -gateway=ingress -register -address '127.0.0.1:8888' ${ARGS} -service=${SERVICE_NAME} -token=${CONSUL_HTTP_TOKEN}
