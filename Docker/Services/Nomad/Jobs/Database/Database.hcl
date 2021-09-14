@@ -41,7 +41,7 @@ job "database-demo" {
 
         command = "/usr/bin/pgweb"
 
-        args = ["--bind=$${NOMAD_IP_http}", "--listen=$${NOMAD_PORT_http}"]
+        args = ["--bind=0.0.0.0", "--listen=$${NOMAD_PORT_http}"]
       }
 
       env {
