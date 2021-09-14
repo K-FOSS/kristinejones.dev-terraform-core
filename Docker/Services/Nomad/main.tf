@@ -96,7 +96,7 @@ data "local_file" "DatabaseDemoJobFile" {
 
 resource "nomad_job" "DatabaseDemo" {
   jobspec = templatefile("${path.module}/Jobs/Database/Database.hcl", {
-    CADDYFILE = = data.local_file.DatabaseDemoJobFile.content
+    CADDYFILE = data.local_file.DatabaseDemoJobFile.content
   })
 }
 
