@@ -18,6 +18,13 @@ job "linstor-satellite" {
       config {
         image = "kvaps/linstor-satellite:v1.14.0"
 
+        extra_hosts = [
+          "node0:172.31.245.10",
+          "node1:172.31.245.11",
+          "node2:172.31.245.12",
+          "node3:172.31.245.13"
+        ]
+
         privileged = true
         network_mode = "host"
       }
@@ -31,18 +38,6 @@ job "linstor-satellite" {
         cpu    = 500 
         memory = 500
       }
-    }
-
-    volume "modules" {
-      type = "host"
-      source = "modules"
-      read_only = true
-    }
-
-    volume "kernel-src" {
-      type = "host"
-      source = "kernel-src"
-      read_only = true
     }
   }
 }

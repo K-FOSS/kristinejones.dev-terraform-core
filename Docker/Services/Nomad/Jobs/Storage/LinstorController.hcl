@@ -34,6 +34,13 @@ job "linstor-controller" {
       config {
         image = "kvaps/linstor-controller:v1.14.0"
 
+        extra_hosts = [
+          "node0:172.31.245.10",
+          "node1:172.31.245.11",
+          "node2:172.31.245.12",
+          "node3:172.31.245.13"
+        ]
+
         mount {
           type = "bind"
           source = "local"
