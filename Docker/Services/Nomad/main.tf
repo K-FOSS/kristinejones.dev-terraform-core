@@ -82,6 +82,25 @@ resource "docker_config" "NomadConfig" {
   }
 }
 
+#
+# Hashicorp Nomad Demo Jobs/Sandbox
+#
+
+#
+# Nomad Database Sandbox/Demo
+#
+
+data "local_file" "DatabaseDemoJobFile" {
+  filename = "${path.module}/Jobs/Database/Configs/Caddyfile.json"
+}
+
+resource "nomad_job" "DatabaseDemo" {
+  jobspec = templatefile("${path.module}/Jobs/Database/Database.hcl", {
+    CADDYFILE = = data.local_file.DatabaseDemoJobFile.content
+  })
+}
+
+
 resource "docker_config" "NomadEntryScriptConfig" {
   name = "nomad-entryconfig-${replace(timestamp(), ":", ".")}"
   data = base64encode(file("${path.module}/Configs/Nomad/start.sh"))

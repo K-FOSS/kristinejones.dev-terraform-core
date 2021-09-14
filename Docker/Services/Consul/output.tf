@@ -69,3 +69,20 @@ output "CortexSecretToken" {
 output "GrafanaSecretToken" {
   value = data.consul_acl_token_secret_id.GrafanaToken
 }
+
+#
+# Nomad Jobs
+#
+
+#
+# TODO: Figure out how to create Nomad services here and export details to Nomad Module (Intentions, HTTP/TCP/UDP, etc)
+#
+
+# output "Nomad" {
+#   value = {
+#     dhcp = {
+#       ecs = module.dhcp.ecs
+#       ecr = module.dhcp.ecr
+#     }
+#   }
+# }

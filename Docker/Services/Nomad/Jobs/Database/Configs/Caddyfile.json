@@ -1,0 +1,61 @@
+{
+  "apps": {
+    "http": {
+      "http_port": 8080,
+      "https_port": 8443,
+      "servers": {
+        "consul": {
+          "listen": [
+            "0.0.0.0:{{ env "NOMAD_PORT_http" }}"
+          ],
+          "automatic_https": {
+            "disable": true
+          },
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "reverse_proxy",
+                  "transport": {
+                    "protocol": "http"
+                  },
+                  "upstreams": [
+                    {
+                      "dial": "{{ env "NOMAD_UPSTREAM_ADDR_databasedemo_web" }}"
+                    }
+                  ]
+                }
+              ],
+              "terminal": true
+            }
+          ]
+        }
+      }
+    },
+    "layer4": {
+      "servers": {
+        "database_demo": {
+          "listen": [
+            "tcp/0.0.0.0:{{ env "NOMAD_PORT_psql" }}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "proxy",
+                  "upstreams": [
+                    {
+                      "dial": [
+                        "tcp/{{ env "NOMAD_UPSTREAM_ADDR_databasedemo_store" }}"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
