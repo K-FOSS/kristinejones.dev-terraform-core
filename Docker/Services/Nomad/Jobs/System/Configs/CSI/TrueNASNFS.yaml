@@ -35,10 +35,10 @@ zfs:
   #    sudo: /usr/local/bin/sudo
   #    chroot: /usr/sbin/chroot
 
-  datasetParentName: tank/k8s/a/vols
+  datasetParentName: Site1.NAS1.Pool1/CSI/vols
   # do NOT make datasetParentName and detachedSnapshotsDatasetParentName overlap
   # they may be siblings, but neither should be nested in the other
-  detachedSnapshotsDatasetParentName: tank/k8s/a/snaps
+  detachedSnapshotsDatasetParentName: Site1.NAS1.Pool1/CSI/snaps
   datasetEnableQuotas: true
   datasetEnableReservation: false
   datasetPermissionsMode: "0777"
