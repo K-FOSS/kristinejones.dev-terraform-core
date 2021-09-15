@@ -8,6 +8,8 @@ job "database-demo" {
       type      = "csi"
       read_only = false
       source    = "test-vol"
+      attachment_mode = "file-system"
+      access_mode     = "single-node-writer"
     }
 
     network {
