@@ -174,7 +174,7 @@ resource "nomad_volume" "Attempt" {
   attachment_mode       = "file-system"
   deregister_on_destroy = true
 
-  mount_options = {
+  mount_options {
     fs_type = "nfs"
   }
 
