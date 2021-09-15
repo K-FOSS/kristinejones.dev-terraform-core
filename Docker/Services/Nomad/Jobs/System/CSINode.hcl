@@ -21,7 +21,7 @@ job "storage-node" {
           "--log-level=debug",
           "--csi-mode=node",
           "--server-socket=/csi-data/csi.sock",
-          "--server-port=2500",
+          "--server-port=2501",
         ]
 
         privileged = true
