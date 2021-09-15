@@ -170,8 +170,12 @@ resource "nomad_volume" "Attempt" {
   volume_id             = "test-vol"
   name                  = "test-vol"
   external_id           = "test-vol"
-  access_mode           = "multi-node-multi-writer"
-  attachment_mode       = "file-system"
+
+  capability {
+    access_mode     = "multi-node-multi-writer"
+    attachment_mode = "file-system"
+  }
+
   deregister_on_destroy = true
 
   mount_options {
