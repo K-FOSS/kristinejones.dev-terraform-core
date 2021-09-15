@@ -12,7 +12,7 @@ job "storage-node" {
         args = [
           "--csi-version=1.2.0",
           "--csi-name=org.democratic-csi.nfs",
-          "--driver-config-file=${NOMAD_TASK_DIR}/driver-config-file.yaml",
+          "--driver-config-file=$${NOMAD_TASK_DIR}/driver-config-file.yaml",
           "--log-level=debug",
           "--csi-mode=node",
           "--server-socket=/csi-data/csi.sock",
@@ -28,7 +28,7 @@ job "storage-node" {
       }
 
       template {
-        destination = "${NOMAD_TASK_DIR}/driver-config-file.yaml"
+        destination = "$${NOMAD_TASK_DIR}/driver-config-file.yaml"
 
         data = <<EOH
 ${CONFIG}
