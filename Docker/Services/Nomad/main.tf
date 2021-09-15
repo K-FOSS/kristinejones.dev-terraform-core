@@ -164,6 +164,27 @@ resource "nomad_job" "CSINode" {
   })
 }
 
+resource "nomad_volume" "Attempt" {
+  type                  = "csi"
+  plugin_id             = "truenas"
+  volume_id             = "test-vol"
+  name                  = "test-vol"
+  external_id           = "test-vol"
+  access_mode           = "single-node-writer"
+  attachment_mode       = "file-system"
+  deregister_on_destroy = true
+
+  mount_options = {
+    fs_type = "nfs"
+  }
+
+  context = {
+    node_attach_driver = "nfs"
+    provisioner_driver = "freenas-nfs"
+    server             = "172.16.20.21"
+    share              = "/mnt/Site1.NAS1.Pool1/CSI/vols/test-vol"
+  }
+}
 
 
 
