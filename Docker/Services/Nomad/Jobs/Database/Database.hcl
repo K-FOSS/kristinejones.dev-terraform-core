@@ -4,6 +4,12 @@ job "database-demo" {
   group "database-store" {
     count = 1
 
+    volume "test-vol" {
+      type      = "csi"
+      read_only = false
+      source    = "test-vol"
+    }
+
     network {
       mode = "bridge"
 
