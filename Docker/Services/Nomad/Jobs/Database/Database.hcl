@@ -35,6 +35,12 @@ job "database-demo" {
 
       env {
         POSTGRES_PASSWORD = "RANDOM_PASS"
+        PGDATA = "$${NOMAD_ALLOC_DIR}/$${var.path}"
+      }
+
+      volume_mount {
+        volume      = "test-vol"
+        destination = "$${NOMAD_ALLOC_DIR}/$${var.path}"
       }
     }
   }
