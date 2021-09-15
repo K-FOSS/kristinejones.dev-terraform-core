@@ -7,8 +7,8 @@ job "storage-controller" {
       mode = "bridge"
 
       port "grpc" {
-        static = 9000
-        to     = 9000
+        static = 2500
+        to     = 2500
       }
     }
 
@@ -27,7 +27,7 @@ job "storage-controller" {
           "--csi-mode=controller",
           "--server-socket=/csi-data/csi.sock",
           "--server-address=0.0.0.0",
-          "--server-port=9000",
+          "--server-port=2500",
         ]
 
         privileged = true
@@ -49,7 +49,7 @@ EOH
 
       resources {
         cpu    = 30
-        memory = 50
+        memory = 200
       }
     }
   }
