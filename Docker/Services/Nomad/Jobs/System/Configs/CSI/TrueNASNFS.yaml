@@ -34,13 +34,6 @@ zfs:
   #    zpool: /usr/local/sbin/zpool
   #    sudo: /usr/local/bin/sudo
   #    chroot: /usr/sbin/chroot
-  
-  # can be used to set arbitrary values on the dataset/zvol
-  # can use handlebars templates with the parameters from the storage class/CO
-  #datasetProperties:
-  #  "org.freenas:description": "{{ parameters.[csi.storage.k8s.io/pvc/namespace] }}/{{ parameters.[csi.storage.k8s.io/pvc/name] }}"
-  #  "org.freenas:test": "{{ parameters.foo }}"
-  #  "org.freenas:test2": "some value"
 
   datasetParentName: tank/k8s/a/vols
   # do NOT make datasetParentName and detachedSnapshotsDatasetParentName overlap
@@ -56,7 +49,6 @@ zfs:
   #- "-m u:kube:full_set:allow"
 
 nfs:
-  #shareCommentTemplate: "{{ parameters.[csi.storage.k8s.io/pvc/namespace] }}-{{ parameters.[csi.storage.k8s.io/pvc/name] }}"
   shareHost: ${NASIP}
   shareAlldirs: false
   shareAllowedHosts: []
