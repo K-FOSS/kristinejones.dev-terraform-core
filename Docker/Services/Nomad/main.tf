@@ -30,6 +30,11 @@ terraform {
       source = "hashicorp/time"
       version = "0.7.2"
     }
+
+    vault = {
+      source = "hashicorp/vault"
+      version = "2.22.1"
+    }
   }
 }
 
@@ -130,6 +135,35 @@ resource "docker_config" "NomadEntryScriptConfig" {
     create_before_destroy = true
   }
 }
+
+#
+# Nomad Democratic
+#
+
+data "vault_generic_secret" "NASAuth" {
+  path = "keycloak/NASAuth"
+}
+
+resource "nomad_job" "CSIController" {
+  jobspec = templatefile("${path.module}/Jobs/System/CSIController.hcl", {
+    CONFIG = templatefile("${path.module}/Jobs/System/Configs/CSI/TrueNASNFS.yaml", {
+      RootPassword = "${data.vault_generic_secret.NASAuth.data["PASSWORD"]}"
+
+      NASIP = "172.16.20.21"
+    })
+  })
+}
+
+resource "nomad_job" "CSINode" {
+  jobspec = templatefile("${path.module}/Jobs/System/CSIController.hcl", {
+    CONFIG = templatefile("${path.module}/Jobs/System/Configs/CSI/TrueNASNFS.yaml", {
+      RootPassword = "${data.vault_generic_secret.NASAuth.data["PASSWORD"]}"
+
+      NASIP = "172.16.20.21"
+    })
+  })
+}
+
 
 
 
