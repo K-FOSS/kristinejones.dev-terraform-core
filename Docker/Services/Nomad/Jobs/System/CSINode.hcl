@@ -15,7 +15,7 @@ job "storage-node" {
         image = "democraticcsi/democratic-csi:latest"
 
         args = [
-          "--csi-version=1.2.0",
+          "--csi-version=1.5.0",
           "--csi-name=org.democratic-csi.nfs",
           "--driver-config-file=$${NOMAD_TASK_DIR}/driver-config-file.yaml",
           "--log-level=debug",
@@ -42,8 +42,8 @@ EOH
       }
 
       resources {
-        cpu    = 30
-        memory = 50
+        cpu    = 124
+        memory = 124
       }
     }
   }

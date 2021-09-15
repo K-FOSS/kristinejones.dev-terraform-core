@@ -27,7 +27,7 @@ job "storage-controller" {
         ports = ["grpc"]
 
         args = [
-          "--csi-version=1.2.0",
+          "--csi-version=1.5.0",
           "--csi-name=org.democratic-csi.nfs",
           "--driver-config-file=$${NOMAD_TASK_DIR}/driver-config-file.yaml",
           "--log-level=debug",
