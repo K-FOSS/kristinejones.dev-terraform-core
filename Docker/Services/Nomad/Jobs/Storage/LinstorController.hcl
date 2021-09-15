@@ -5,6 +5,10 @@ job "linstor-controller" {
   group "linstor-controller" {
     network {
       mode = "bridge"
+
+      dns {
+        searches = ["core0.site1.kristianjones.dev"]
+      }
       # port "linstor-api" { (2)
       #   static = 3370
       #   to = 3370
