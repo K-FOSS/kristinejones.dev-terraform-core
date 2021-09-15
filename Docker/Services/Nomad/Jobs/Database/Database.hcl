@@ -9,7 +9,7 @@ job "database-demo" {
       read_only = false
       source    = "test-vol"
       attachment_mode = "file-system"
-      access_mode     = "single-node-writer"
+      access_mode     = "multi-node-multi-writer"
     }
 
     network {
