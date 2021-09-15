@@ -3,6 +3,11 @@ job "storage-node" {
   type        = "system"
 
   group "node" {
+    constraint {
+      operator  = "distinct_hosts"
+      value     = "true"
+    }
+
     task "node" {
       driver = "docker"
 

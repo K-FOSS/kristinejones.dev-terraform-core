@@ -2,7 +2,14 @@ job "storage-controller" {
   datacenters = ["core0site1"]
   type        = "service"
 
+
+
   group "controller" {
+    constraint {
+      operator  = "distinct_hosts"
+      value     = "true"
+    }
+  
     network {
       mode = "bridge"
 
