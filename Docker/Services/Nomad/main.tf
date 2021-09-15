@@ -155,7 +155,7 @@ resource "nomad_job" "CSIController" {
 }
 
 resource "nomad_job" "CSINode" {
-  jobspec = templatefile("${path.module}/Jobs/System/CSIController.hcl", {
+  jobspec = templatefile("${path.module}/Jobs/System/CSINode.hcl", {
     CONFIG = templatefile("${path.module}/Jobs/System/Configs/CSI/TrueNASNFS.yaml", {
       RootPassword = "${data.vault_generic_secret.NASAuth.data["PASSWORD"]}"
 
