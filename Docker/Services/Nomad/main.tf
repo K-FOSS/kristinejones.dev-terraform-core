@@ -168,7 +168,7 @@ resource "nomad_volume" "Attempt" {
   type                  = "csi"
   plugin_id             = "truenas"
   volume_id             = "test-vol"
-  name                  = "test-vol"
+  name                  = "test2-vol"
   external_id           = "test-vol"
 
   capability {

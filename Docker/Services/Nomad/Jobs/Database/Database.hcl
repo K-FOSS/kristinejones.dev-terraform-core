@@ -4,10 +4,10 @@ job "database-demo" {
   group "database-store" {
     count = 1
 
-    volume "test-vol" {
+    volume "test2-vol" {
       type      = "csi"
       read_only = false
-      source    = "test-vol"
+      source    = "test2-vol"
       attachment_mode = "file-system"
       access_mode     = "multi-node-multi-writer"
     }
@@ -47,7 +47,7 @@ job "database-demo" {
       }
 
       volume_mount {
-        volume      = "test-vol"
+        volume      = "test2-vol"
         destination = "$${NOMAD_ALLOC_DIR}/$${var.path}"
       }
     }
