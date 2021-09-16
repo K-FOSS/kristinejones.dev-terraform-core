@@ -25,23 +25,10 @@ job "Patroni" {
       name = "patroni-store"
       port = "psql"
 
-      task = "database"
+      task = "patroni"
 
       connect {
         sidecar_service {}
-      }
-    }
-
-    task "database" {
-      driver = "docker"
-
-      config {
-        image = "postgres:13.4-alpine3.14"
-      }
-
-      env {
-        POSTGRES_PASSWORD = "RANDOM_PASS"
-        PGDATA = "/alloc/psql"
       }
     }
 
@@ -53,12 +40,6 @@ job "Patroni" {
 
       connect {
         sidecar_service {
-          proxy {
-            upstreams {
-              destination_name = "patroni-store"
-              local_bind_port  = 5432
-            }
-          }
         }
       }
     }
