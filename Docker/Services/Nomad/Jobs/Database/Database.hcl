@@ -50,6 +50,11 @@ job "database-demo" {
         volume      = "test4-vol"
         destination = "/dbdata"
       }
+
+      resources {
+        cpu    = 2000
+        memory = 2048
+      }
     }
   }
 
