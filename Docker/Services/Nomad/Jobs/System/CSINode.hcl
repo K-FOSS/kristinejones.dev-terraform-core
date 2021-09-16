@@ -8,6 +8,24 @@ job "storage-node" {
       value     = "true"
     }
 
+    network {
+      mode = "bridge"
+
+      port "grpc" {
+      }
+    }
+
+    service {
+      name = "democraticcsi-node"
+      port = "grpc"
+
+      task = "controller"
+
+      connect {
+        sidecar_service {}
+      }
+    }
+
     task "node" {
       driver = "docker"
 
@@ -20,8 +38,7 @@ job "storage-node" {
           "--driver-config-file=$${NOMAD_TASK_DIR}/driver-config-file.yaml",
           "--log-level=debug",
           "--csi-mode=node",
-          "--server-socket=/csi-data/csi.sock",
-          "--server-port=2501",
+          "--server-port=$${NOMAD_PORT_grpc}",
         ]
 
         privileged = true

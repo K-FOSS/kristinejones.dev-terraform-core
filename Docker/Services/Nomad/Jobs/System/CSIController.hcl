@@ -5,26 +5,30 @@ job "storage-controller" {
 
 
   group "controller" {
-    constraint {
-      operator  = "distinct_hosts"
-      value     = "true"
-    }
-  
     network {
       mode = "bridge"
 
       port "grpc" {
-        static = 2500
-        to     = 2500
       }
     }
+
+    service {
+      name = "democraticcsi-controller"
+      port = "grpc"
+
+      task = "controller"
+
+      connect {
+        sidecar_service {}
+      }
+    }
+
 
     task "controller" {
       driver = "docker"
 
       config {
         image = "democraticcsi/democratic-csi:latest"
-        ports = ["grpc"]
 
         args = [
           "--csi-version=1.5.0",
@@ -32,9 +36,8 @@ job "storage-controller" {
           "--driver-config-file=$${NOMAD_TASK_DIR}/driver-config-file.yaml",
           "--log-level=debug",
           "--csi-mode=controller",
-          "--server-socket=/csi-data/csi.sock",
           "--server-address=0.0.0.0",
-          "--server-port=2500",
+          "--server-port=$${NOMAD_PORT_grpc}",
         ]
 
         privileged = true
