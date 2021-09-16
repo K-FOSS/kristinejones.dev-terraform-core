@@ -4,10 +4,10 @@ job "database-demo" {
   group "database-store" {
     count = 1
 
-    volume "test3-vol" {
+    volume "test4-vol" {
       type      = "csi"
       read_only = false
-      source    = "test3-vol"
+      source    = "test4-vol"
       attachment_mode = "file-system"
       access_mode     = "multi-node-multi-writer"
     }
@@ -47,7 +47,7 @@ job "database-demo" {
       }
 
       volume_mount {
-        volume      = "test3-vol"
+        volume      = "test4-vol"
         destination = "/dbdata"
       }
     }

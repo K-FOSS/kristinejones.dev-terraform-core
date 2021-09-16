@@ -167,8 +167,8 @@ resource "nomad_job" "CSINode" {
 resource "nomad_volume" "Attempt" {
   type                  = "csi"
   plugin_id             = "truenas"
-  volume_id             = "test3-vol"
-  name                  = "test3-vol"
+  volume_id             = "test4-vol"
+  name                  = "test4-vol"
   external_id           = "test-vol"
 
   capability {
@@ -186,7 +186,7 @@ resource "nomad_volume" "Attempt" {
   context = {
     node_attach_driver = "nfs"
     provisioner_driver = "freenas-nfs"
-    server             = "172.16.20.21"
+    server             = "172.16.51.21"
     share              = "/mnt/Site1.NAS1.Pool1/CSI/vols/test-vol"
   }
 }
