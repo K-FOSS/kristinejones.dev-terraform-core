@@ -54,24 +54,13 @@ job "Patroni" {
       }
 
       config {
-        image = "timescale/timescaledb-ha:pg13.4-ts2.4-oss-latest"
-
-        command = "/usr/bin/patroni"
-
-        args = ["/local/Patroni.yaml"]
+        image = "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
       }
 
       env {
         POSTGRES_PASSWORD = "RANDOM_PASS"
         PGDATA = "/alloc/psql"
-      }
-
-      template {
-        data = <<EOF
-${CONFIG}
-EOF
-
-        destination = "local/Patroni.yaml"
+        SPILO_CONFIGURATION = "${CONFIG}"
       }
     }
   }
