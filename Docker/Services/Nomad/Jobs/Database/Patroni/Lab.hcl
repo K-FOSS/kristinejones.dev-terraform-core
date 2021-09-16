@@ -37,13 +37,29 @@ job "Patroni" {
 
       config {
         image = "postgres:13.4-alpine3.14"
-
-        args = ["-k/alloc/psql"]
       }
 
       env {
         POSTGRES_PASSWORD = "RANDOM_PASS"
         PGDATA = "/alloc/psql"
+      }
+    }
+
+    service {
+      name = "patroni"
+      port = "http"
+
+      task = "patroni"
+
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "patroni-store"
+              local_bind_port  = 5432
+            }
+          }
+        }
       }
     }
 

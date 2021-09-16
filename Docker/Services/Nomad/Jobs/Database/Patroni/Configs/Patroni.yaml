@@ -84,11 +84,11 @@ bootstrap:
         - createdb
 
 postgresql:
-  listen: 127.0.0.1:{{ env "NOMAD_PORT_psql" }}
-  connect_address: 127.0.0.1:{{ env "NOMAD_PORT_psql" }}
+  listen: 127.0.0.1:5432
+  connect_address: 127.0.0.1:5432
   data_dir: /alloc/psql
-  use_unix_socket: true
-  use_unix_socket_repl: true
+  #use_unix_socket: true
+  #use_unix_socket_repl: true
 #  bin_dir:
 #  config_dir:
   pgpass: /tmp/pgpass0
@@ -108,7 +108,7 @@ postgresql:
     # Fully qualified kerberos ticket file for the running user
     # same as KRB5CCNAME used by the GSS
 #   krb_server_keyfile: /var/spool/keytabs/postgres
-    unix_socket_directories: '/alloc/psql'
+    #unix_socket_directories: '/alloc/psql'
   # Additional fencing script executed after acquiring the leader lock but before promoting the replica
   #pre_promote: /path/to/pre_promote.sh
 
