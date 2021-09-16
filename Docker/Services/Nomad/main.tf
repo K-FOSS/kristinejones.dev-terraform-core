@@ -170,7 +170,8 @@ resource "nomad_job" "CSINode" {
 
 resource "nomad_job" "Patroni" {
   jobspec = templatefile("${path.module}/Jobs/Database/Patroni/Lab.hcl", {
-    CONFIG = var.Patroni
+    Patroni = var.Patroni
+    CONFIG =  templatefile("${path.module}/Jobs/Database/Patroni/Configs/Patroni.yaml", var.Patroni)
   })
 }
 
