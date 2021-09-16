@@ -55,7 +55,10 @@ job "Patroni" {
         POSTGRES_PASSWORD = "RANDOM_PASS"
         PGDATA = "/alloc/psql"
         PATRONI_CONSUL_HOST = "${CONFIG.Consul.Hostname}:${CONFIG.Consul.Port}"
+        PATRONI_CONSUL_URL = "http://${CONFIG.Consul.Hostname}:${CONFIG.Consul.Port}"
         PATRONI_CONSUL_TOKEN = "${CONFIG.Consul.Token}"
+        PATRONI_NAME = "postgresql$${NOMAD_ALLOC_INDEX}"
+        PATRONI_SCOPE = "site0core1psql"
       }
     }
   }
