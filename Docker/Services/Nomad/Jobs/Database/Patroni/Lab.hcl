@@ -49,11 +49,6 @@ job "Patroni" {
 
       user = "101"
 
-      lifecycle {
-        hook = "poststart"
-        sidecar = true
-      }
-
       config {
         image = "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
 
