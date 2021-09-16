@@ -53,7 +53,7 @@ bootstrap:
 postgresql:
   listen: 0.0.0.0:5432
   connect_address: 127.0.0.1:5432
-  data_dir: /alloc/psql
+  data_dir: /data/postgresql{{ env "NOMAD_ALLOC_INDEX" }}
   authentication:
     replication:
       username: replicator

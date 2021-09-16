@@ -95,15 +95,15 @@ resource "docker_config" "NomadConfig" {
 # Nomad Database Sandbox/Demo
 #
 
-data "local_file" "DatabaseDemoJobFile" {
-  filename = "${path.module}/Jobs/Database/Configs/Caddyfile.json"
-}
+# data "local_file" "DatabaseDemoJobFile" {
+#   filename = "${path.module}/Jobs/Database/Configs/Caddyfile.json"
+# }
 
-resource "nomad_job" "DatabaseDemo" {
-  jobspec = templatefile("${path.module}/Jobs/Database/Database.hcl", {
-    CADDYFILE = data.local_file.DatabaseDemoJobFile.content
-  })
-}
+# resource "nomad_job" "DatabaseDemo" {
+#   jobspec = templatefile("${path.module}/Jobs/Database/Database.hcl", {
+#     CADDYFILE = data.local_file.DatabaseDemoJobFile.content
+#   })
+# }
 
 #
 # Linstor
@@ -168,22 +168,11 @@ resource "nomad_job" "CSINode" {
 # Patroni
 #
 
-resource "nomad_job" "Patroni" {
-  jobspec = templatefile("${path.module}/Jobs/Database/Patroni/Lab.hcl", {
-    Patroni = var.Patroni
-    CONFIG =  templatefile("${path.module}/Jobs/Database/Patroni/Configs/Patroni.yaml", var.Patroni)
-  })
-}
-
-#
-# Nomad Volumes
-#
-
-resource "nomad_volume" "Attempt" {
+resource "nomad_volume" "Patroni" {
   type                  = "csi"
   plugin_id             = "truenas"
-  volume_id             = "test4-vol"
-  name                  = "test4-vol"
+  volume_id             = "patroni-vol"
+  name                  = "patroni-vol"
   external_id           = "test-vol"
 
   capability {
@@ -205,6 +194,15 @@ resource "nomad_volume" "Attempt" {
     share              = "/mnt/Site1.NAS1.Pool1/CSI/vols/test-vol"
   }
 }
+
+resource "nomad_job" "Patroni" {
+  jobspec = templatefile("${path.module}/Jobs/Database/Patroni/Lab.hcl", {
+    Patroni = var.Patroni
+    Volume = nomad_volume.Patroni
+    CONFIG =  templatefile("${path.module}/Jobs/Database/Patroni/Configs/Patroni.yaml", var.Patroni)
+  })
+}
+
 
 
 

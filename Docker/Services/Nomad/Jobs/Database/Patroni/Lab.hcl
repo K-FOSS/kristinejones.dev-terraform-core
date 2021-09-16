@@ -4,6 +4,14 @@ job "Patroni" {
   group "postgres-database" {
     count = 1
 
+    volume "${Volume.name}" {
+      type      = "csi"
+      read_only = false
+      source    = "${Volume.name}"
+      attachment_mode = "file-system"
+      access_mode     = "multi-node-multi-writer"
+    }
+
     network {
       mode = "bridge"
 
@@ -66,6 +74,11 @@ job "Patroni" {
         PATRONI_CONSUL_TOKEN = "${Patroni.Consul.Token}"
         PATRONI_NAME = "postgresql$${NOMAD_ALLOC_INDEX}"
         PATRONI_SCOPE = "site0core1psql"
+      }
+
+      volume_mount {
+        volume      = "${Volume.name}"
+        destination = "/data"
       }
 
       template {
