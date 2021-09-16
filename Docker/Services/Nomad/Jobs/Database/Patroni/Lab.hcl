@@ -25,33 +25,15 @@ job "Patroni" {
       name = "patroni-store"
       port = "psql"
 
-      task = "database"
+      task = "patroni"
 
       connect {
         sidecar_service {}
       }
     }
 
-    task "database" {
-      driver = "docker"
-
-      config {
-        image = "postgres:13.4-alpine3.14"
-      }
-
-      env {
-        POSTGRES_PASSWORD = "RANDOM_PASS"
-        PGDATA = "/alloc/psql"
-      }
-    }
-
     task "patroni" {
       driver = "docker"
-
-      lifecycle {
-        hook = "poststart"
-        sidecar = true
-      }
 
       config {
         image = "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
