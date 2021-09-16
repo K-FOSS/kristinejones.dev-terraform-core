@@ -37,6 +37,8 @@ job "Patroni" {
 
       config {
         image = "postgres:13.4-alpine3.14"
+
+        args = ["-k/alloc/psql"]
       }
 
       env {
