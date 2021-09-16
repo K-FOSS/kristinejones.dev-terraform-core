@@ -54,9 +54,8 @@ job "Patroni" {
       env {
         POSTGRES_PASSWORD = "RANDOM_PASS"
         PGDATA = "/alloc/psql"
-        SPILO_CONFIGURATION = <<EOF
-${CONFIG}
-EOF
+        PATRONI_CONSUL_HOST = "${CONFIG.Consul.Hostname}:${CONFIG.Consul.Port}"
+        PATRONI_CONSUL_TOKEN = "${CONFIG.Consul.Token}"
       }
     }
   }
