@@ -3,6 +3,13 @@ scope: site0core1psql
 namespace: /service/
 name: postgresql{{ env "NOMAD_ALLOC_INDEX" }}
 
+#
+# Docs: https://patroni.readthedocs.io/en/latest/SETTINGS.html#rest-api
+#
+restapi:
+  listen: 0.0.0.0:{{ env "NOMAD_PORT_http" }}
+  connect_address: 0.0.0.0:{{ env "NOMAD_PORT_http" }}
+
 postgresql:
   listen: 127.0.0.1:5432
   connect_address: 127.0.0.1:5432
