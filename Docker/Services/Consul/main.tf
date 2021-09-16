@@ -460,6 +460,31 @@ data "consul_acl_token_secret_id" "LokiToken" {
 }
 
 #
+# Patroni
+# 
+resource "random_uuid" "PatroniToken" { }
+
+
+resource "consul_acl_policy" "PatroniACL" {
+  name  = "PatroniLoki"
+
+  rules = file("${path.module}/Consul/Patroni.hcl")
+}
+
+resource "consul_acl_token" "PatroniToken" {
+  accessor_id = random_uuid.PatroniToken.result
+
+  description = "Patroni PostgreSQL Cluster Token"
+
+  policies = ["${consul_acl_policy.PatroniACL.name}"]
+  local = true
+}
+
+data "consul_acl_token_secret_id" "PatroniToken" {
+  accessor_id = consul_acl_token.PatroniToken.id
+}
+
+#
 # Grafana Cortex
 #
 
@@ -595,10 +620,15 @@ resource "consul_config_entry" "GrafanaIngress" {
         Services = [{ Name  = "core0web-http" }]
       },
       {
-      Port     = 7881
-      Protocol = "tcp"
-      Services = [{ Name  = "database-demo-webpsql" }]
+        Port     = 7881
+        Protocol = "tcp"
+        Services = [{ Name  = "database-demo-webpsql" }]
       }
+      # {
+      #   Port     = 7882
+      #   Protocol = "tcp"
+      #   Services = [{ Name  = "democraticcsi-controller" }]
+      # }
     ]
   })
 }
@@ -627,6 +657,35 @@ resource "consul_config_entry" "DatabaseStore" {
 
 resource "consul_config_entry" "DatabaseProxy" {
   name = "database-demo-webpsql"
+  kind = "service-intentions"
+
+  config_json = jsonencode({
+    Sources = [
+      {
+        Action     = "allow"
+        Name       = "vps1-ingress"
+        Precedence = 9
+        Type       = "consul"
+      }
+    ]
+  })
+}
+
+#
+# DemocraticCSI
+#
+
+resource "consul_config_entry" "DemocraticCSI" {
+  name = "democraticcsi-controller"
+  kind = "service-defaults"
+
+  config_json = jsonencode({
+    Protocol    = "grpc"
+  })
+}
+
+resource "consul_config_entry" "DemocraticCSI" {
+  name = "democraticcsi-controller"
   kind = "service-intentions"
 
   config_json = jsonencode({
@@ -971,6 +1030,14 @@ resource "docker_service" "ConsulIngressGateway" {
       protocol       = "tcp"
       target_port    = "7881"
       published_port = "7881"
+      publish_mode   = "host"
+    }
+
+    ports {
+      name           = "democraticcsi-controller-ingress"
+      protocol       = "tcp"
+      target_port    = "7882"
+      published_port = "7882"
       publish_mode   = "host"
     }
   }
