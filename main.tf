@@ -156,43 +156,6 @@ module "Docker" {
   StolonBitwardenDB = module.Database.BitwardenDB
 
   #
-  # TFTP
-  #
-  TFTPBucket = module.Minio.TFTPBucket
-
-  #
-  # OpenNMS
-  #
-
-  # Volumes
-  OpenNMSDataBucket = module.Minio.OpenNMSData
-  OpenNMSCoreDataBucket = module.Minio.OpenNMSCoreData
-  OpenNMSConfigBucket = module.Minio.OpenNMSConfig
-  OpenNMSCassandraBucket = module.Minio.OpenNMSCassandra
-  OpenNMSDeployDataBucket = module.Minio.OpenNMSDeployData
-
-  # Database
-  StolonOpenNMSRole = module.Database.OpenNMSRole
-  StolonOpenNMSDB = module.Database.OpenNMSDB
-
-
-  #
-  # ISC Network Infra
-  #
-
-  #
-  # ISC Kea
-  #
-  StolonDHCPRole = module.Database.DHCPRole
-  StolonDHCPDB = module.Database.DHCPDB
-
-  #
-  # ISC Stork
-  #
-  StolonStorkRole = module.Database.StorkRole
-  StolonStorkDB = module.Database.StorkDB
-
-  #
   # NetBox
   #
   StolonNetboxRole = module.Database.NetboxRole

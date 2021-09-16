@@ -1,7 +1,3 @@
-# variable "NextCloudBucket" {
-#   description = "NextCloudBucket"
-# }
-
 # variable "PostgresDatabaseBucket" {
 #   description = "Postgres SQL Root Database Minio Bucket"
 # }
@@ -39,78 +35,8 @@ variable "StolonBitwardenDB" {
 }
 
 #
-# TFTPd
-#
-variable "TFTPBucket" {
-  
-}
-
-#
-# OpenNMS
-#
-
-#
-# Minio/S3 Buckets
-# 
-variable "OpenNMSDataBucket" {
-
-}
-
-variable "OpenNMSDeployDataBucket" {
-
-}
-
-variable "OpenNMSCoreDataBucket" {
-
-}
-
-variable "OpenNMSConfigBucket" {
-
-}
-
-variable "OpenNMSCassandraBucket" {
-
-}
-
-#
-# Stolon/Postgres Database
-#
-
-variable "StolonOpenNMSRole" {
-
-}
-
-variable "StolonOpenNMSDB" {
-  
-}
-
-#
 # ISC Network Infra
 #
-
-#
-# ISC Kea DHCP Server
-#
-
-variable "StolonDHCPRole" {
-
-}
-
-variable "StolonDHCPDB" {
-  
-}
-
-#
-# ISC Stork
-# 
-
-variable "StolonStorkRole" {
-
-}
-
-variable "StolonStorkDB" {
-  
-}
 
 #
 # NetBox
