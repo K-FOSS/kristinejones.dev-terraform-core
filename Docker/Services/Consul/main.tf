@@ -621,7 +621,7 @@ resource "consul_config_entry" "GrafanaIngress" {
       {
         Port     = 7881
         Protocol = "tcp"
-        Services = [{ Name  = "database-demo-webpsql" }]
+        Services = [{ Name  = "patroni-store" }]
       }
       # {
       #   Port     = 7882
