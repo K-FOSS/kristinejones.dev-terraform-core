@@ -180,7 +180,7 @@ resource "nomad_volume" "Attempt" {
 
   mount_options {
     fs_type = "nfs"
-    mount_flags = "nolock"
+    mount_flags = ["nolock"]
   }
 
   context = {
