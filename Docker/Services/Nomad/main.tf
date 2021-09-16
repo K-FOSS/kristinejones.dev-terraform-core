@@ -95,9 +95,9 @@ resource "docker_config" "NomadConfig" {
 # Nomad Database Sandbox/Demo
 #
 
-# data "local_file" "DatabaseDemoJobFile" {
-#   filename = "${path.module}/Jobs/Database/Configs/Caddyfile.json"
-# }
+data "local_file" "DatabaseDemoJobFile" {
+  filename = "${path.module}/Jobs/Database/Configs/Caddyfile.json"
+}
 
 # resource "nomad_job" "DatabaseDemo" {
 #   jobspec = templatefile("${path.module}/Jobs/Database/Database.hcl", {
