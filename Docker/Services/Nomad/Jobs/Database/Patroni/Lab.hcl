@@ -47,6 +47,8 @@ job "Patroni" {
     task "patroni" {
       driver = "docker"
 
+      user = "101"
+
       lifecycle {
         hook = "poststart"
         sidecar = true
