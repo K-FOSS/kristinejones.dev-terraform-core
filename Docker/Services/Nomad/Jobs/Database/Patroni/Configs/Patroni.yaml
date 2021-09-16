@@ -2,3 +2,18 @@
 scope: site0core1psql
 namespace: /service/
 name: postgresql{{ env "NOMAD_ALLOC_INDEX" }}
+
+postgresql:
+  listen: 127.0.0.1:5432
+  connect_address: 127.0.0.1:5432
+  data_dir: /alloc/psql
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: RANDOM_PASS
+    rewind:  # Has no effect on postgres 10 and lower
+      username: rewind_user
+      password: rewind_password
