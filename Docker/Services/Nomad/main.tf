@@ -167,7 +167,7 @@ resource "nomad_job" "CSINode" {
 resource "nomad_volume" "Attempt" {
   type                  = "csi"
   plugin_id             = "truenas"
-  volume_id             = "test-vol"
+  volume_id             = "test2-vol"
   name                  = "test2-vol"
   external_id           = "test-vol"
 
