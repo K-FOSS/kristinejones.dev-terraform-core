@@ -47,8 +47,6 @@ job "Patroni" {
     task "patroni" {
       driver = "docker"
 
-      user = "101"
-
       config {
         image = "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
       }
