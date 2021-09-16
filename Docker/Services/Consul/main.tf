@@ -675,7 +675,7 @@ resource "consul_config_entry" "DatabaseProxy" {
 # DemocraticCSI
 #
 
-resource "consul_config_entry" "DemocraticCSI" {
+resource "consul_config_entry" "DemocraticCSIServiceDefaults" {
   name = "democraticcsi-controller"
   kind = "service-defaults"
 
@@ -684,7 +684,7 @@ resource "consul_config_entry" "DemocraticCSI" {
   })
 }
 
-resource "consul_config_entry" "DemocraticCSI" {
+resource "consul_config_entry" "DemocraticCSIServiceIntentions" {
   name = "democraticcsi-controller"
   kind = "service-intentions"
 
