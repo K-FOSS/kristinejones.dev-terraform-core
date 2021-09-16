@@ -51,7 +51,7 @@ bootstrap:
     - data-checksums
 
 postgresql:
-  listen: 127.0.0.1:5432
+  listen: 0.0.0.0:5432
   connect_address: 127.0.0.1:5432
   data_dir: /alloc/psql
   authentication:
