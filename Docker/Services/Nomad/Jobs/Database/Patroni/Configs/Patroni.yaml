@@ -14,7 +14,7 @@ restapi:
 # Docs: https://patroni.readthedocs.io/en/latest/SETTINGS.html#consul
 # 
 consul:
-  host: ${Consul.Host}:${Consul.Port}
+  host: ${Consul.Hostname}:${Consul.Port}
   token: ${Consul.Token}
 
 #raft:
