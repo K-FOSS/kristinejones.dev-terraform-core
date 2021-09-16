@@ -671,6 +671,76 @@ resource "consul_config_entry" "DatabaseProxy" {
 }
 
 #
+# Patroni
+#
+
+#
+# PostgreSQL
+# 
+
+resource "consul_config_entry" "PatroniPSQLServiceDefaults" {
+  name = "patroni-store"
+  kind = "service-defaults"
+
+  config_json = jsonencode({
+    Protocol    = "tcp"
+  })
+}
+
+resource "consul_config_entry" "PatroniPSQLIntentions" {
+  name = "patroni-store"
+  kind = "service-intentions"
+
+  config_json = jsonencode({
+    Sources = [
+      {
+        Action     = "allow"
+        Name       = "vps1-ingress"
+        Precedence = 9
+        Type       = "consul"
+      }
+    ]
+  })
+}
+
+#
+# Patroni API
+#
+
+resource "consul_config_entry" "PatroniAPIServiceDefaults" {
+  name = "patroni"
+  kind = "service-defaults"
+
+  config_json = jsonencode({
+    Protocol    = "http"
+  })
+}
+
+# resource "consul_config_entry" "PatroniAPIIntentions" {
+#   name = "patroni"
+#   kind = "service-intentions"
+
+#   config_json = jsonencode({
+#     Sources = [
+#       {
+#         Name        = "contractor-webapp"
+#         Permissions = [
+#           {
+#             Action = "allow"
+#             HTTP   = {
+#               Methods   = ["GET", "HEAD"]
+#               PathExact = "/metrics"
+#             }
+#           }
+#         ]
+#         Precedence = 9
+#         Type       = "consul"
+#       }
+#     ]
+#   })
+# }
+
+#
 # DemocraticCSI
 #
 
