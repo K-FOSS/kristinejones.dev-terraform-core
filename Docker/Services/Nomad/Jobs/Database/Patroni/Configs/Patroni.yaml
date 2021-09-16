@@ -87,6 +87,8 @@ postgresql:
   listen: 127.0.0.1:{{ env "NOMAD_PORT_psql" }}
   connect_address: 127.0.0.1:{{ env "NOMAD_PORT_psql" }}
   data_dir: /alloc/psql
+  use_unix_socket: true
+  use_unix_socket_repl: true
 #  bin_dir:
 #  config_dir:
   pgpass: /tmp/pgpass0
