@@ -58,6 +58,7 @@ job "Patroni" {
       env {
         POSTGRES_PASSWORD = "RANDOM_PASS"
         PGDATA = "/alloc/psql"
+        PATRONI_POSTGRESQL_DATA_DIR = "/alloc/psql"
         PATRONI_CONSUL_HOST = "${Patroni.Consul.Hostname}:${Patroni.Consul.Port}"
         PATRONI_CONSUL_URL = "http://${Patroni.Consul.Hostname}:${Patroni.Consul.Port}"
         PATRONI_CONSUL_TOKEN = "${Patroni.Consul.Token}"
