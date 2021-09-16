@@ -54,9 +54,9 @@ job "Patroni" {
       }
 
       config {
-        image = "openstackhelm/patroni:latest-ubuntu_xenial"
+        image = "timescale/timescaledb-ha:pg13.4-ts2.4-oss-latest"
 
-        command = "/usr/local/bin/patroni"
+        command = "/usr/bin/patroni"
 
         args = ["/local/Patroni.yaml"]
       }
