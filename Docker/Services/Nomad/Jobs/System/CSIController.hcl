@@ -36,6 +36,7 @@ job "storage-controller" {
           "--driver-config-file=$${NOMAD_TASK_DIR}/driver-config-file.yaml",
           "--log-level=debug",
           "--csi-mode=controller",
+          "--server-socket=/csi-data/csi.sock",
           "--server-address=0.0.0.0",
           "--server-port=$${NOMAD_PORT_grpc}",
         ]
