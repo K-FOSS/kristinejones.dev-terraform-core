@@ -49,6 +49,10 @@ job "Patroni" {
 
       config {
         image = "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
+
+        command = "/usr/local/bin/patroni"
+
+        args = ["/local/Patroni.yaml"]
       }
 
       env {
