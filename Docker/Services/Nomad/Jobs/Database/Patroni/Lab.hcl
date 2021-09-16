@@ -34,7 +34,6 @@ job "Patroni" {
 
     task "database" {
       driver = "docker"
-      port = ["psql"]
 
       config {
         image = "postgres:13.4-alpine3.14"
@@ -48,8 +47,6 @@ job "Patroni" {
 
     task "patroni" {
       driver = "docker"
-
-      port = ["psql", "http"]
 
       lifecycle {
         hook = "poststart"
