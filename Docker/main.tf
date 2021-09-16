@@ -3483,7 +3483,7 @@ module "CoreNomad" {
   Patroni = {
     Consul = {
       Hostname = "core0.site1.kristianjones.dev"
-      Port = 9500
+      Port = 8500
 
       Token = module.NewConsul.PatroniSecretToken.secret_id
 
