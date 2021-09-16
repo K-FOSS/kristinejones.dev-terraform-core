@@ -1,7 +1,7 @@
   
 scope: site0core1psql
 namespace: /service/
-name: postgresql0
+name: postgresql{{ env "NOMAD_ALLOC_INDEX" }}
 
 #
 # Docs: 
