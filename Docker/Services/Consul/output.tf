@@ -71,6 +71,14 @@ output "GrafanaSecretToken" {
 }
 
 #
+# Patroni
+#
+
+output "PatroniSecretToken" {
+  value = data.consul_acl_token_secret_id.PatroniToken
+}
+
+#
 # Nomad Jobs
 #
 

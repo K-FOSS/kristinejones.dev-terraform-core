@@ -2299,311 +2299,311 @@ resource "docker_config" "DHCPEntryConfig" {
   }
 }
 
-resource "docker_service" "DHCP" {
-  name = "DHCP"
+# resource "docker_service" "DHCP" {
+#   name = "DHCP"
 
-  task_spec {
-    container_spec {
-      image = "kristianfjones/kea:vps1-core"
+#   task_spec {
+#     container_spec {
+#       image = "kristianfjones/kea:vps1-core"
 
-      command = ["/entry.sh"]
+#       command = ["/entry.sh"]
 
-      args = []
+#       args = []
 
-      hostname = "DHCP{{.Task.Slot}}"
+#       hostname = "DHCP{{.Task.Slot}}"
 
-      env = {
-        STORK_AGENT_SERVER_TOKEN = "IRH8K2w4e84bPXcU9guLL7CUHnQcHnEf"
+#       env = {
+#         STORK_AGENT_SERVER_TOKEN = "IRH8K2w4e84bPXcU9guLL7CUHnQcHnEf"
 
-        #
-        # MISC
-        #
-        TZ = "America/Winnipeg"
-      }
+#         #
+#         # MISC
+#         #
+#         TZ = "America/Winnipeg"
+#       }
 
-      configs {
-        config_id   = docker_config.DHCPConfig.id
-        config_name = docker_config.DHCPConfig.name
+#       configs {
+#         config_id   = docker_config.DHCPConfig.id
+#         config_name = docker_config.DHCPConfig.name
 
-        file_name   = "/config/DHCP4.json"
-      }
+#         file_name   = "/config/DHCP4.json"
+#       }
 
-      configs {
-        config_id   = docker_config.DHCP6Config.id
-        config_name = docker_config.DHCP6Config.name
+#       configs {
+#         config_id   = docker_config.DHCP6Config.id
+#         config_name = docker_config.DHCP6Config.name
 
-        file_name   = "/config/DHCP6.json"
-      }
+#         file_name   = "/config/DHCP6.json"
+#       }
 
-      configs {
-        config_id   = docker_config.DHCPCTRLAgentConfig.id
-        config_name = docker_config.DHCPCTRLAgentConfig.name
+#       configs {
+#         config_id   = docker_config.DHCPCTRLAgentConfig.id
+#         config_name = docker_config.DHCPCTRLAgentConfig.name
 
-        file_name   = "/config/keactrl.conf"
-      }
+#         file_name   = "/config/keactrl.conf"
+#       }
 
-      configs {
-        config_id   = docker_config.DHCPCTRLConfig.id
-        config_name = docker_config.DHCPCTRLConfig.name
+#       configs {
+#         config_id   = docker_config.DHCPCTRLConfig.id
+#         config_name = docker_config.DHCPCTRLConfig.name
 
-        file_name   = "/config/kea-ctrl-agent.json"
-      }
+#         file_name   = "/config/kea-ctrl-agent.json"
+#       }
 
-      configs {
-        config_id   = docker_config.DHCPEntryConfig.id
-        config_name = docker_config.DHCPEntryConfig.name
+#       configs {
+#         config_id   = docker_config.DHCPEntryConfig.id
+#         config_name = docker_config.DHCPEntryConfig.name
 
-        file_name   = "/entry.sh"
-        file_mode = 0777
-      }
+#         file_name   = "/entry.sh"
+#         file_mode = 0777
+#       }
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
-    }
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
+#     }
 
-    force_update = 0
-    runtime      = "container"
+#     force_update = 0
+#     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
+#     networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
 
-    log_driver {
-      name = "loki"
+#     log_driver {
+#       name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  mode {
-    replicated {
-      replicas = 3
-    }
-  }
+#   mode {
+#     replicated {
+#       replicas = 3
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
 #
 # ISC Stork
 #
 
-resource "docker_service" "StorkServer" {
-  name = "StorkServer"
+# resource "docker_service" "StorkServer" {
+#   name = "StorkServer"
 
-  task_spec {
-    container_spec {
-      image = "registry.gitlab.isc.org/isc-projects/stork/server:latest"
+#   task_spec {
+#     container_spec {
+#       image = "registry.gitlab.isc.org/isc-projects/stork/server:latest"
 
-      #
-      # TODO: Finetune this
-      #
-      # command = ["/usr/sbin/kea-dhcp4"]
-      # args = ["-c", "/config/config.json"]
+#       #
+#       # TODO: Finetune this
+#       #
+#       # command = ["/usr/sbin/kea-dhcp4"]
+#       # args = ["-c", "/config/config.json"]
 
-      env = {
-        #
-        # Stork Database
-        #
-        STORK_DATABASE_HOST = "tasks.StolonProxy"
-        STORK_DATABASE_PORT = "5432"
+#       env = {
+#         #
+#         # Stork Database
+#         #
+#         STORK_DATABASE_HOST = "tasks.StolonProxy"
+#         STORK_DATABASE_PORT = "5432"
 
-        STORK_DATABASE_NAME = "${var.StolonStorkDB.name}"
+#         STORK_DATABASE_NAME = "${var.StolonStorkDB.name}"
 
-        STORK_DATABASE_USER_NAME = "${var.StolonStorkRole.name}"
-        STORK_DATABASE_PASSWORD = "${var.StolonStorkRole.password}"
+#         STORK_DATABASE_USER_NAME = "${var.StolonStorkRole.name}"
+#         STORK_DATABASE_PASSWORD = "${var.StolonStorkRole.password}"
 
-        #
-        # MISC
-        #
-        TZ = "America/Winnipeg"
-      }
+#         #
+#         # MISC
+#         #
+#         TZ = "America/Winnipeg"
+#       }
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
-    }
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
+#     }
 
-    force_update = 0
-    runtime      = "container"
+#     force_update = 0
+#     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
+#     networks     = [data.docker_network.meshSpineNet.id, docker_network.meshIntSpineNet.id]
 
-    log_driver {
-      name = "loki"
+#     log_driver {
+#       name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  mode {
-    #
-    # TODO: Scale/Replicate
-    #
-    replicated {
-      replicas = 1
-    }
-  }
+#   mode {
+#     #
+#     # TODO: Scale/Replicate
+#     #
+#     replicated {
+#       replicas = 1
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
-resource "docker_service" "StorkUI" {
-  name = "StorkUI"
+# resource "docker_service" "StorkUI" {
+#   name = "StorkUI"
 
-  task_spec {
-    container_spec {
-      image = "registry.gitlab.isc.org/isc-projects/stork/webui:latest"
+#   task_spec {
+#     container_spec {
+#       image = "registry.gitlab.isc.org/isc-projects/stork/webui:latest"
 
-      #
-      # TODO: Finetune this
-      #
-      # command = ["/usr/sbin/kea-dhcp4"]
-      # args = ["-c", "/config/config.json"]
+#       #
+#       # TODO: Finetune this
+#       #
+#       # command = ["/usr/sbin/kea-dhcp4"]
+#       # args = ["-c", "/config/config.json"]
 
-      env = {
-        API_HOST = "tasks.StorkServer"
-        API_PORT = "8080"
+#       env = {
+#         API_HOST = "tasks.StorkServer"
+#         API_PORT = "8080"
 
 
-        #
-        # MISC
-        #
-        TZ = "America/Winnipeg"
-      }
+#         #
+#         # MISC
+#         #
+#         TZ = "America/Winnipeg"
+#       }
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
-    }
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
+#     }
 
-    force_update = 0
-    runtime      = "container"
+#     force_update = 0
+#     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.networkSpineNet.id]
+#     networks     = [data.docker_network.meshSpineNet.id, data.docker_network.networkSpineNet.id]
 
-    log_driver {
-      name = "loki"
+#     log_driver {
+#       name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  mode {
-    #
-    # TODO: Scale/Replicate
-    #
-    replicated {
-      replicas = 1
-    }
-  }
+#   mode {
+#     #
+#     # TODO: Scale/Replicate
+#     #
+#     replicated {
+#       replicas = 1
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
 #
 # Ingress
@@ -3063,124 +3063,124 @@ resource "random_password" "WallabagSecret" {
 }
 
 
-resource "docker_service" "Wallabag" {
-  name = "Wallabag"
+# resource "docker_service" "Wallabag" {
+#   name = "Wallabag"
 
-  task_spec {
-    container_spec {
-      image = "wallabag/wallabag"
+#   task_spec {
+#     container_spec {
+#       image = "wallabag/wallabag"
 
-      hostname = "Wallabag"
+#       hostname = "Wallabag"
 
-      #
-      # TODO: Finetune this
-      #
-      # command = ["/usr/sbin/kea-dhcp4"]
-      # args = ["-c", "/config/config.json"]
+#       #
+#       # TODO: Finetune this
+#       #
+#       # command = ["/usr/sbin/kea-dhcp4"]
+#       # args = ["-c", "/config/config.json"]
 
-      env = {
-        #
-        # Instance Config
-        #
-        SYMFONY__ENV__DOMAIN_NAME = "https://wallabag.kristianjones.dev"
+#       env = {
+#         #
+#         # Instance Config
+#         #
+#         SYMFONY__ENV__DOMAIN_NAME = "https://wallabag.kristianjones.dev"
 
-        #
-        # Database
-        #
+#         #
+#         # Database
+#         #
 
-        SYMFONY__ENV__DATABASE_DRIVER = "pdo_pgsql"
+#         SYMFONY__ENV__DATABASE_DRIVER = "pdo_pgsql"
 
-        SYMFONY__ENV__DATABASE_HOST = "tasks.StolonProxy"
-        SYMFONY__ENV__DATABASE_PORT = "5432"
+#         SYMFONY__ENV__DATABASE_HOST = "tasks.StolonProxy"
+#         SYMFONY__ENV__DATABASE_PORT = "5432"
 
-        SYMFONY__ENV__DATABASE_NAME = "${var.StolonWallabagDB.name}"
+#         SYMFONY__ENV__DATABASE_NAME = "${var.StolonWallabagDB.name}"
 
-        SYMFONY__ENV__DATABASE_USER = "${var.StolonWallabagRole.name}"
-        SYMFONY__ENV__DATABASE_PASSWORD = "${var.StolonWallabagRole.password}"
+#         SYMFONY__ENV__DATABASE_USER = "${var.StolonWallabagRole.name}"
+#         SYMFONY__ENV__DATABASE_PASSWORD = "${var.StolonWallabagRole.password}"
 
-        #
-        # Postgres ADMIN
-        #
-        # TODO: Determine if Wallabag User Suffices
-        #
-        POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
-        POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
+#         #
+#         # Postgres ADMIN
+#         #
+#         # TODO: Determine if Wallabag User Suffices
+#         #
+#         POSTGRES_USER = "${data.vault_generic_secret.pgAuth.data["USERNAME"]}",
+#         POSTGRES_PASSWORD = "${data.vault_generic_secret.pgAuth.data["PASSWORD"]}"
 
-        #
-        # Secrets
-        #
-        SYMFONY__ENV__SECRET = "${random_password.WallabagSecret.result}"
+#         #
+#         # Secrets
+#         #
+#         SYMFONY__ENV__SECRET = "${random_password.WallabagSecret.result}"
 
 
-        #
-        # MISC
-        #
-        TZ = "America/Winnipeg"
-      }
+#         #
+#         # MISC
+#         #
+#         TZ = "America/Winnipeg"
+#       }
 
-      mounts {
-        target    = "/etc/timezone"
-        source    = "/etc/timezone"
-        type      = "bind"
-        read_only = true
-      }
+#       mounts {
+#         target    = "/etc/timezone"
+#         source    = "/etc/timezone"
+#         type      = "bind"
+#         read_only = true
+#       }
 
-      mounts {
-        target    = "/etc/localtime"
-        source    = "/etc/localtime"
-        type      = "bind"
-        read_only = true
-      }
-    }
+#       mounts {
+#         target    = "/etc/localtime"
+#         source    = "/etc/localtime"
+#         type      = "bind"
+#         read_only = true
+#       }
+#     }
 
-    force_update = 0
-    runtime      = "container"
+#     force_update = 0
+#     runtime      = "container"
 
-    networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.meshIntSpineNet.id]
+#     networks     = [data.docker_network.meshSpineNet.id, data.docker_network.protectedSpineNet.id, docker_network.meshIntSpineNet.id]
 
-    log_driver {
-      name = "loki"
+#     log_driver {
+#       name = "loki"
 
-      options = {
-        loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
-      }
-    }
-  }
+#       options = {
+#         loki-url = "https://loki.kristianjones.dev:443/loki/api/v1/push"
+#       }
+#     }
+#   }
 
-  mode {
-    #
-    # TODO: Scale/Replicate
-    #
-    replicated {
-      replicas = 1
-    }
-  }
+#   mode {
+#     #
+#     # TODO: Scale/Replicate
+#     #
+#     replicated {
+#       replicas = 1
+#     }
+#   }
 
-  #
-  # TODO: Finetune this
-  # 
-  # update_config {
-  #   parallelism       = 1
-  #   delay             = "10s"
-  #   failure_action    = "pause"
-  #   monitor           = "5s"
-  #   max_failure_ratio = "0.1"
-  #   order             = "start-first"
-  # }
+#   #
+#   # TODO: Finetune this
+#   # 
+#   # update_config {
+#   #   parallelism       = 1
+#   #   delay             = "10s"
+#   #   failure_action    = "pause"
+#   #   monitor           = "5s"
+#   #   max_failure_ratio = "0.1"
+#   #   order             = "start-first"
+#   # }
 
-  # rollback_config {
-  #   parallelism       = 1
-  #   delay             = "5ms"
-  #   failure_action    = "pause"
-  #   monitor           = "10h"
-  #   max_failure_ratio = "0.9"
-  #   order             = "stop-first"
-  # }
+#   # rollback_config {
+#   #   parallelism       = 1
+#   #   delay             = "5ms"
+#   #   failure_action    = "pause"
+#   #   monitor           = "10h"
+#   #   max_failure_ratio = "0.9"
+#   #   order             = "stop-first"
+#   # }
 
-  endpoint_spec {
-    mode = "dnsrr"
-  }
-}
+#   endpoint_spec {
+#     mode = "dnsrr"
+#   }
+# }
 
 #
 # RocketChat
@@ -3479,6 +3479,19 @@ module "CoreNomad" {
   Replicas = 3
 
   LogLevel = "INFO"
+
+  Patroni = {
+    Consul = {
+      Hostname = "core0.site1.kristianjones.dev"
+      Port = 9500
+
+      Token = module.NewConsul.PatroniSecretToken.secret_id
+
+      Prefix = "Patroni/"
+
+      ServiceName = "Patroni"
+    }
+  }
 
   Consul = {
     Hostname = "tasks.ConsulAgent"

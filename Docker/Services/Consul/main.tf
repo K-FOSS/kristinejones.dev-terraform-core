@@ -460,31 +460,6 @@ data "consul_acl_token_secret_id" "LokiToken" {
 }
 
 #
-# Patroni
-# 
-resource "random_uuid" "PatroniToken" { }
-
-
-resource "consul_acl_policy" "PatroniACL" {
-  name  = "PatroniLoki"
-
-  rules = file("${path.module}/Consul/Patroni.hcl")
-}
-
-resource "consul_acl_token" "PatroniToken" {
-  accessor_id = random_uuid.PatroniToken.result
-
-  description = "Patroni PostgreSQL Cluster Token"
-
-  policies = ["${consul_acl_policy.PatroniACL.name}"]
-  local = true
-}
-
-data "consul_acl_token_secret_id" "PatroniToken" {
-  accessor_id = consul_acl_token.PatroniToken.id
-}
-
-#
 # Grafana Cortex
 #
 
@@ -536,6 +511,30 @@ data "consul_acl_token_secret_id" "GrafanaToken" {
   accessor_id = consul_acl_token.GrafanaToken.id
 }
 
+#
+# Patroni
+# 
+resource "random_uuid" "PatroniToken" { }
+
+
+resource "consul_acl_policy" "PatroniACL" {
+  name  = "Patroni"
+
+  rules = file("${path.module}/Consul/Patroni.hcl")
+}
+
+resource "consul_acl_token" "PatroniToken" {
+  accessor_id = random_uuid.PatroniToken.result
+
+  description = "Patroni PostgreSQL Cluster Token"
+
+  policies = ["${consul_acl_policy.PatroniACL.name}"]
+  local = true
+}
+
+data "consul_acl_token_secret_id" "PatroniToken" {
+  accessor_id = consul_acl_token.PatroniToken.id
+}
 
 #
 # Config Entries

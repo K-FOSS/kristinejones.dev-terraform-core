@@ -17,6 +17,23 @@ variable "Consul" {
   description = "Consul Configuration"
 }
 
+variable "Patroni" {
+  type = object({
+    Consul = object({
+      Hostname = string
+      Port = number
+
+      Token = string
+    
+      Prefix = string
+      ServiceName = string
+    })
+  })
+  sensitive = true
+
+  description = "Patroni Configuration"
+}
+
 #
 # TODO: Get Hashicorp Vault connected to Nomad
 #

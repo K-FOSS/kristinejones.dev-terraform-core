@@ -164,6 +164,20 @@ resource "nomad_job" "CSINode" {
   })
 }
 
+#
+# Patroni
+#
+
+resource "nomad_job" "Patroni" {
+  jobspec = templatefile("${path.module}/Jobs/Database/Patroni/Lab.hcl", {
+    CONFIG = templatefile("${path.module}/Jobs/Database/Patroni/Configs/Patroni.yaml", var.Patroni)
+  })
+}
+
+#
+# Nomad Volumes
+#
+
 resource "nomad_volume" "Attempt" {
   type                  = "csi"
   plugin_id             = "truenas"
