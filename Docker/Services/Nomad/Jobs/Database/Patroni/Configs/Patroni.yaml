@@ -8,7 +8,7 @@ name: postgresql{{ env "NOMAD_ALLOC_INDEX" }}
 #
 restapi:
   listen: 0.0.0.0:{{ env "NOMAD_PORT_http" }}
-  connect_address: {{ GetInterfaceIP "eth0" }}:{{ env "NOMAD_PORT_http" }}
+  connect_address: postgresql{{ env "NOMAD_ALLOC_INDEX" }}:{{ env "NOMAD_PORT_http" }}
 
 bootstrap:
   # this section will be written into Etcd:/<namespace>/<scope>/config after initializing new cluster
@@ -52,7 +52,7 @@ bootstrap:
 
 postgresql:
   listen: 0.0.0.0:5432
-  connect_address: {{ GetInterfaceIP "eth0" }}:5432
+  connect_address: postgresql{{ env "NOMAD_ALLOC_INDEX" }}:5432
   data_dir: /data/postgresql{{ env "NOMAD_ALLOC_INDEX" }}
   authentication:
     replication:
