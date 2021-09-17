@@ -49,10 +49,6 @@ job "Patroni" {
         port = "psql"
 
         address_mode = "driver"
-
-        connect {
-          sidecar_service {}
-        }
       }
 
       service {
@@ -60,11 +56,6 @@ job "Patroni" {
         port = "http"
 
         address_mode = "driver"
-
-        connect {
-          sidecar_service {
-          }
-        }
       }
 
       env {
