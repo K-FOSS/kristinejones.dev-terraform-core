@@ -13,7 +13,7 @@ job "Patroni" {
     }
 
     network {
-      mode = "bridge"
+      mode = "cni/spine0"
 
       port "psql" {
         static = 5432
@@ -33,7 +33,9 @@ job "Patroni" {
 
         command = "/usr/local/bin/patroni"
 
-        network_mode = "bridge"
+        ipv4_address = "172.16.0.5$${NOMAD_ALLOC_INDEX}"
+
+        network_mode = "cni/spine0"
 
         hostname = "postgresql$${NOMAD_ALLOC_INDEX}"
 
