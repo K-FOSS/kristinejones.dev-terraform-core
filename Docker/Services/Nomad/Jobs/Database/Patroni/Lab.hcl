@@ -33,6 +33,8 @@ job "Patroni" {
       name = "patroni-store"
       port = "psql"
 
+      address_mode = "driver"
+
       task = "patroni"
 
       connect {
@@ -43,6 +45,8 @@ job "Patroni" {
     service {
       name = "patroni"
       port = "http"
+
+      address_mode = "driver"
 
       task = "patroni"
 
@@ -61,6 +65,8 @@ job "Patroni" {
         image = "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
 
         command = "/usr/local/bin/patroni"
+
+        network_mode = "bridge"
 
         hostname = "postgresql$${NOMAD_ALLOC_INDEX}"
 
