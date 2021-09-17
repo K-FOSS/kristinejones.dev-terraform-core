@@ -23,39 +23,6 @@ job "Patroni" {
       }
     }
 
-    ephemeral_disk {
-      migrate = true
-      size    = 500
-      sticky  = true
-    }
-
-    service {
-      name = "patroni-store"
-      port = "psql"
-
-      address_mode = "driver"
-
-      task = "patroni"
-
-      connect {
-        sidecar_service {}
-      }
-    }
-
-    service {
-      name = "patroni"
-      port = "http"
-
-      address_mode = "driver"
-
-      task = "patroni"
-
-      connect {
-        sidecar_service {
-        }
-      }
-    }
-
     task "patroni" {
       driver = "docker"
 
@@ -75,6 +42,29 @@ job "Patroni" {
         network_aliases = [
           "postgresql$${NOMAD_ALLOC_INDEX}"
         ]
+      }
+
+      service {
+        name = "patroni-store"
+        port = "psql"
+
+        address_mode = "driver"
+
+        connect {
+          sidecar_service {}
+        }
+      }
+
+      service {
+        name = "patroni"
+        port = "http"
+
+        address_mode = "driver"
+
+        connect {
+          sidecar_service {
+          }
+        }
       }
 
       env {
