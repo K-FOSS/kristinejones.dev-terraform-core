@@ -62,11 +62,11 @@ job "Patroni" {
 
         command = "/usr/local/bin/patroni"
 
+        hostname = "postgresql$${NOMAD_ALLOC_INDEX}"
+
         args = ["/local/Patroni.yaml"]
 
         network_aliases = [
-          "$${NOMAD_TASK_NAME}",
-          "$${NOMAD_TASK_NAME}-$${NOMAD_ALLOC_INDEX}",
           "postgresql$${NOMAD_ALLOC_INDEX}"
         ]
       }
