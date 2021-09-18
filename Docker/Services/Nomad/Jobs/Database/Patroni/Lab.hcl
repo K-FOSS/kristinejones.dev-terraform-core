@@ -33,8 +33,6 @@ job "Patroni" {
 
         command = "/usr/local/bin/patroni"
 
-        mac_address = "02:68:b3:29:da:5$${NOMAD_ALLOC_INDEX}"
-
         args = ["/local/Patroni.yaml"]
       }
 
