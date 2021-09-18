@@ -33,17 +33,9 @@ job "Patroni" {
 
         command = "/usr/local/bin/patroni"
 
-        ipv4_address = "172.16.0.5$${NOMAD_ALLOC_INDEX}"
-
-        network_mode = "spine0"
-
-        hostname = "postgresql$${NOMAD_ALLOC_INDEX}"
+        mac_address = "02:68:b3:29:da:5$${NOMAD_ALLOC_INDEX}"
 
         args = ["/local/Patroni.yaml"]
-
-        network_aliases = [
-          "postgresql$${NOMAD_ALLOC_INDEX}"
-        ]
       }
 
       service {
