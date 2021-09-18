@@ -31,7 +31,7 @@ job "web-demo" {
       env {
         WEBSOCKET_ENABLED = "true"
         ROCKET_PORT = "8080"
-        DATABASE_URL = "postgresql://${Database.Username}:${Database.Password}@0.patroni-store.service.kjdev:5432/${Database.Database}"
+        DATABASE_URL = "postgresql://${Database.Username}:${Database.Password}@2.patroni-store.service.kjdev:5432/${Database.Database}"
       }
     }
   }
