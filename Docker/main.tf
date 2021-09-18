@@ -2513,6 +2513,15 @@ module "CoreNomad" {
     }
   }
 
+  Bitwarden = {
+    Database = {
+      Username = "${var.StolonBitwardenRole.name}"
+      Password = "${var.StolonBitwardenRole.password}"
+
+      Database = "${var.StolonBitwardenDB.name}"
+    }
+  }
+
   # Vault = {
 
   # }

@@ -34,6 +34,20 @@ variable "Patroni" {
   description = "Patroni Configuration"
 }
 
+variable "Bitwarden" {
+  type = object({
+    Database = object({
+      Username = string
+      Password = string
+
+      Database = string
+    })
+  })
+  sensitive = true
+
+  description = "Bitwarden Configuration"
+}
+
 #
 # TODO: Get Hashicorp Vault connected to Nomad
 #

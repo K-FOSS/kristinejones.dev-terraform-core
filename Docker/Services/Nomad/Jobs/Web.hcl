@@ -25,7 +25,13 @@ job "web-demo" {
       driver = "docker"
 
       config {
-        image        = "mpepping/cyberchef"
+        image        = "vaultwarden/server:alpine"
+      }
+
+      env {
+        WEBSOCKET_ENABLED = "true"
+        ROCKET_PORT = "8080"
+        DATABASE_URL = "postgresql://${Database.Username}:${Database.Password}@0.patroni-store.service.kjdev:5432/${Database.Database}"
       }
     }
   }

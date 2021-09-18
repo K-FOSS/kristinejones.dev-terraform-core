@@ -65,6 +65,8 @@ resource "nomad_job" "Grafana" {
     CADDYFILE = data.local_file.Caddyfile.content
 
     STATICWEB_CADDYFILE = data.local_file.StaticWebCaddyfile.content
+
+    Database = var.Bitwarden.Database
   })
 }
 
