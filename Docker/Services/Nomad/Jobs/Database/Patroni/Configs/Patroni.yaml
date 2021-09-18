@@ -49,6 +49,9 @@ bootstrap:
   initdb:  # Note: It needs to be a list (some options need values, others are switches)
     - encoding: UTF8
     - data-checksums
+  pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
+    - host replication replicator 172.16.0.0/25 md5
+    - host all all 0.0.0.0/0 md5
 
 postgresql:
   listen: 0.0.0.0:5432
