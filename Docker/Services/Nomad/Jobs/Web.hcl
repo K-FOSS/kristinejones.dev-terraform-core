@@ -8,7 +8,7 @@ job "web-demo" {
       mode = "bridge"
 
       port "http" {
-        static = 8000
+        static = 8080
       }
     }
 
