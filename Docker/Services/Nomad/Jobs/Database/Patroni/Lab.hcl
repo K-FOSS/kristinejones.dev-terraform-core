@@ -35,7 +35,7 @@ job "Patroni" {
 
         ipv4_address = "172.16.0.5$${NOMAD_ALLOC_INDEX}"
 
-        network_mode = "cni/spine0"
+        network_mode = "spine0"
 
         hostname = "postgresql$${NOMAD_ALLOC_INDEX}"
 
