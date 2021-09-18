@@ -29,6 +29,12 @@ job "Patroni" {
 
       task = "patroni"
 
+      tags = ["$${NOMAD_ALLOC_INDEX}"]
+
+      meta {
+        id = "$${NOMAD_ALLOC_INDEX}"
+      }
+
       address_mode = "alloc"
     }
 
