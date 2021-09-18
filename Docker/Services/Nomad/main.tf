@@ -59,13 +59,7 @@ data "local_file" "StaticWebCaddyfile" {
 
 
 resource "nomad_job" "Grafana" {
-
-  
-  jobspec = templatefile("${path.module}/Jobs/Web.hcl", {
-    CADDYFILE = data.local_file.Caddyfile.content
-
-    STATICWEB_CADDYFILE = data.local_file.StaticWebCaddyfile.content
-
+  jobspec = templatefile("${path.module}/Jobs/Bitwarden.hcl", {
     Database = var.Bitwarden.Database
   })
 }

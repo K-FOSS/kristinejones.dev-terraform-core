@@ -74,6 +74,7 @@ job "Patroni" {
         PATRONI_POSTGRESQL_DATA_DIR = "/alloc/psql"
         PATRONI_CONSUL_HOST = "${Patroni.Consul.Hostname}:${Patroni.Consul.Port}"
         PATRONI_CONSUL_URL = "http://${Patroni.Consul.Hostname}:${Patroni.Consul.Port}"
+        PATRONI_CONSUL_REGISTER_SERVICE = "true"
         PATRONI_CONSUL_TOKEN = "${Patroni.Consul.Token}"
         PATRONI_NAME = "postgresql$${NOMAD_ALLOC_INDEX}"
         PATRONI_SCOPE = "site0core1psql"
